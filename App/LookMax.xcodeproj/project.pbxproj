@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		380499F0304078E30019AC4F /* FaceReportDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceReportDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		380499F0304078E30019AC4F /* LookMax.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LookMax.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		380499F2304078E30019AC4F /* FaceReportDemo */ = {
+		380499F2304078E30019AC4F /* LookMax */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FaceReportDemo;
+			path = LookMax;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		380499E7304078E30019AC4F = {
 			isa = PBXGroup;
 			children = (
-				380499F2304078E30019AC4F /* FaceReportDemo */,
+				380499F2304078E30019AC4F /* LookMax */,
 				380499F1304078E30019AC4F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		380499F1304078E30019AC4F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				380499F0304078E30019AC4F /* FaceReportDemo.app */,
+				380499F0304078E30019AC4F /* LookMax.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		380499EF304078E30019AC4F /* FaceReportDemo */ = {
+		380499EF304078E30019AC4F /* LookMax */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 380499FB304078E40019AC4F /* Build configuration list for PBXNativeTarget "FaceReportDemo" */;
+			buildConfigurationList = 380499FB304078E40019AC4F /* Build configuration list for PBXNativeTarget "LookMax" */;
 			buildPhases = (
 				380499EC304078E30019AC4F /* Sources */,
 				380499ED304078E30019AC4F /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				380499F2304078E30019AC4F /* FaceReportDemo */,
+				380499F2304078E30019AC4F /* LookMax */,
 			);
-			name = FaceReportDemo;
+			name = LookMax;
 			packageProductDependencies = (
 			);
-			productName = FaceReportDemo;
-			productReference = 380499F0304078E30019AC4F /* FaceReportDemo.app */;
+			productName = LookMax;
+			productReference = 380499F0304078E30019AC4F /* LookMax.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 380499EB304078E30019AC4F /* Build configuration list for PBXProject "FaceReportDemo" */;
+			buildConfigurationList = 380499EB304078E30019AC4F /* Build configuration list for PBXProject "LookMax" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				380499EF304078E30019AC4F /* FaceReportDemo */,
+				380499EF304078E30019AC4F /* LookMax */,
 			);
 		};
 /* End PBXProject section */
@@ -254,6 +254,7 @@
 				DEVELOPMENT_TEAM = 984X5737VV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = LookMax;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take a picture and analyze your facial features.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -266,7 +267,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.NexurTech.FaceReportDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.NexurTech.LookMax;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -288,6 +289,7 @@
 				DEVELOPMENT_TEAM = 984X5737VV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = LookMax;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take a picture and analyze your facial features.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -300,7 +302,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.NexurTech.FaceReportDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.NexurTech.LookMax;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -315,7 +317,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		380499EB304078E30019AC4F /* Build configuration list for PBXProject "FaceReportDemo" */ = {
+		380499EB304078E30019AC4F /* Build configuration list for PBXProject "LookMax" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				380499F9304078E40019AC4F /* Debug */,
@@ -324,7 +326,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		380499FB304078E40019AC4F /* Build configuration list for PBXNativeTarget "FaceReportDemo" */ = {
+		380499FB304078E40019AC4F /* Build configuration list for PBXNativeTarget "LookMax" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				380499FC304078E40019AC4F /* Debug */,

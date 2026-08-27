@@ -1,6 +1,6 @@
 //
-//  FaceReportDemoApp.swift
-//  FaceReportDemo
+//  LookMaxApp.swift
+//  LookMax
 //
 //  Created by Sayyed on 27/08/2026.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct FaceReportDemoApp: App {
+struct LookMaxApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
