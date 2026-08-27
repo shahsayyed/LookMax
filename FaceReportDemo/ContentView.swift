@@ -5,6 +5,57 @@ import AVFoundation
 import PhotosUI
 import Combine
 
+// MARK: - Biometric Face Signature Model
+struct FaceBiometricSignature: Codable, Equatable {
+    let eyeToNoseRatio: Double
+    let eyeToMouthRatio: Double
+    let noseToChinRatio: Double
+    let mouthWidthRatio: Double
+    let jawWidthRatio: Double
+    let faceAspectRatio: Double
+    
+    // Compute similarity score between 0.0 (completely different) and 1.0 (identical)
+    func similarity(to other: FaceBiometricSignature) -> Double {
+        let diffs = [
+            abs(eyeToNoseRatio - other.eyeToNoseRatio) * 1.5,
+            abs(eyeToMouthRatio - other.eyeToMouthRatio) * 1.5,
+            abs(noseToChinRatio - other.noseToChinRatio) * 1.2,
+            abs(mouthWidthRatio - other.mouthWidthRatio) * 1.0,
+            abs(jawWidthRatio - other.jawWidthRatio) * 1.0,
+            abs(faceAspectRatio - other.faceAspectRatio) * 1.2
+        ]
+        
+        let avgDiff = diffs.reduce(0, +) / Double(diffs.count)
+        let similarity = max(0.0, min(1.0, 1.0 - (avgDiff * 2.8)))
+        return similarity
+    }
+}
+
+// MARK: - User Profile Model
+struct UserProfile: Codable {
+    var name: String
+    var photoDataList: [Data]
+    var signatures: [FaceBiometricSignature]
+    var dateCreated: Date
+    
+    static let storageKey = "FaceReportDemo_UserProfile"
+    
+    static func load() -> UserProfile? {
+        guard let data = UserDefaults.standard.data(forKey: storageKey) else { return nil }
+        return try? JSONDecoder().decode(UserProfile.self, from: data)
+    }
+    
+    func save() {
+        if let data = try? JSONEncoder().encode(self) {
+            UserDefaults.standard.set(data, forKey: UserProfile.storageKey)
+        }
+    }
+    
+    static func clear() {
+        UserDefaults.standard.removeObject(forKey: storageKey)
+    }
+}
+
 // MARK: - Analysis Scope Enum
 enum VisualScope: String, CaseIterable {
     case closeUpFace = "Close-up Face / Portrait"
@@ -22,19 +73,43 @@ enum VisualScope: String, CaseIterable {
     }
 }
 
-// MARK: - Report Section Data Model
+// MARK: - Verification Result Model
+struct VerificationResult {
+    let isMatched: Bool
+    let confidence: Double // 0.0 to 1.0
+    let profileName: String
+    let statusMessage: String
+}
+
+// MARK: - Style Rating Model
+struct StyleRating {
+    let overallScore: Double // 0.0 to 10.0
+    let title: String
+    let styleVerdict: String
+    let colorHarmony: String
+    let groomingRating: String
+    let lightingClarity: String
+}
+
+// MARK: - Report Category Model
 struct VisualReportCategory: Identifiable {
     let id = UUID()
     let title: String
     let icon: String
+    let color: Color
     let items: [String]
 }
 
 // MARK: - Main ContentView
 struct ContentView: View {
+    @State private var profile: UserProfile? = UserProfile.load()
+    @State private var showingOnboarding = false
     @State private var showingCustomCamera = false
     @State private var showingLibraryPicker = false
     @State private var inputImage: UIImage?
+    
+    @State private var verificationResult: VerificationResult?
+    @State private var styleRating: StyleRating?
     @State private var detectedScope: VisualScope?
     @State private var reportCategories: [VisualReportCategory] = []
     @State private var isAnalyzing = false
@@ -43,36 +118,101 @@ struct ContentView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
+                    // Profile Header Card
+                    if let user = profile {
+                        HStack(spacing: 14) {
+                            if let firstData = user.photoDataList.first, let avatar = UIImage(data: firstData) {
+                                Image(uiImage: avatar)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 52, height: 52)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.blue, lineWidth: 2))
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(user.name)
+                                    .font(.headline)
+                                Text("\(user.photoDataList.count) enrolled reference photo\(user.photoDataList.count > 1 ? "s" : "")")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Button("Edit") {
+                                showingOnboarding = true
+                            }
+                            .font(.subheadline.bold())
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 6)
+                            .background(Color.blue.opacity(0.12))
+                            .foregroundColor(.blue)
+                            .clipShape(Capsule())
+                        }
+                        .padding(14)
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(14)
+                    } else {
+                        // Prompt to create profile
+                        VStack(spacing: 12) {
+                            Image(systemName: "person.badge.plus")
+                                .font(.system(size: 38))
+                                .foregroundColor(.blue)
+                            Text("No Profile Enrolled")
+                                .font(.headline)
+                            Text("Create a profile with 1 to 3 reference photos to enable identity verification and personalized style ratings.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                            
+                            Button(action: { showingOnboarding = true }) {
+                                Text("Create Profile Now")
+                                    .font(.subheadline.bold())
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 10)
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .clipShape(Capsule())
+                            }
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(16)
+                    }
+                    
                     // Image Preview Card
                     if let inputImage = inputImage {
                         ZStack(alignment: .topTrailing) {
                             Image(uiImage: inputImage)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(maxHeight: 320)
+                                .frame(maxHeight: 300)
                                 .cornerRadius(16)
-                                .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
                             
                             if let scope = detectedScope {
                                 Label(scope.rawValue, systemImage: scope.icon)
                                     .font(.caption.bold())
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
                                     .background(.ultraThinMaterial)
                                     .clipShape(Capsule())
-                                    .padding(12)
+                                    .padding(10)
                             }
                         }
                     } else {
                         ZStack {
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(Color.secondary.opacity(0.12))
-                                .frame(height: 280)
-                            VStack(spacing: 12) {
-                                Image(systemName: "person.and.background.dotted")
-                                    .font(.system(size: 64))
+                                .fill(Color.secondary.opacity(0.10))
+                                .frame(height: 240)
+                            VStack(spacing: 10) {
+                                Image(systemName: "person.crop.rectangle.badge.plus")
+                                    .font(.system(size: 52))
                                     .foregroundColor(.secondary)
-                                Text("Take or choose a picture to analyze visual features")
+                                Text("Take or choose a photo to verify identity & analyze style")
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                                     .multilineTextAlignment(.center)
@@ -81,38 +221,105 @@ struct ContentView: View {
                         }
                     }
                     
-                    // Loading State
+                    // Loading Spinner
                     if isAnalyzing {
                         VStack(spacing: 12) {
                             ProgressView()
                                 .scaleEffect(1.2)
-                            Text("Running Apple Vision Visual Analysis...")
+                            Text("Running Apple Vision Verification & Visual Analysis...")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                         .padding()
                     }
                     
-                    // Comprehensive Visual Report
-                    if !reportCategories.isEmpty && !isAnalyzing {
-                        VStack(alignment: .leading, spacing: 16) {
+                    // Identity Verification Banner
+                    if let verif = verificationResult, !isAnalyzing {
+                        HStack(spacing: 14) {
+                            Image(systemName: verif.isMatched ? "checkmark.seal.fill" : "person.fill.xmark")
+                                .font(.system(size: 32))
+                                .foregroundColor(verif.isMatched ? .green : .orange)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(verif.isMatched ? "Identity Verified" : "Identity Mismatch")
+                                    .font(.headline.bold())
+                                    .foregroundColor(verif.isMatched ? .green : .orange)
+                                Text(verif.statusMessage)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .trailing) {
+                                Text("\(Int(verif.confidence * 100))%")
+                                    .font(.title2.bold())
+                                    .foregroundColor(verif.isMatched ? .green : .orange)
+                                Text("Match")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(14)
+                        .background(verif.isMatched ? Color.green.opacity(0.12) : Color.orange.opacity(0.12))
+                        .cornerRadius(14)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(verif.isMatched ? Color.green.opacity(0.3) : Color.orange.opacity(0.3), lineWidth: 1.5)
+                        )
+                    }
+                    
+                    // Style & Look Rating Card (Displayed when verified)
+                    if let rating = styleRating, !isAnalyzing {
+                        VStack(spacing: 14) {
                             HStack {
-                                Text("Visual Analysis Report")
-                                    .font(.title3.bold())
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Style & Aesthetic Rating")
+                                        .font(.headline)
+                                    Text(rating.styleVerdict)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                
                                 Spacer()
-                                if let scope = detectedScope {
-                                    Text(scope.rawValue)
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundColor(.blue)
+                                
+                                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                                    Text(String(format: "%.1f", rating.overallScore))
+                                        .font(.system(size: 34, weight: .heavy, design: .rounded))
+                                        .foregroundColor(.purple)
+                                    Text("/10")
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(.secondary)
                                 }
                             }
-                            .padding(.horizontal, 4)
+                            
+                            Divider()
+                            
+                            // Rating Metrics Grid
+                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                                MetricBadge(title: "Overall Look", value: rating.title, icon: "sparkles", color: .purple)
+                                MetricBadge(title: "Color Harmony", value: rating.colorHarmony, icon: "paintpalette.fill", color: .blue)
+                                MetricBadge(title: "Grooming & Hair", value: rating.groomingRating, icon: "comb.fill", color: .orange)
+                                MetricBadge(title: "Lighting & Clarity", value: rating.lightingClarity, icon: "sun.max.fill", color: .green)
+                            }
+                        }
+                        .padding(16)
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(16)
+                    }
+                    
+                    // Detailed Visual Report Cards
+                    if !reportCategories.isEmpty && !isAnalyzing {
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text("Detailed Visual Analysis")
+                                .font(.headline)
+                                .padding(.horizontal, 4)
                             
                             ForEach(reportCategories) { category in
                                 VStack(alignment: .leading, spacing: 10) {
                                     HStack(spacing: 8) {
                                         Image(systemName: category.icon)
-                                            .foregroundColor(.blue)
+                                            .foregroundColor(category.color)
                                             .font(.headline)
                                         Text(category.title)
                                             .font(.headline)
@@ -120,7 +327,7 @@ struct ContentView: View {
                                     
                                     ForEach(category.items, id: \.self) { item in
                                         HStack(alignment: .top, spacing: 10) {
-                                            Image(systemName: "checkmark.seal.fill")
+                                            Image(systemName: "checkmark.circle.fill")
                                                 .foregroundColor(.green)
                                                 .font(.subheadline)
                                                 .padding(.top, 2)
@@ -143,7 +350,7 @@ struct ContentView: View {
                         Button(action: {
                             checkCameraPermissionAndPresent()
                         }) {
-                            Label(inputImage == nil ? "Open Camera (with Timer & Controls)" : "Retake Photo", systemImage: "camera.viewfinder")
+                            Label(inputImage == nil ? "Scan / Take Picture" : "Scan Another Photo", systemImage: "camera.viewfinder")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -168,16 +375,32 @@ struct ContentView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Visual AI Reporter")
+            .navigationTitle("Face & Style AI")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingOnboarding = true }) {
+                        Image(systemName: profile == nil ? "person.crop.circle.badge.plus" : "person.crop.circle")
+                            .font(.system(size: 20))
+                    }
+                }
+            }
+            .sheet(isPresented: $showingOnboarding) {
+                ProfileOnboardingView(profile: $profile)
+            }
             .fullScreenCover(isPresented: $showingCustomCamera) {
                 CustomCameraView(isPresented: $showingCustomCamera, onPhotoCaptured: { image in
                     self.inputImage = image
-                    self.startVisualAnalysis()
+                    self.startVisualAndVerificationPipeline()
                 })
                 .ignoresSafeArea()
             }
-            .sheet(isPresented: $showingLibraryPicker, onDismiss: startVisualAnalysis) {
+            .sheet(isPresented: $showingLibraryPicker, onDismiss: startVisualAndVerificationPipeline) {
                 ImagePicker(image: $inputImage, sourceType: .photoLibrary)
+            }
+        }
+        .onAppear {
+            if profile == nil {
+                showingOnboarding = true
             }
         }
     }
@@ -200,18 +423,20 @@ struct ContentView: View {
         }
     }
     
-    // MARK: - AI Visual Analysis Router
-    private func startVisualAnalysis() {
+    // MARK: - Main AI Pipeline: Verification, Style & Visual Analysis
+    private func startVisualAndVerificationPipeline() {
         guard let uiImage = inputImage, let cgImage = uiImage.cgImage else { return }
         
         isAnalyzing = true
+        verificationResult = nil
+        styleRating = nil
         reportCategories = []
         detectedScope = nil
         
         DispatchQueue.global(qos: .userInitiated).async {
             let orientation = CGImagePropertyOrientation(uiImage.imageOrientation)
             
-            // 1. Initial Requests to determine framing & features
+            // 1. Setup Apple Vision Requests
             let faceRequest = VNDetectFaceLandmarksRequest()
             let faceQualityRequest = VNDetectFaceCaptureQualityRequest()
             let bodyPoseRequest = VNDetectHumanBodyPoseRequest()
@@ -228,53 +453,235 @@ struct ContentView: View {
                 let bodyPoses = bodyPoseRequest.results ?? []
                 let classifications = classificationRequest.results ?? []
                 
-                // 2. Determine Scope (Face, Upper Body, Full Body, General)
+                // 2. Extract Biometrics for Face Matching
+                var currentSignature: FaceBiometricSignature?
+                if let firstFace = faces.first, let landmarks = firstFace.landmarks {
+                    currentSignature = extractFaceSignature(from: landmarks, boundingBox: firstFace.boundingBox)
+                }
+                
+                // 3. Perform Identity Verification against Enrolled Profile
+                var matchResult = VerificationResult(
+                    isMatched: false,
+                    confidence: 0.0,
+                    profileName: profile?.name ?? "Unknown",
+                    statusMessage: "No face detected to verify."
+                )
+                
+                if let enrolledProfile = profile, let currentSig = currentSignature, !enrolledProfile.signatures.isEmpty {
+                    // Compare against all enrolled reference signatures
+                    var highestSimilarity = 0.0
+                    for enrolledSig in enrolledProfile.signatures {
+                        let sim = currentSig.similarity(to: enrolledSig)
+                        if sim > highestSimilarity {
+                            highestSimilarity = sim
+                        }
+                    }
+                    
+                    let isMatched = highestSimilarity >= 0.72
+                    let confidencePct = Int(highestSimilarity * 100)
+                    
+                    matchResult = VerificationResult(
+                        isMatched: isMatched,
+                        confidence: highestSimilarity,
+                        profileName: enrolledProfile.name,
+                        statusMessage: isMatched ?
+                            "Matched with enrolled profile \(enrolledProfile.name) (\(confidencePct)% similarity)" :
+                            "Subject does not match enrolled profile for \(enrolledProfile.name)."
+                    )
+                } else if profile == nil {
+                    matchResult = VerificationResult(
+                        isMatched: true,
+                        confidence: 1.0,
+                        profileName: "Guest",
+                        statusMessage: "Guest mode (No profile enrolled)."
+                    )
+                }
+                
+                // 4. Determine Image Scope
                 let scope = determineImageScope(faces: faces, bodyPoses: bodyPoses, imageSize: CGSize(width: cgImage.width, height: cgImage.height))
                 
+                // 5. Compute Style & Aesthetic Rating
+                var computedRating: StyleRating?
+                if matchResult.isMatched || profile == nil {
+                    computedRating = computeStyleRating(faces: faces, faceQualityRequest: faceQualityRequest, bodyPoses: bodyPoses, classifications: classifications, cgImage: cgImage)
+                }
+                
+                // 6. Generate Category Reports
                 var categories: [VisualReportCategory] = []
                 
-                // 3. Select and execute relevant analysis functions based on detected scope
-                
-                // A. Framing & Stance Analysis
+                // Framing & Pose
                 let stanceItems = analyzeFramingAndPose(scope: scope, bodyPoses: bodyPoses, faces: faces)
                 if !stanceItems.isEmpty {
-                    categories.append(VisualReportCategory(title: "Framing & Body Pose", icon: "figure.walk", items: stanceItems))
+                    categories.append(VisualReportCategory(title: "Framing & Stance", icon: "figure.walk", color: .blue, items: stanceItems))
                 }
                 
-                // B. Head, Hairstyle & Eyewear Analysis
-                let headAndFaceItems = analyzeHeadHairstyleAndEyewear(faces: faces, classifications: classifications, cgImage: cgImage, orientation: orientation)
-                if !headAndFaceItems.isEmpty {
-                    categories.append(VisualReportCategory(title: "Hairstyle, Eyewear & Facial Features", icon: "eyeglasses", items: headAndFaceItems))
+                // Hairstyle, Eyewear & Grooming
+                let headItems = analyzeHeadHairstyleAndEyewear(faces: faces, classifications: classifications, cgImage: cgImage, orientation: orientation)
+                if !headItems.isEmpty {
+                    categories.append(VisualReportCategory(title: "Hair, Eyewear & Grooming", icon: "eyeglasses", color: .orange, items: headItems))
                 }
                 
-                // C. Apparel, Clothing & Accessories Analysis
+                // Apparel & Outfits
                 let apparelItems = analyzeApparelAndOutfit(scope: scope, bodyPoses: bodyPoses, classifications: classifications, cgImage: cgImage)
                 if !apparelItems.isEmpty {
-                    categories.append(VisualReportCategory(title: "Apparel & Wearing Analysis", icon: "tshirt.fill", items: apparelItems))
+                    categories.append(VisualReportCategory(title: "Apparel & Outfit Analysis", icon: "tshirt.fill", color: .purple, items: apparelItems))
                 }
                 
-                // D. Visual Context & Capture Quality
+                // Capture Quality & Environment
                 let contextItems = analyzeCaptureAndEnvironment(faces: faces, faceQualityRequest: faceQualityRequest, classifications: classifications)
                 if !contextItems.isEmpty {
-                    categories.append(VisualReportCategory(title: "Environment & Image Context", icon: "sparkles", items: contextItems))
+                    categories.append(VisualReportCategory(title: "Lighting & Setting", icon: "sun.max.fill", color: .green, items: contextItems))
                 }
                 
                 DispatchQueue.main.async {
+                    self.verificationResult = matchResult
+                    self.styleRating = computedRating
                     self.detectedScope = scope
                     self.reportCategories = categories
                     self.isAnalyzing = false
                 }
                 
             } catch {
-                print("Vision analysis failed: \(error)")
+                print("Pipeline error: \(error)")
                 DispatchQueue.main.async {
-                    self.reportCategories = [
-                        VisualReportCategory(title: "Analysis Status", icon: "exclamationmark.triangle", items: ["Visual analysis could not identify subject clearly."])
-                    ]
                     self.isAnalyzing = false
                 }
             }
         }
+    }
+    
+    // MARK: - Style & Aesthetic Scoring Engine
+    private func computeStyleRating(faces: [VNFaceObservation], faceQualityRequest: VNDetectFaceCaptureQualityRequest, bodyPoses: [VNHumanBodyPoseObservation], classifications: [VNClassificationObservation], cgImage: CGImage) -> StyleRating {
+        var baseScore = 7.5
+        
+        // Lighting & Quality Factor
+        var qualityScore = 0.7
+        if let qualityFace = faceQualityRequest.results?.first, let q = qualityFace.faceCaptureQuality {
+            qualityScore = Double(q)
+            baseScore += (qualityScore - 0.5) * 2.0 // +/- 1.0
+        }
+        
+        // Posture Factor
+        if let body = bodyPoses.first {
+            if let neck = try? body.recognizedPoint(.neck), let root = try? body.recognizedPoint(.root), neck.confidence > 0.3, root.confidence > 0.3 {
+                let dx = abs(neck.location.x - root.location.x)
+                if dx < 0.04 {
+                    baseScore += 0.6 // Good upright posture
+                }
+            }
+        }
+        
+        // Clothing & Styling Factors
+        let formalOrSharpKeywords = ["suit", "blazer", "tie", "jacket", "shirt", "dress", "uniform"]
+        let casualKeywords = ["t-shirt", "sweater", "hoodie", "denim", "jersey"]
+        
+        let isFormal = classifications.contains { item in
+            formalOrSharpKeywords.contains { kw in item.identifier.lowercased().contains(kw) } && item.confidence > 0.3
+        }
+        let isCasual = classifications.contains { item in
+            casualKeywords.contains { kw in item.identifier.lowercased().contains(kw) } && item.confidence > 0.3
+        }
+        
+        if isFormal { baseScore += 0.8 }
+        else if isCasual { baseScore += 0.4 }
+        
+        // Eyewear / Accessory bonus
+        let hasAccessories = classifications.contains { item in
+            ["sunglass", "glasses", "watch", "necklace", "jewelry"].contains { kw in item.identifier.lowercased().contains(kw) } && item.confidence > 0.3
+        }
+        if hasAccessories { baseScore += 0.4 }
+        
+        let finalScore = max(6.0, min(9.9, baseScore))
+        
+        let verdict: String
+        let title: String
+        if finalScore >= 9.0 {
+            title = "Superb & Sharp"
+            verdict = "Exceptional presentation with high visual balance and crisp coordination."
+        } else if finalScore >= 8.2 {
+            title = "Well-Coordinated"
+            verdict = "Polished look with harmonious tones, confident posture, and clear framing."
+        } else if finalScore >= 7.2 {
+            title = "Clean & Casual"
+            verdict = "Comfortable, natural everyday style with well-balanced lighting."
+        } else {
+            title = "Relaxed Look"
+            verdict = "Casual appearance with soft lighting and natural framing."
+        }
+        
+        let colorVerdict = isFormal ? "Sharp & High Contrast" : "Harmonious & Balanced"
+        let groomingVerdict = hasAccessories ? "Accessorized & Styled" : "Clean & Natural"
+        let lightingVerdict = qualityScore > 0.65 ? "Bright & Crisp (Studio/Daylight)" : "Soft Ambient Lighting"
+        
+        return StyleRating(
+            overallScore: finalScore,
+            title: title,
+            styleVerdict: verdict,
+            colorHarmony: colorVerdict,
+            groomingRating: groomingVerdict,
+            lightingClarity: lightingVerdict
+        )
+    }
+    
+    // MARK: - Biometric Extraction Helper
+    private func extractFaceSignature(from landmarks: VNFaceLandmarks2D, boundingBox: CGRect) -> FaceBiometricSignature? {
+        guard let leftEye = landmarks.leftEye,
+              let rightEye = landmarks.rightEye,
+              let nose = landmarks.nose ?? landmarks.noseCrest,
+              let lips = landmarks.outerLips else { return nil }
+        
+        let leftEyeCenter = calculateCenter(points: leftEye.normalizedPoints)
+        let rightEyeCenter = calculateCenter(points: rightEye.normalizedPoints)
+        let noseTip = calculateCenter(points: nose.normalizedPoints)
+        let mouthCenter = calculateCenter(points: lips.normalizedPoints)
+        
+        let eyeDistance = distance(from: leftEyeCenter, to: rightEyeCenter)
+        guard eyeDistance > 0.01 else { return nil }
+        
+        let eyeMidpoint = CGPoint(x: (leftEyeCenter.x + rightEyeCenter.x)/2, y: (leftEyeCenter.y + rightEyeCenter.y)/2)
+        
+        let eyeToNose = distance(from: eyeMidpoint, to: noseTip) / eyeDistance
+        let eyeToMouth = distance(from: eyeMidpoint, to: mouthCenter) / eyeDistance
+        
+        var noseToChinRatio = 1.2
+        if let contour = landmarks.faceContour, let chinPoint = contour.normalizedPoints.last {
+            noseToChinRatio = distance(from: noseTip, to: chinPoint) / eyeDistance
+        }
+        
+        let mouthWidth = lips.normalizedPoints.map { $0.x }.max() ?? 0 - (lips.normalizedPoints.map { $0.x }.min() ?? 0)
+        let mouthWidthRatio = Double(mouthWidth) / Double(eyeDistance)
+        
+        var jawWidthRatio = 2.0
+        if let contour = landmarks.faceContour {
+            let jawPoints = contour.normalizedPoints
+            if let first = jawPoints.first, let last = jawPoints.last {
+                jawWidthRatio = distance(from: first, to: last) / eyeDistance
+            }
+        }
+        
+        let aspectRatio = Double(boundingBox.height / max(0.01, boundingBox.width))
+        
+        return FaceBiometricSignature(
+            eyeToNoseRatio: eyeToNose,
+            eyeToMouthRatio: eyeToMouth,
+            noseToChinRatio: noseToChinRatio,
+            mouthWidthRatio: mouthWidthRatio,
+            jawWidthRatio: jawWidthRatio,
+            faceAspectRatio: aspectRatio
+        )
+    }
+    
+    private func calculateCenter(points: [CGPoint]) -> CGPoint {
+        guard !points.isEmpty else { return .zero }
+        let totalX = points.reduce(0) { $0 + $1.x }
+        let totalY = points.reduce(0) { $0 + $1.y }
+        return CGPoint(x: totalX / CGFloat(points.count), y: totalY / CGFloat(points.count))
+    }
+    
+    private func distance(from: CGPoint, to: CGPoint) -> Double {
+        let dx = Double(from.x - to.x)
+        let dy = Double(from.y - to.y)
+        return sqrt(dx*dx + dy*dy)
     }
     
     // MARK: - Scope Determination Function
@@ -309,10 +716,10 @@ struct ContentView: View {
         return .generalScene
     }
     
-    // MARK: - Function 1: Framing & Pose Analysis
+    // MARK: - Framing & Pose Analysis
     private func analyzeFramingAndPose(scope: VisualScope, bodyPoses: [VNHumanBodyPoseObservation], faces: [VNFaceObservation]) -> [String] {
         var items: [String] = []
-        items.append("Detected Framing: \(scope.rawValue)")
+        items.append("Framing Category: \(scope.rawValue)")
         
         if let body = bodyPoses.first {
             let leftWrist = try? body.recognizedPoint(.leftWrist)
@@ -325,7 +732,7 @@ struct ContentView: View {
             } else if let rw = rightWrist, let rs = rightShoulder, rw.confidence > 0.4, rs.confidence > 0.4, rw.location.y > rs.location.y {
                 items.append("Arm/Hand Gesture: Raised hand detected")
             } else {
-                items.append("Arm Position: Relaxed / at sides")
+                items.append("Arm Position: Relaxed posture at sides")
             }
             
             if let neck = try? body.recognizedPoint(.neck), let root = try? body.recognizedPoint(.root), neck.confidence > 0.3, root.confidence > 0.3 {
@@ -333,7 +740,7 @@ struct ContentView: View {
                 if dx < 0.05 {
                     items.append("Body Posture: Upright and centered")
                 } else {
-                    items.append("Body Posture: Angled / leaning stance")
+                    items.append("Body Posture: Angled / dynamic stance")
                 }
             }
         } else if let face = faces.first {
@@ -347,14 +754,14 @@ struct ContentView: View {
                 }
             }
             if let roll = face.roll, abs(roll.doubleValue) > 0.15 {
-                items.append("Head Tilt: Tilted head angle")
+                items.append("Head Tilt: Tilted head orientation")
             }
         }
         
         return items
     }
     
-    // MARK: - Function 2: Head, Hairstyle & Eyewear Analysis
+    // MARK: - Hairstyle, Eyewear & Grooming Analysis
     private func analyzeHeadHairstyleAndEyewear(faces: [VNFaceObservation], classifications: [VNClassificationObservation], cgImage: CGImage, orientation: CGImagePropertyOrientation) -> [String] {
         var items: [String] = []
         
@@ -364,8 +771,7 @@ struct ContentView: View {
         }
         
         if let topEyewear = eyewearMatches.first {
-            let label = topEyewear.identifier.capitalized
-            items.append("Eyewear: Wearing \(label) (ML verified)")
+            items.append("Eyewear: Wearing \(topEyewear.identifier.capitalized)")
         } else {
             items.append("Eyewear: No prominent glasses/sunglasses detected")
         }
@@ -383,31 +789,29 @@ struct ContentView: View {
             return (id.contains("hair") || id.contains("beard") || id.contains("mustache") || id.contains("wig") || id.contains("ponytail") || id.contains("braid") || id.contains("afro")) && $0.confidence > 0.3
         }
         for match in hairMatches.prefix(2) {
-            items.append("Hair/Styling: \(match.identifier.capitalized)")
+            items.append("Hair & Facial Styling: \(match.identifier.capitalized)")
         }
         
-        if let face = faces.first {
-            if let landmarks = face.landmarks {
-                var facialDetails: [String] = []
-                if landmarks.leftEye != nil && landmarks.rightEye != nil {
-                    facialDetails.append("Both eyes clearly visible")
-                }
-                if landmarks.outerLips != nil {
-                    facialDetails.append("Mouth / smile line mapped")
-                }
-                if landmarks.faceContour != nil {
-                    facialDetails.append("Jawline & face contour detected")
-                }
-                if !facialDetails.isEmpty {
-                    items.append("Facial Landmarks: " + facialDetails.joined(separator: ", "))
-                }
+        if let face = faces.first, let landmarks = face.landmarks {
+            var facialDetails: [String] = []
+            if landmarks.leftEye != nil && landmarks.rightEye != nil {
+                facialDetails.append("Eyes open & visible")
+            }
+            if landmarks.outerLips != nil {
+                facialDetails.append("Mouth / smile line tracked")
+            }
+            if landmarks.faceContour != nil {
+                facialDetails.append("Defined jawline contour")
+            }
+            if !facialDetails.isEmpty {
+                items.append("Facial Biometrics: " + facialDetails.joined(separator: ", "))
             }
         }
         
         return items
     }
     
-    // MARK: - Function 3: Apparel, Clothing & Accessories Analysis
+    // MARK: - Apparel & Outfit Analysis
     private func analyzeApparelAndOutfit(scope: VisualScope, bodyPoses: [VNHumanBodyPoseObservation], classifications: [VNClassificationObservation], cgImage: CGImage) -> [String] {
         var items: [String] = []
         
@@ -424,22 +828,21 @@ struct ContentView: View {
         
         if !matchingApparel.isEmpty {
             for apparel in matchingApparel.prefix(3) {
-                let name = apparel.identifier.capitalized
-                items.append("Outfit item: \(name)")
+                items.append("Outfit Category: \(apparel.identifier.capitalized)")
             }
         } else {
-            items.append("Apparel style: Casual / everyday clothing")
+            items.append("Apparel Style: Casual / daily wear")
         }
         
         let sampleRect = CGRect(x: 0.35, y: 0.45, width: 0.30, height: 0.25)
         if let colorName = sampleDominantColorName(in: cgImage, normalizedRect: sampleRect) {
-            items.append("Top / Upper Body Color: Dominant \(colorName)")
+            items.append("Upper Body Color Tone: Dominant \(colorName)")
         }
         
         if scope == .fullBody {
             let lowerSampleRect = CGRect(x: 0.35, y: 0.70, width: 0.30, height: 0.20)
             if let lowerColor = sampleDominantColorName(in: cgImage, normalizedRect: lowerSampleRect) {
-                items.append("Bottom / Lower Body Color: Dominant \(lowerColor)")
+                items.append("Lower Body Color Tone: Dominant \(lowerColor)")
             }
         }
         
@@ -449,13 +852,13 @@ struct ContentView: View {
             return accessoryKeywords.contains { kw in id.contains(kw) } && item.confidence > 0.25
         }
         for acc in accessoryMatches.prefix(2) {
-            items.append("Accessory: \(acc.identifier.capitalized)")
+            items.append("Accessory Detected: \(acc.identifier.capitalized)")
         }
         
         return items
     }
     
-    // MARK: - Function 4: Capture Quality & Environment
+    // MARK: - Capture Quality & Environment
     private func analyzeCaptureAndEnvironment(faces: [VNFaceObservation], faceQualityRequest: VNDetectFaceCaptureQualityRequest, classifications: [VNClassificationObservation]) -> [String] {
         var items: [String] = []
         
@@ -470,13 +873,13 @@ struct ContentView: View {
             return envKeywords.contains { kw in id.contains(kw) } && item.confidence > 0.35
         }
         if let topEnv = envMatches.first {
-            items.append("Setting / Environment: \(topEnv.identifier.capitalized)")
+            items.append("Environment Setting: \(topEnv.identifier.capitalized)")
         }
         
         return items
     }
     
-    // MARK: - Dominant Color Sampling Utility
+    // MARK: - Color Sampling Utility
     private func sampleDominantColorName(in cgImage: CGImage, normalizedRect: CGRect) -> String? {
         let width = CGFloat(cgImage.width)
         let height = CGFloat(cgImage.height)
@@ -520,7 +923,7 @@ struct ContentView: View {
         if maxDiff < 0.08 { return "Grey / Neutral tone" }
         
         if r > g && r > b {
-            if g > 0.5 { return "Yellow / Orange tone" }
+            if g > 0.5 { return "Yellow / Warm tone" }
             return "Red / Warm tone"
         } else if g > r && g > b {
             return "Green tone"
@@ -533,6 +936,302 @@ struct ContentView: View {
     }
 }
 
+// MARK: - Metric Badge Component
+struct MetricBadge: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .font(.subheadline)
+            
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Text(value)
+                    .font(.caption.bold())
+                    .lineLimit(1)
+            }
+        }
+        .padding(8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(UIColor.tertiarySystemBackground))
+        .cornerRadius(10)
+    }
+}
+
+// MARK: - Profile Onboarding / Enrollment View
+struct ProfileOnboardingView: View {
+    @Binding var profile: UserProfile?
+    @Environment(\.presentationMode) var presentationMode
+    
+    @State private var name: String = ""
+    @State private var selectedImages: [UIImage] = []
+    @State private var isProcessing = false
+    @State private var errorMessage: String?
+    @State private var showingImagePicker = false
+    @State private var pickerImage: UIImage?
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "person.text.rectangle.fill")
+                            .font(.system(size: 48))
+                            .foregroundColor(.blue)
+                        Text(profile == nil ? "Create Your Profile" : "Edit Profile")
+                            .font(.title2.bold())
+                        Text("Add your name and 1 to 3 clear reference photos of your face for accurate biometric matching.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                    .padding(.top, 10)
+                    
+                    // Name Field
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Your Name")
+                            .font(.subheadline.bold())
+                        TextField("Enter full name", text: $name)
+                            .padding()
+                            .background(Color(UIColor.secondarySystemBackground))
+                            .cornerRadius(12)
+                    }
+                    
+                    // Reference Photos Grid
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Reference Photos (\(selectedImages.count)/3)")
+                                .font(.subheadline.bold())
+                            Spacer()
+                            if selectedImages.count < 3 {
+                                Button(action: { showingImagePicker = true }) {
+                                    Label("Add Photo", systemImage: "plus.circle.fill")
+                                        .font(.subheadline.bold())
+                                }
+                            }
+                        }
+                        
+                        HStack(spacing: 12) {
+                            ForEach(Array(selectedImages.enumerated()), id: \.offset) { index, img in
+                                ZStack(alignment: .topTrailing) {
+                                    Image(uiImage: img)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 96, height: 96)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    
+                                    Button(action: {
+                                        selectedImages.remove(at: index)
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.white)
+                                            .background(Circle().fill(Color.black.opacity(0.6)))
+                                    }
+                                    .padding(4)
+                                }
+                            }
+                            
+                            if selectedImages.count < 3 {
+                                Button(action: { showingImagePicker = true }) {
+                                    VStack(spacing: 6) {
+                                        Image(systemName: "camera.fill")
+                                            .font(.title3)
+                                        Text("Add #\(selectedImages.count + 1)")
+                                            .font(.caption2.bold())
+                                    }
+                                    .foregroundColor(.blue)
+                                    .frame(width: 96, height: 96)
+                                    .background(Color.blue.opacity(0.08))
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4]))
+                                            .foregroundColor(.blue.opacity(0.5))
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    
+                    if let err = errorMessage {
+                        Text(err)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                    }
+                    
+                    // Save Button
+                    Button(action: enrollProfile) {
+                        if isProcessing {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                        } else {
+                            Text("Save Profile")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(canSave ? Color.blue : Color.gray.opacity(0.4))
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                    }
+                    .disabled(!canSave || isProcessing)
+                    
+                    if profile != nil {
+                        Button("Delete Current Profile", role: .destructive) {
+                            UserProfile.clear()
+                            profile = nil
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                        .font(.subheadline)
+                        .padding(.top, 4)
+                    }
+                }
+                .padding()
+            }
+            .navigationBarItems(trailing: Button("Cancel") {
+                presentationMode.wrappedValue.dismiss()
+            })
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(image: $pickerImage, sourceType: .photoLibrary)
+                    .onDisappear {
+                        if let img = pickerImage {
+                            selectedImages.append(img)
+                            pickerImage = nil
+                        }
+                    }
+            }
+            .onAppear {
+                if let current = profile {
+                    name = current.name
+                    selectedImages = current.photoDataList.compactMap { UIImage(data: $0) }
+                }
+            }
+        }
+    }
+    
+    private var canSave: Bool {
+        !name.trimmingCharacters(in: .whitespaces).isEmpty && !selectedImages.isEmpty
+    }
+    
+    private func enrollProfile() {
+        isProcessing = true
+        errorMessage = nil
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            var extractedSignatures: [FaceBiometricSignature] = []
+            var validPhotoDataList: [Data] = []
+            
+            let request = VNDetectFaceLandmarksRequest()
+            
+            for image in selectedImages {
+                guard let cgImage = image.cgImage else { continue }
+                let orientation = CGImagePropertyOrientation(image.imageOrientation)
+                let handler = VNImageRequestHandler(cgImage: cgImage, orientation: orientation, options: [:])
+                
+                try? handler.perform([request])
+                if let face = request.results?.first, let landmarks = face.landmarks {
+                    if let sig = extractSignature(from: landmarks, boundingBox: face.boundingBox) {
+                        extractedSignatures.append(sig)
+                        if let data = image.jpegData(compressionQuality: 0.7) {
+                            validPhotoDataList.append(data)
+                        }
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.isProcessing = false
+                if extractedSignatures.isEmpty {
+                    self.errorMessage = "No clear face could be detected in the chosen photos. Please select clearer front-facing photos."
+                } else {
+                    let newProfile = UserProfile(
+                        name: self.name.trimmingCharacters(in: .whitespaces),
+                        photoDataList: validPhotoDataList,
+                        signatures: extractedSignatures,
+                        dateCreated: Date()
+                    )
+                    newProfile.save()
+                    self.profile = newProfile
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            }
+        }
+    }
+    
+    private func extractSignature(from landmarks: VNFaceLandmarks2D, boundingBox: CGRect) -> FaceBiometricSignature? {
+        guard let leftEye = landmarks.leftEye,
+              let rightEye = landmarks.rightEye,
+              let nose = landmarks.nose ?? landmarks.noseCrest,
+              let lips = landmarks.outerLips else { return nil }
+        
+        let leftEyeCenter = calculateCenter(points: leftEye.normalizedPoints)
+        let rightEyeCenter = calculateCenter(points: rightEye.normalizedPoints)
+        let noseTip = calculateCenter(points: nose.normalizedPoints)
+        let mouthCenter = calculateCenter(points: lips.normalizedPoints)
+        
+        let eyeDistance = distance(from: leftEyeCenter, to: rightEyeCenter)
+        guard eyeDistance > 0.01 else { return nil }
+        
+        let eyeMidpoint = CGPoint(x: (leftEyeCenter.x + rightEyeCenter.x)/2, y: (leftEyeCenter.y + rightEyeCenter.y)/2)
+        
+        let eyeToNose = distance(from: eyeMidpoint, to: noseTip) / eyeDistance
+        let eyeToMouth = distance(from: eyeMidpoint, to: mouthCenter) / eyeDistance
+        
+        var noseToChinRatio = 1.2
+        if let contour = landmarks.faceContour, let chinPoint = contour.normalizedPoints.last {
+            noseToChinRatio = distance(from: noseTip, to: chinPoint) / eyeDistance
+        }
+        
+        let mouthWidth = lips.normalizedPoints.map { $0.x }.max() ?? 0 - (lips.normalizedPoints.map { $0.x }.min() ?? 0)
+        let mouthWidthRatio = Double(mouthWidth) / Double(eyeDistance)
+        
+        var jawWidthRatio = 2.0
+        if let contour = landmarks.faceContour {
+            let jawPoints = contour.normalizedPoints
+            if let first = jawPoints.first, let last = jawPoints.last {
+                jawWidthRatio = distance(from: first, to: last) / eyeDistance
+            }
+        }
+        
+        let aspectRatio = Double(boundingBox.height / max(0.01, boundingBox.width))
+        
+        return FaceBiometricSignature(
+            eyeToNoseRatio: eyeToNose,
+            eyeToMouthRatio: eyeToMouth,
+            noseToChinRatio: noseToChinRatio,
+            mouthWidthRatio: mouthWidthRatio,
+            jawWidthRatio: jawWidthRatio,
+            faceAspectRatio: aspectRatio
+        )
+    }
+    
+    private func calculateCenter(points: [CGPoint]) -> CGPoint {
+        guard !points.isEmpty else { return .zero }
+        let totalX = points.reduce(0) { $0 + $1.x }
+        let totalY = points.reduce(0) { $0 + $1.y }
+        return CGPoint(x: totalX / CGFloat(points.count), y: totalY / CGFloat(points.count))
+    }
+    
+    private func distance(from: CGPoint, to: CGPoint) -> Double {
+        let dx = Double(from.x - to.x)
+        let dy = Double(from.y - to.y)
+        return sqrt(dx*dx + dy*dy)
+    }
+}
+
 // MARK: - Camera Controller (AVCaptureSession Engine)
 class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var session = AVCaptureSession()
@@ -541,7 +1240,7 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     @Published var countdownRemaining = 0
     @Published var selectedTimerDuration: Int = 0 // 0s (Off), 3s, 5s, 10s
     @Published var flashMode: AVCaptureDevice.FlashMode = .auto
-    @Published var cameraPosition: AVCaptureDevice.Position = .back
+    @Published var cameraPosition: AVCaptureDevice.Position = .front
     @Published var isGridVisible = false
     @Published var currentZoomFactor: CGFloat = 1.0
     @Published var focusPoint: CGPoint?
@@ -551,6 +1250,14 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     private var currentDeviceInput: AVCaptureDeviceInput?
     private var countdownTimer: Timer?
     var onPhotoCaptured: ((UIImage) -> Void)?
+    
+    var isUltraWideAvailable: Bool {
+        return minZoomFactor < 0.95
+    }
+    
+    var isTelephotoAvailable: Bool {
+        return maxZoomFactor >= 2.0
+    }
     
     func setupCamera() {
         guard !session.isRunning else { return }
@@ -681,7 +1388,6 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     func focus(at point: CGPoint, viewSize: CGSize) {
         guard let device = currentDeviceInput?.device else { return }
         
-        // Convert screen coordinates to normalized camera coordinates (0.0 to 1.0)
         let focusPointNormalized = CGPoint(x: point.y / viewSize.height, y: 1.0 - (point.x / viewSize.width))
         
         do {
@@ -773,10 +1479,8 @@ struct CustomCameraView: View {
     var onPhotoCaptured: (UIImage) -> Void
     
     @StateObject private var camera = CameraController()
-    @State private var showingTimerMenu = false
     @State private var showingLibraryPicker = false
     @State private var pickerImage: UIImage?
-    
     @State private var baseZoomFactor: CGFloat = 1.0
     
     var body: some View {
@@ -800,12 +1504,10 @@ struct CustomCameraView: View {
                                 }
                         )
                     
-                    // Grid Overlay
                     if camera.isGridVisible {
                         CameraGridView()
                     }
                     
-                    // Tap to Focus Square Box
                     if camera.isFocusing, let point = camera.focusPoint {
                         Rectangle()
                             .stroke(Color.yellow, lineWidth: 1.5)
@@ -846,11 +1548,9 @@ struct CustomCameraView: View {
             // 3. Camera Controls UI Overlays
             VStack {
                 // Top Control Bar
-                HStack(spacing: 24) {
-                    // Flash Mode Toggle
-                    Button(action: {
-                        camera.toggleFlash()
-                    }) {
+                HStack(spacing: 20) {
+                    // Flash Mode
+                    Button(action: { camera.toggleFlash() }) {
                         Image(systemName: flashIconName)
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(camera.flashMode == .off ? .white : .yellow)
@@ -859,7 +1559,7 @@ struct CustomCameraView: View {
                             .clipShape(Circle())
                     }
                     
-                    // Delayed Capture Timer Button
+                    // Timer Menu
                     Menu {
                         Button("Timer Off") { camera.selectedTimerDuration = 0 }
                         Button("3 Seconds") { camera.selectedTimerDuration = 3 }
@@ -882,9 +1582,7 @@ struct CustomCameraView: View {
                     }
                     
                     // Grid Toggle
-                    Button(action: {
-                        camera.isGridVisible.toggle()
-                    }) {
+                    Button(action: { camera.isGridVisible.toggle() }) {
                         Image(systemName: camera.isGridVisible ? "grid.circle.fill" : "grid")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(camera.isGridVisible ? .yellow : .white)
@@ -913,53 +1611,56 @@ struct CustomCameraView: View {
                 
                 Spacer()
                 
-                // Zoom Switcher (0.5x / 1x / 2x)
-                HStack(spacing: 12) {
-                    Button(action: {
-                        let target = max(0.5, camera.minZoomFactor)
-                        camera.setZoom(target)
-                        baseZoomFactor = target
-                    }) {
-                        Text(".5x")
-                            .font(.caption.bold())
-                            .foregroundColor(camera.currentZoomFactor < 0.9 ? .yellow : .white)
-                            .frame(width: 38, height: 38)
-                            .background(Color.black.opacity(0.65))
-                            .clipShape(Circle())
+                // Zoom Switcher (Only display supported zoom options)
+                if camera.isUltraWideAvailable || camera.isTelephotoAvailable {
+                    HStack(spacing: 12) {
+                        if camera.isUltraWideAvailable {
+                            Button(action: {
+                                let target = camera.minZoomFactor
+                                camera.setZoom(target)
+                                baseZoomFactor = target
+                            }) {
+                                Text(".5x")
+                                    .font(.caption.bold())
+                                    .foregroundColor(camera.currentZoomFactor < 0.9 ? .yellow : .white)
+                                    .frame(width: 38, height: 38)
+                                    .background(Color.black.opacity(0.65))
+                                    .clipShape(Circle())
+                            }
+                        }
+                        
+                        Button(action: {
+                            camera.setZoom(1.0)
+                            baseZoomFactor = 1.0
+                        }) {
+                            Text("1x")
+                                .font(.caption.bold())
+                                .foregroundColor(abs(camera.currentZoomFactor - 1.0) < 0.2 ? .yellow : .white)
+                                .frame(width: 38, height: 38)
+                                .background(Color.black.opacity(0.65))
+                                .clipShape(Circle())
+                        }
+                        
+                        if camera.isTelephotoAvailable {
+                            Button(action: {
+                                camera.setZoom(2.0)
+                                baseZoomFactor = 2.0
+                            }) {
+                                Text("2x")
+                                    .font(.caption.bold())
+                                    .foregroundColor(camera.currentZoomFactor >= 1.8 ? .yellow : .white)
+                                    .frame(width: 38, height: 38)
+                                    .background(Color.black.opacity(0.65))
+                                    .clipShape(Circle())
+                            }
+                        }
                     }
-                    
-                    Button(action: {
-                        camera.setZoom(1.0)
-                        baseZoomFactor = 1.0
-                    }) {
-                        Text("1x")
-                            .font(.caption.bold())
-                            .foregroundColor(abs(camera.currentZoomFactor - 1.0) < 0.2 ? .yellow : .white)
-                            .frame(width: 38, height: 38)
-                            .background(Color.black.opacity(0.65))
-                            .clipShape(Circle())
-                    }
-                    
-                    Button(action: {
-                        camera.setZoom(2.0)
-                        baseZoomFactor = 2.0
-                    }) {
-                        Text("2x")
-                            .font(.caption.bold())
-                            .foregroundColor(camera.currentZoomFactor >= 1.8 ? .yellow : .white)
-                            .frame(width: 38, height: 38)
-                            .background(Color.black.opacity(0.65))
-                            .clipShape(Circle())
-                    }
+                    .padding(.bottom, 16)
                 }
-                .padding(.bottom, 16)
                 
                 // Bottom Control Bar
                 HStack(alignment: .center) {
-                    // Photo Library Shortcut
-                    Button(action: {
-                        showingLibraryPicker = true
-                    }) {
+                    Button(action: { showingLibraryPicker = true }) {
                         Image(systemName: "photo.on.rectangle")
                             .font(.system(size: 24))
                             .foregroundColor(.white)
@@ -970,10 +1671,7 @@ struct CustomCameraView: View {
                     
                     Spacer()
                     
-                    // Shutter Button with Countdown State
-                    Button(action: {
-                        camera.triggerCapture()
-                    }) {
+                    Button(action: { camera.triggerCapture() }) {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color.white, lineWidth: 4)
@@ -989,10 +1687,7 @@ struct CustomCameraView: View {
                     
                     Spacer()
                     
-                    // Front / Back Camera Switch
-                    Button(action: {
-                        camera.switchCamera()
-                    }) {
+                    Button(action: { camera.switchCamera() }) {
                         Image(systemName: "camera.rotate.fill")
                             .font(.system(size: 24))
                             .foregroundColor(.white)
@@ -1070,13 +1765,11 @@ struct CameraGridView: View {
                 let w = geo.size.width
                 let h = geo.size.height
                 
-                // Vertical lines
                 path.move(to: CGPoint(x: w / 3, y: 0))
                 path.addLine(to: CGPoint(x: w / 3, y: h))
                 path.move(to: CGPoint(x: 2 * w / 3, y: 0))
                 path.addLine(to: CGPoint(x: 2 * w / 3, y: h))
                 
-                // Horizontal lines
                 path.move(to: CGPoint(x: 0, y: h / 3))
                 path.addLine(to: CGPoint(x: w, y: h / 3))
                 path.move(to: CGPoint(x: 0, y: 2 * h / 3))
