@@ -65,6 +65,9 @@ struct ContentView: View {
                     // Main Content
                     if storage.sessions.isEmpty {
                         EmptySessionsView(onNew: { showingCreateSession = true })
+                            .safeAreaInset(edge: .bottom, spacing: 0) {
+                                bottomTabBar
+                            }
                     } else {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 14) {
@@ -185,13 +188,13 @@ struct ContentView: View {
                                     }
                                 }
                             }
-                            .padding(.bottom, 110)
+                            .padding(.bottom, 40)
+                        }
+                        .safeAreaInset(edge: .bottom, spacing: 0) {
+                            bottomTabBar
                         }
                     }
                 }
-
-                // Bottom Tab Bar (5 tabs)
-                bottomTabBar
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showingOnboarding) {
@@ -239,20 +242,19 @@ struct ContentView: View {
         }
         .padding(.horizontal, 8)
         .padding(.top, 10)
-        .padding(.bottom, 26)
+        // Add safe area padding for devices with home indicator
+        .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 20)
         .background(
             Rectangle()
                 .fill(Theme.cardDark.opacity(0.97))
-                .overlay(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                )
+                .background(.ultraThinMaterial)
                 .overlay(
                     Rectangle()
                         .frame(height: 0.5)
                         .foregroundColor(Theme.cardBorder),
                     alignment: .top
                 )
+                .ignoresSafeArea(edges: .bottom)
         )
     }
 
