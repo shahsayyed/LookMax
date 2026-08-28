@@ -17,14 +17,22 @@ enum LookAnalysisEngine {
         var goodPoints: [String] = []
         var badPoints: [String] = []
         var suggestions: [StyleSuggestion] = []
-        var baseScore = 7.6
-        var postureScore = 7.0
-        var fitScore = 7.2
+
+        // ─── Occasion-Based Scoring Baseline ───
+        // Each occasion has a different baseline and strictness. More formal events
+        // have a lower initial baseline (harder to impress) and penalise casual looks harder.
+        let occasionProfile = LookAnalysisEngine.occasionProfile(for: occasion)
+        var baseScore = occasionProfile.baseline
+        var postureScore = occasionProfile.postureBaseline
+        var fitScore = occasionProfile.fitBaseline
         var groomingScore = 7.5
 
         var postureNote = "Balanced posture"
         var fitNote = "Proportional fit"
         var styleNote = "Cohesive color palette"
+
+        // Tell the user which event standards their look is being evaluated against
+        goodPoints.append("Evaluated against \(occasion.rawValue) standards (baseline: \(String(format: "%.1f", occasionProfile.baseline))/10).")
 
         // ─── Face Shape ───
         var faceShape = "Balanced Oval"
@@ -223,9 +231,10 @@ enum LookAnalysisEngine {
             ))
         } else if isCasual {
             if occasionFormalExpected {
+                let formalityPenalty = occasionProfile.formalityWeight * 0.4
                 badPoints.append("Casual outfit may be underdressed for \(occasion.rawValue). Consider adding a blazer.")
-                baseScore -= 0.4
-                fitScore = 6.4
+                baseScore -= formalityPenalty
+                fitScore = max(5.8, 6.8 - formalityPenalty * 0.5)
                 fitNote = "Relaxed / under-structured"
                 styleNote = "Too informal for occasion"
                 suggestions.append(StyleSuggestion(
@@ -293,6 +302,34 @@ enum LookAnalysisEngine {
             fitNote: fitNote,
             styleNote: styleNote
         )
+    }
+
+    // MARK: - Occasion Profile
+    private struct OccasionProfile {
+        let baseline: Double       // Starting score before modifiers
+        let postureBaseline: Double
+        let fitBaseline: Double
+        let formalityWeight: Double  // How much outfit formality mismatch penalises
+    }
+
+    private static func occasionProfile(for occasion: OccasionCategory) -> OccasionProfile {
+        switch occasion {
+        case .formalEvent:
+            // Black-tie / wedding: strictest. High bar. Casual outfits heavily penalised.
+            return OccasionProfile(baseline: 6.8, postureBaseline: 7.2, fitBaseline: 7.0, formalityWeight: 1.6)
+        case .businessMeeting:
+            // Professional: expects structured attire; slight leniency vs. formal.
+            return OccasionProfile(baseline: 7.0, postureBaseline: 7.2, fitBaseline: 7.2, formalityWeight: 1.3)
+        case .dateNight:
+            // Stylish but flexible; well-groomed smart-casual is fine.
+            return OccasionProfile(baseline: 7.4, postureBaseline: 7.0, fitBaseline: 7.2, formalityWeight: 0.9)
+        case .casualEveryday:
+            // Most lenient. Clean, comfortable fits score well.
+            return OccasionProfile(baseline: 7.6, postureBaseline: 7.0, fitBaseline: 7.0, formalityWeight: 0.5)
+        case .custom:
+            // Flexible / custom event: generous baseline, moderate standards.
+            return OccasionProfile(baseline: 7.5, postureBaseline: 7.0, fitBaseline: 7.0, formalityWeight: 0.6)
+        }
     }
 
     // MARK: - Color Sampling

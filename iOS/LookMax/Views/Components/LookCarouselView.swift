@@ -3,6 +3,7 @@ import SwiftUI
 struct LookCarouselView: View {
     let looks: [LookItem]
     @Binding var selectedId: UUID?
+    var onDelete: ((LookItem) -> Void)? = nil
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -33,16 +34,38 @@ struct LookCarouselView: View {
                                     .frame(width: 104, height: 136)
                             }
 
-                            // Score Badge
+                            // Score Badge — rounded rectangle at top-right, per design
                             Text(String(format: "%.1f", look.score))
                                 .font(.system(size: 11, weight: .black, design: .rounded))
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 3)
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 4)
                                 .background(scoreCol)
-                                .clipShape(Capsule())
-                                .padding(6)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .padding(.top, 6)
+                                .padding(.trailing, 6)
                         }
+                        .overlay(
+                            // Trash delete button (bottom-trailing) — appears on selected look
+                            Group {
+                                if isSelected, let onDelete = onDelete {
+                                    Button(action: {
+                                        HapticManager.medium()
+                                        onDelete(look)
+                                    }) {
+                                        Image(systemName: "trash.fill")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(.white)
+                                            .frame(width: 28, height: 28)
+                                            .background(Color.red.opacity(0.85))
+                                            .clipShape(Circle())
+                                            .shadow(color: .black.opacity(0.4), radius: 4)
+                                    }
+                                    .padding(6)
+                                }
+                            },
+                            alignment: .bottomTrailing
+                        )
 
                         HStack(spacing: 4) {
                             Text("Look \(index + 1)")

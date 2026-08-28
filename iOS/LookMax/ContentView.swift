@@ -30,9 +30,22 @@ struct ContentView: View {
                             HapticManager.light()
                             showingOnboarding = true
                         }) {
-                            Image(systemName: "person.circle")
-                                .font(.system(size: 22, weight: .medium))
-                                .foregroundColor(.white.opacity(0.8))
+                            Group {
+                                if let p = profile,
+                                   let data = p.photoDataList.first,
+                                   let img = UIImage(data: data) {
+                                    Image(uiImage: img)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 34, height: 34)
+                                        .clipShape(Circle())
+                                        .overlay(Circle().stroke(Theme.neonCyan, lineWidth: 1.5))
+                                } else {
+                                    Image(systemName: "person.circle.fill")
+                                        .font(.system(size: 28, weight: .medium))
+                                        .foregroundColor(.white.opacity(0.8))
+                                }
+                            }
                         }
                     }
                     .padding(.horizontal, 20)
@@ -73,6 +86,16 @@ struct ContentView: View {
                                             selectedSession = session
                                         }
                                         .padding(.horizontal, 16)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button(role: .destructive) {
+                                                HapticManager.medium()
+                                                withAnimation {
+                                                    SessionStorageManager.shared.deleteSession(session)
+                                                }
+                                            } label: {
+                                                Label("Delete", systemImage: "trash.fill")
+                                            }
+                                        }
                                 }
 
                                 // ─── Saved Looks ───

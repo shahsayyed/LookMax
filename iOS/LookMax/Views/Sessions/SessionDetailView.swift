@@ -6,7 +6,10 @@ struct SessionDetailView: View {
     @Binding var session: LookSession
     let profile: UserProfile?
 
+    @Environment(\.presentationMode) var presentationMode
     @State private var selectedLookId: UUID?
+    @State private var showingDeleteLookConfirm = false
+    @State private var lookToDelete: LookItem?
     @State private var showingCustomCamera = false
     @State private var showingLibraryPicker = false
     @State private var showingComparison = false
@@ -45,7 +48,14 @@ struct SessionDetailView: View {
                             .padding(.vertical, 40)
                         } else {
                             // Look Carousel with glowing border
-                            LookCarouselView(looks: session.looks, selectedId: $selectedLookId)
+                            LookCarouselView(
+                                looks: session.looks,
+                                selectedId: $selectedLookId,
+                                onDelete: { look in
+                                    lookToDelete = look
+                                    showingDeleteLookConfirm = true
+                                }
+                            )
 
                             // Side-by-side bar chart comparison
                             if session.looks.count > 1 {
@@ -116,11 +126,20 @@ struct SessionDetailView: View {
             .navigationTitle(session.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 18))
+                            .foregroundColor(.secondary)
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if session.looks.count >= 2 {
-                        Button(action: { showingComparison = true }) {
-                            Image(systemName: "slider.horizontal.below.rectangle")
-                                .foregroundColor(Theme.neonCyan)
+                    HStack(spacing: 14) {
+                        if session.looks.count >= 2 {
+                            Button(action: { showingComparison = true }) {
+                                Image(systemName: "slider.horizontal.below.rectangle")
+                                    .foregroundColor(Theme.neonCyan)
+                            }
                         }
                     }
                 }
@@ -135,6 +154,24 @@ struct SessionDetailView: View {
             .sheet(isPresented: $showingLibraryPicker) {
                 ImagePicker(image: $incomingImage, sourceType: .photoLibrary)
                     .onDisappear { if incomingImage != nil { analyzeAndAddLook() } }
+            }
+            .confirmationDialog(
+                "Delete this look?",
+                isPresented: $showingDeleteLookConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Look", role: .destructive) {
+                    if let look = lookToDelete {
+                        withAnimation {
+                            SessionStorageManager.shared.deleteLook(look, from: &session)
+                            if selectedLookId == look.id {
+                                selectedLookId = session.looks.first?.id
+                            }
+                            HapticManager.medium()
+                        }
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
             }
             .sheet(isPresented: $showingComparison) {
                 if session.looks.count >= 2 {
