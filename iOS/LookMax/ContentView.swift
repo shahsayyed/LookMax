@@ -69,8 +69,8 @@ struct ContentView: View {
                                 bottomTabBar
                             }
                     } else {
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 14) {
+                        List {
+                            Group {
                                 // ─── My Style Sessions ───
                                 HStack {
                                     Text("MY STYLE SESSIONS")
@@ -81,6 +81,10 @@ struct ContentView: View {
                                 }
                                 .padding(.horizontal, 20)
                                 .padding(.top, 4)
+                                .padding(.bottom, 6)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets())
 
                                 ForEach(storage.sessions) { session in
                                     SessionCardView(session: session)
@@ -89,7 +93,8 @@ struct ContentView: View {
                                             selectedSession = session
                                         }
                                         .padding(.horizontal, 16)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        .padding(.vertical, 7)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                             Button(role: .destructive) {
                                                 HapticManager.medium()
                                                 withAnimation {
@@ -98,9 +103,28 @@ struct ContentView: View {
                                             } label: {
                                                 Label("Delete", systemImage: "trash.fill")
                                             }
-                                        }
-                                }
+                                            
+                                            Button {
+                                                HapticManager.light()
+                                            } label: {
+                                                Label("Archive", systemImage: "archivebox.fill")
+                                            }
+                                            .tint(.blue)
 
+                                            Button {
+                                                HapticManager.light()
+                                            } label: {
+                                                Label("Hide", systemImage: "eye.slash.fill")
+                                            }
+                                            .tint(.orange)
+                                        }
+                                        .listRowBackground(Color.clear)
+                                        .listRowSeparator(.hidden)
+                                        .listRowInsets(EdgeInsets())
+                                }
+                            }
+
+                            Group {
                                 // ─── Saved Looks ───
                                 HStack {
                                     Text("Saved Looks")
@@ -144,7 +168,12 @@ struct ContentView: View {
                                         .padding(.horizontal, 20)
                                     }
                                 }
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
 
+                            Group {
                                 // ─── Daily Inspiration ───
                                 HStack {
                                     Text("Daily Inspiration")
@@ -188,8 +217,12 @@ struct ContentView: View {
                                     }
                                 }
                             }
-                            .padding(.bottom, 40)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
                         }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
                         .safeAreaInset(edge: .bottom, spacing: 0) {
                             bottomTabBar
                         }
@@ -242,8 +275,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 8)
         .padding(.top, 10)
-        // Add safe area padding for devices with home indicator
-        .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 20)
+        .padding(.bottom, 10)
         .background(
             Rectangle()
                 .fill(Theme.cardDark.opacity(0.97))
