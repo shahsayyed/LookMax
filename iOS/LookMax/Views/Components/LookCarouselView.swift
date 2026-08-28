@@ -6,44 +6,64 @@ struct LookCarouselView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                ForEach(looks) { look in
+            HStack(spacing: 14) {
+                ForEach(Array(looks.enumerated()), id: \.element.id) { index, look in
                     let isSelected = (selectedId ?? looks.first?.id) == look.id
-                    VStack(spacing: 4) {
+                    let scoreCol = Theme.scoreColor(look.score)
+
+                    VStack(spacing: 6) {
                         ZStack(alignment: .topTrailing) {
                             if let img = look.image {
                                 Image(uiImage: img)
-                                    .resizable().scaledToFill()
-                                    .frame(width: 100, height: 130)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 104, height: 136)
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(isSelected ? Color.purple : Color.clear, lineWidth: 2.5)
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(
+                                                isSelected ? scoreCol : Color.white.opacity(0.12),
+                                                lineWidth: isSelected ? 3 : 1
+                                            )
                                     )
+                                    .shadow(color: isSelected ? scoreCol.opacity(0.6) : Color.clear, radius: 8)
+                            } else {
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(Theme.cardDark)
+                                    .frame(width: 104, height: 136)
                             }
+
+                            // Score Badge
                             Text(String(format: "%.1f", look.score))
-                                .font(.caption2.bold())
+                                .font(.system(size: 11, weight: .black, design: .rounded))
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 5).padding(.vertical, 2)
-                                .background(scoreColor(look.score))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(scoreCol)
                                 .clipShape(Capsule())
-                                .padding(5)
+                                .padding(6)
                         }
-                        Text(look.formattedTime)
-                            .font(.caption2)
-                            .foregroundColor(isSelected ? .purple : .secondary)
+
+                        HStack(spacing: 4) {
+                            Text("Look \(index + 1)")
+                                .font(.caption2.bold())
+                                .foregroundColor(isSelected ? .white : .secondary)
+
+                            Text("• \(look.formattedTime)")
+                                .font(.system(size: 10))
+                                .foregroundColor(.secondary)
+                        }
                     }
-                    .onTapGesture { selectedId = look.id }
+                    .scaleEffect(isSelected ? 1.04 : 0.98)
+                    .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isSelected)
+                    .onTapGesture {
+                        selectedId = look.id
+                        HapticManager.light()
+                    }
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 6)
+            .padding(.vertical, 8)
         }
-    }
-
-    private func scoreColor(_ score: Double) -> Color {
-        if score >= 8.5 { return .green }
-        if score >= 7.5 { return .blue }
-        return .orange
     }
 }

@@ -18,6 +18,13 @@ enum LookAnalysisEngine {
         var badPoints: [String] = []
         var suggestions: [StyleSuggestion] = []
         var baseScore = 7.6
+        var postureScore = 7.0
+        var fitScore = 7.2
+        var groomingScore = 7.5
+
+        var postureNote = "Balanced posture"
+        var fitNote = "Proportional fit"
+        var styleNote = "Cohesive color palette"
 
         // ─── Face Shape ───
         var faceShape = "Balanced Oval"
@@ -38,6 +45,7 @@ enum LookAnalysisEngine {
         if qualityScore >= 0.65 {
             goodPoints.append("Well-lit portrait with minimal shadow and crisp sharpness (\(lightingScore)% clarity).")
             baseScore += 0.4
+            groomingScore += 0.6
         } else if qualityScore >= 0.45 {
             badPoints.append("Lighting slightly flat or soft – ideal clarity score is 65%+, yours is \(lightingScore)%.")
             suggestions.append(StyleSuggestion(
@@ -49,6 +57,7 @@ enum LookAnalysisEngine {
         } else {
             badPoints.append("Poor lighting conditions — photo appears dark or backlit (\(lightingScore)% clarity). Reshoot near natural light.")
             baseScore -= 0.5
+            groomingScore -= 0.8
             suggestions.append(StyleSuggestion(
                 category: "Lighting", icon: "sun.max.fill", iconColor: .yellow,
                 title: "Move to Better Light Immediately",
@@ -74,17 +83,27 @@ enum LookAnalysisEngine {
                 if dx < 0.04 {
                     goodPoints.append("Upright, aligned posture projects confidence and authority.")
                     baseScore += 0.5
+                    postureScore = 8.2
                     postureGood = true
+                    postureNote = "Aligned spine & upright shoulders"
                 } else {
                     badPoints.append("Slight postural lean detected – shoulders appear uneven.")
+                    postureScore = 6.2
+                    postureNote = "Slight lateral lean / slouch"
                 }
             }
         }
         if !postureGood {
             suggestions.append(StyleSuggestion(
                 category: "Posture & Angle", icon: "figure.walk", iconColor: .teal,
+                title: "Straighten Posture & Roll Shoulders",
+                recommendation: "Pull shoulder blades gently down and back, lifting chest slightly for a confident silhouette.",
+                effortTime: "5 sec"
+            ))
+            suggestions.append(StyleSuggestion(
+                category: "Angle", icon: "arrow.triangle.2.circlepath", iconColor: .teal,
                 title: "Turn Shoulders 15° for Depth",
-                recommendation: "Rotate your body slightly while keeping your face forward for a slimmer, more dynamic silhouette.",
+                recommendation: "Rotate body slightly while keeping face forward for a slimmer, more dynamic silhouette.",
                 effortTime: "5 sec"
             ))
         }
@@ -124,6 +143,7 @@ enum LookAnalysisEngine {
         }
 
         if hasBeard {
+            groomingScore += 0.3
             suggestions.append(StyleSuggestion(
                 category: "Beard Lineup", icon: "scissors", iconColor: .brown,
                 title: "Define Neckline Two Fingers Above Adam's Apple",
@@ -153,13 +173,6 @@ enum LookAnalysisEngine {
                 recommendation: "Slide frames slightly up so your pupils sit in the upper third of each lens.",
                 effortTime: "10 sec"
             ))
-        } else if faceShape == "Round / Square" {
-            suggestions.append(StyleSuggestion(
-                category: "Eyewear Tip", icon: "eyeglasses", iconColor: .blue,
-                title: "Choose Angular or Geometric Frames",
-                recommendation: "Rectangular or cat-eye frames contrast a round face and add sharp definition.",
-                effortTime: "Tip"
-            ))
         }
 
         // ─── Outfit / Apparel ───
@@ -183,9 +196,12 @@ enum LookAnalysisEngine {
         if isFormal {
             goodPoints.append("Structured, formal attire with a strong collar and lapel outline.")
             baseScore += 0.5
+            fitScore = 8.4
+            fitNote = "Collar aligned & crisp lapels"
             if occasionFormalExpected {
                 goodPoints.append("Outfit is well-matched for the occasion (\(occasion.rawValue)).")
                 baseScore += 0.3
+                styleNote = "Executive & Formal"
             }
             suggestions.append(StyleSuggestion(
                 category: "Collar & Lapel", icon: "tshirt.fill", iconColor: .purple,
@@ -193,10 +209,25 @@ enum LookAnalysisEngine {
                 recommendation: "Check that shirt collar points lie flat under jacket lapels without curling.",
                 effortTime: "30 sec"
             ))
+            suggestions.append(StyleSuggestion(
+                category: "Shirt Tuck", icon: "arrow.down.to.line", iconColor: .purple,
+                title: "Tuck Shirt Neatly (Military Tuck)",
+                recommendation: "Pinch excess fabric at the side seams and fold backward before buckling your belt.",
+                effortTime: "30 sec"
+            ))
+            suggestions.append(StyleSuggestion(
+                category: "Accessories", icon: "watch.analog", iconColor: .blue,
+                title: "Align Watch & Cuff Length",
+                recommendation: "Show 1/4 to 1/2 inch of shirt cuff below your jacket sleeve.",
+                effortTime: "10 sec"
+            ))
         } else if isCasual {
             if occasionFormalExpected {
                 badPoints.append("Casual outfit may be underdressed for \(occasion.rawValue). Consider adding a blazer.")
                 baseScore -= 0.4
+                fitScore = 6.4
+                fitNote = "Relaxed / under-structured"
+                styleNote = "Too informal for occasion"
                 suggestions.append(StyleSuggestion(
                     category: "Outfit Upgrade", icon: "tshirt.fill", iconColor: .red,
                     title: "Add a Blazer or Structured Jacket",
@@ -205,6 +236,9 @@ enum LookAnalysisEngine {
                 ))
             } else {
                 goodPoints.append("Relaxed, appropriate casual outfit for \(occasion.rawValue).")
+                fitScore = 7.6
+                fitNote = "Clean casual fit"
+                styleNote = "Versatile Everyday"
                 suggestions.append(StyleSuggestion(
                     category: "Casual Layering", icon: "tshirt.fill", iconColor: .purple,
                     title: "Layer for Depth & Dimension",
@@ -213,6 +247,8 @@ enum LookAnalysisEngine {
                 ))
             }
         } else {
+            fitScore = 7.2
+            fitNote = "Standard proportion"
             suggestions.append(StyleSuggestion(
                 category: "Outfit Framing", icon: "tshirt.fill", iconColor: .purple,
                 title: "Check Neckline & Shoulder Fit",
@@ -249,7 +285,13 @@ enum LookAnalysisEngine {
             suggestions: suggestions,
             detectedOutfitColor: dominantColor,
             detectedFaceShape: faceShape,
-            lightingScore: lightingScore
+            lightingScore: lightingScore,
+            postureScore: min(9.8, max(5.5, postureScore)),
+            fitScore: min(9.8, max(5.5, fitScore)),
+            groomingScore: min(9.8, max(5.5, groomingScore)),
+            postureNote: postureNote,
+            fitNote: fitNote,
+            styleNote: styleNote
         )
     }
 

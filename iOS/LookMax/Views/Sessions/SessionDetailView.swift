@@ -9,6 +9,7 @@ struct SessionDetailView: View {
     @State private var selectedLookId: UUID?
     @State private var showingCustomCamera = false
     @State private var showingLibraryPicker = false
+    @State private var showingComparison = false
     @State private var incomingImage: UIImage?
     @State private var isAnalyzing = false
 
@@ -19,79 +20,113 @@ struct SessionDetailView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 18) {
-                    if session.looks.isEmpty {
-                        VStack(spacing: 16) {
-                            Image(systemName: "camera.viewfinder")
-                                .font(.system(size: 54)).foregroundColor(.purple.opacity(0.6))
-                            Text("Add Your First Look").font(.title3.bold())
-                            Text("Take or choose a photo to get instant AI styling feedback for \"\(session.title)\".")
-                                .font(.subheadline).foregroundColor(.secondary)
-                                .multilineTextAlignment(.center).padding(.horizontal, 28)
-                        }
-                        .padding(.vertical, 40)
-                    } else {
-                        LookCarouselView(looks: session.looks, selectedId: $selectedLookId)
+            ZStack {
+                Theme.oledBlack.ignoresSafeArea()
 
-                        if session.looks.count > 1 {
-                            ScoreComparisonBar(looks: session.looks, selectedId: selectedLookId)
+                ScrollView {
+                    VStack(spacing: 18) {
+                        if session.looks.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.system(size: 60))
+                                    .foregroundColor(Theme.neonCyan)
+                                    .neonGlow(color: Theme.neonCyan, radius: 12)
+
+                                Text("Add Your First Look")
+                                    .font(.title3.bold())
+                                    .foregroundColor(.white)
+
+                                Text("Capture a photo to get instant AI biometric feedback and 5-min tweaks for \"\(session.title)\".")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 28)
+                            }
+                            .padding(.vertical, 40)
+                        } else {
+                            // Look Carousel with glowing border
+                            LookCarouselView(looks: session.looks, selectedId: $selectedLookId)
+
+                            // Side-by-side bar chart comparison
+                            if session.looks.count > 1 {
+                                ScoreComparisonBar(
+                                    looks: session.looks,
+                                    selectedId: selectedLookId,
+                                    onCompareTapped: { showingComparison = true }
+                                )
                                 .padding(.horizontal)
-                        }
+                            }
 
-                        if let look = selectedLook {
-                            LookDetailCard(look: look, isBestLook: look.id == session.bestLook?.id)
+                            // Active Look Detail Card
+                            if let look = selectedLook {
+                                LookDetailCard(
+                                    look: look,
+                                    isBestLook: look.id == session.bestLook?.id,
+                                    onCompareTapped: { showingComparison = true }
+                                )
                                 .padding(.horizontal)
+                            }
                         }
-                    }
 
-                    // Action Buttons
-                    VStack(spacing: 10) {
-                        Button(action: { checkCameraPermission() }) {
-                            Label(
-                                session.looks.isEmpty ? "Add Look with Camera" : "Add Another Look (Camera)",
-                                systemImage: "camera.fill"
-                            )
-                            .font(.headline)
-                            .frame(maxWidth: .infinity).padding()
-                            .background(Color.blue).foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                        }
-                        Button(action: { showingLibraryPicker = true }) {
-                            Label("Choose from Photo Library", systemImage: "photo.on.rectangle")
+                        // Capture CTAs
+                        VStack(spacing: 12) {
+                            Button(action: { checkCameraPermission() }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "camera.fill")
+                                    Text(session.looks.isEmpty ? "Take Photo (Biometric Camera)" : "Add Another Look (Camera)")
+                                }
                                 .font(.headline)
-                                .frame(maxWidth: .infinity).padding()
-                                .background(Color(UIColor.secondarySystemBackground)).foregroundColor(.primary)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Theme.neonGradient)
+                                .foregroundColor(.black)
                                 .clipShape(RoundedRectangle(cornerRadius: 14))
-                        }
-                    }
-                    .padding(.horizontal)
+                                .shadow(color: Theme.neonCyan.opacity(0.4), radius: 8)
+                            }
 
-                    if isAnalyzing {
-                        HStack(spacing: 12) {
-                            ProgressView()
-                            Text("AI Consultant Analyzing your look…")
-                                .font(.subheadline).foregroundColor(.secondary)
+                            Button(action: { showingLibraryPicker = true }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "photo.on.rectangle")
+                                    Text("Choose from Library")
+                                }
+                                .font(.subheadline.bold())
+                                .frame(maxWidth: .infinity)
+                                .padding(14)
+                                .glassCard(cornerRadius: 14)
+                                .foregroundColor(.white)
+                            }
                         }
-                        .padding()
+                        .padding(.horizontal)
+
+                        if isAnalyzing {
+                            HStack(spacing: 12) {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: Theme.neonCyan))
+                                Text("AI Consultant analyzing pose & style…")
+                                    .font(.subheadline)
+                                    .foregroundColor(Theme.neonCyan)
+                            }
+                            .padding()
+                        }
                     }
+                    .padding(.top, 12)
+                    .padding(.bottom, 40)
                 }
-                .padding(.top, 12).padding(.bottom, 40)
             }
             .navigationTitle(session.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if let best = session.bestLook {
-                        HStack(spacing: 4) {
-                            Image(systemName: session.occasion.icon).foregroundColor(session.occasion.color)
-                            Text(String(format: "%.1f", best.score)).font(.subheadline.bold()).foregroundColor(.purple)
+                    if session.looks.count >= 2 {
+                        Button(action: { showingComparison = true }) {
+                            Image(systemName: "slider.horizontal.below.rectangle")
+                                .foregroundColor(Theme.neonCyan)
                         }
                     }
                 }
             }
             .fullScreenCover(isPresented: $showingCustomCamera) {
-                CustomCameraView(isPresented: $showingCustomCamera) { image in
+                CustomCameraView(isPresented: $showingCustomCamera, occasion: session.occasion) { image in
                     incomingImage = image
                     analyzeAndAddLook()
                 }
@@ -100,6 +135,15 @@ struct SessionDetailView: View {
             .sheet(isPresented: $showingLibraryPicker) {
                 ImagePicker(image: $incomingImage, sourceType: .photoLibrary)
                     .onDisappear { if incomingImage != nil { analyzeAndAddLook() } }
+            }
+            .sheet(isPresented: $showingComparison) {
+                if session.looks.count >= 2 {
+                    BeforeAfterComparisonView(
+                        look1: session.looks.first!,
+                        look2: session.looks.last!,
+                        occasion: session.occasion
+                    )
+                }
             }
         }
     }
@@ -155,7 +199,13 @@ struct SessionDetailView: View {
                 suggestions: analysis.suggestions,
                 detectedOutfitColor: analysis.detectedOutfitColor,
                 detectedFaceShape: analysis.detectedFaceShape,
-                lightingScore: analysis.lightingScore
+                lightingScore: analysis.lightingScore,
+                postureScore: analysis.postureScore,
+                fitScore: analysis.fitScore,
+                groomingScore: analysis.groomingScore,
+                postureNote: analysis.postureNote,
+                fitNote: analysis.fitNote,
+                styleNote: analysis.styleNote
             )
 
             DispatchQueue.main.async {
@@ -163,6 +213,7 @@ struct SessionDetailView: View {
                 SessionStorageManager.shared.updateSession(session)
                 selectedLookId = lookItem.id
                 isAnalyzing = false
+                HapticManager.success()
             }
         }
     }

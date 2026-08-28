@@ -2,8 +2,9 @@ import Foundation
 import AVFoundation
 import UIKit
 import Combine
+import Vision
 
-class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
+class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     @Published var session = AVCaptureSession()
     @Published var isSessionRunning = false
     @Published var isCountdownActive = false
@@ -16,9 +17,20 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     @Published var focusPoint: CGPoint?
     @Published var isFocusing = false
 
+    // Real-time AR Biometric Overlays
+    @Published var spineStartPoint: CGPoint? = nil
+    @Published var spineEndPoint: CGPoint? = nil
+    @Published var faceLandmarkPoints: [CGPoint] = []
+    @Published var isPostureAligned: Bool = true
+    @Published var biometricStatusText: String = "Biometrics Tracking"
+
     private var photoOutput = AVCapturePhotoOutput()
+    private var videoDataOutput = AVCaptureVideoDataOutput()
     private var currentDeviceInput: AVCaptureDeviceInput?
     private var countdownTimer: Timer?
+    private let visionQueue = DispatchQueue(label: "com.lookmax.visionQueue", qos: .userInteractive)
+    private var isProcessingFrame = false
+
     var onPhotoCaptured: ((UIImage) -> Void)?
 
     var isUltraWideAvailable: Bool { minZoomFactor < 0.95 }
@@ -27,7 +39,7 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     func setupCamera() {
         guard !session.isRunning else { return }
         session.beginConfiguration()
-        session.sessionPreset = .photo
+        session.sessionPreset = .high
         guard let device = getCameraDevice(for: cameraPosition) else {
             session.commitConfiguration(); return
         }
@@ -35,6 +47,12 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
             let input = try AVCaptureDeviceInput(device: device)
             if session.canAddInput(input) { session.addInput(input); currentDeviceInput = input }
             if session.canAddOutput(photoOutput) { session.addOutput(photoOutput) }
+            
+            videoDataOutput.alwaysDiscardsLateVideoFrames = true
+            videoDataOutput.setSampleBufferDelegate(self, queue: visionQueue)
+            if session.canAddOutput(videoDataOutput) {
+                session.addOutput(videoDataOutput)
+            }
         } catch { print("Camera error: \(error)") }
         session.commitConfiguration()
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -130,12 +148,12 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     private func startCountdown(seconds: Int) {
         countdownRemaining = seconds
         isCountdownActive = true
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        HapticManager.medium()
         countdownTimer?.invalidate()
         countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] t in
             guard let self else { return }
             self.countdownRemaining -= 1
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            HapticManager.light()
             if self.countdownRemaining <= 0 {
                 t.invalidate()
                 self.isCountdownActive = false
@@ -158,7 +176,7 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
             settings.flashMode = flashMode
         }
         photoOutput.capturePhoto(with: settings, delegate: self)
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        HapticManager.heavy()
     }
 
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
@@ -170,5 +188,62 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
             final = image
         }
         DispatchQueue.main.async { self.onPhotoCaptured?(final) }
+    }
+
+    // MARK: - Real-time Vision Frame Processing
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard !isProcessingFrame, let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        isProcessingFrame = true
+
+        let isFront = cameraPosition == .front
+        let orientation: CGImagePropertyOrientation = isFront ? .leftMirrored : .right
+
+        let bodyRequest = VNDetectHumanBodyPoseRequest()
+        let faceRequest = VNDetectFaceLandmarksRequest()
+
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientation, options: [:])
+        do {
+            try handler.perform([bodyRequest, faceRequest])
+
+            var startPt: CGPoint? = nil
+            var endPt: CGPoint? = nil
+            var aligned = true
+            var facePoints: [CGPoint] = []
+
+            // Extract Posture Axis (Neck to Root / Spine)
+            if let body = bodyRequest.results?.first {
+                if let neck = try? body.recognizedPoint(.neck),
+                   let root = try? body.recognizedPoint(.root),
+                   neck.confidence > 0.25, root.confidence > 0.25 {
+                    // Convert Vision (bottom-left 0,0) to SwiftUI (top-left 0,0)
+                    startPt = CGPoint(x: neck.location.x, y: 1.0 - neck.location.y)
+                    endPt = CGPoint(x: root.location.x, y: 1.0 - root.location.y)
+                    let dx = abs(neck.location.x - root.location.x)
+                    aligned = dx < 0.05
+                }
+            }
+
+            // Extract Face Contour
+            if let face = faceRequest.results?.first, let landmarks = face.landmarks {
+                let bbox = face.boundingBox
+                if let contour = landmarks.faceContour {
+                    facePoints = contour.normalizedPoints.map { pt in
+                        let x = bbox.origin.x + (pt.x * bbox.size.width)
+                        let y = 1.0 - (bbox.origin.y + (pt.y * bbox.size.height))
+                        return CGPoint(x: x, y: y)
+                    }
+                }
+            }
+
+            DispatchQueue.main.async {
+                self.spineStartPoint = startPt
+                self.spineEndPoint = endPt
+                self.faceLandmarkPoints = facePoints
+                self.isPostureAligned = aligned
+                self.isProcessingFrame = false
+            }
+        } catch {
+            DispatchQueue.main.async { self.isProcessingFrame = false }
+        }
     }
 }

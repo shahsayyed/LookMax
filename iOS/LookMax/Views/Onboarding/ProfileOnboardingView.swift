@@ -14,105 +14,186 @@ struct ProfileOnboardingView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 24) {
-                    VStack(spacing: 8) {
-                        Image(systemName: "person.text.rectangle.fill")
-                            .font(.system(size: 48)).foregroundColor(.blue)
-                        Text(profile == nil ? "Create Your Profile" : "Edit Profile")
-                            .font(.title2.bold())
-                        Text("Add your name and 1–3 reference photos of your face for personalized identity tracking and style history.")
-                            .font(.subheadline).foregroundColor(.secondary)
-                            .multilineTextAlignment(.center).padding(.horizontal)
-                    }
-                    .padding(.top, 10)
+            ZStack {
+                Theme.oledBlack.ignoresSafeArea()
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Your Name").font(.subheadline.bold())
-                        TextField("Enter full name", text: $name)
-                            .padding()
-                            .background(Color(UIColor.secondarySystemBackground))
-                            .cornerRadius(12)
-                    }
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Header
+                        VStack(spacing: 8) {
+                            ZStack {
+                                Circle()
+                                    .fill(Theme.neonCyan.opacity(0.1))
+                                    .frame(width: 80, height: 80)
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text("Reference Photos (\(selectedImages.count)/3)").font(.subheadline.bold())
-                            Spacer()
-                            if selectedImages.count < 3 {
-                                Button(action: { showingImagePicker = true }) {
-                                    Label("Add Photo", systemImage: "plus.circle.fill").font(.subheadline.bold())
-                                }
+                                Image(systemName: "faceid")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(Theme.neonCyan)
+                                    .neonGlow(color: Theme.neonCyan, radius: 10)
                             }
+
+                            Text(profile == nil ? "Setup Biometrics Profile" : "Edit Biometrics Profile")
+                                .font(.title2.bold())
+                                .foregroundColor(.white)
+
+                            Text("Upload 1–3 front-facing reference photos to calibrate your unique facial landmarks & posture signature.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
                         }
+                        .padding(.top, 10)
 
-                        HStack(spacing: 12) {
-                            ForEach(Array(selectedImages.enumerated()), id: \.offset) { index, img in
-                                ZStack(alignment: .topTrailing) {
-                                    Image(uiImage: img).resizable().scaledToFill()
-                                        .frame(width: 96, height: 96)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    Button(action: { selectedImages.remove(at: index) }) {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(.white)
-                                            .background(Circle().fill(Color.black.opacity(0.6)))
-                                    }.padding(4)
-                                }
-                            }
-                            if selectedImages.count < 3 {
-                                Button(action: { showingImagePicker = true }) {
-                                    VStack(spacing: 6) {
-                                        Image(systemName: "camera.fill").font(.title3)
-                                        Text("Add #\(selectedImages.count + 1)").font(.caption2.bold())
+                        // Name Input Card
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("YOUR NAME")
+                                .font(.system(size: 11, weight: .bold, design: .rounded))
+                                .foregroundColor(.secondary)
+                                .tracking(0.8)
+
+                            TextField("e.g. Sarah Johnson", text: $name)
+                                .font(.body)
+                                .foregroundColor(.white)
+                                .padding(14)
+                                .background(Theme.surfaceDark)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Theme.cardBorder, lineWidth: 1)
+                                )
+                        }
+                        .padding(16)
+                        .glassCard(cornerRadius: 18)
+
+                        // Reference Photos Card
+                        VStack(alignment: .leading, spacing: 14) {
+                            HStack {
+                                Text("REFERENCE PHOTOS (\(selectedImages.count)/3)")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundColor(.secondary)
+                                    .tracking(0.8)
+
+                                Spacer()
+
+                                if selectedImages.count < 3 {
+                                    Button(action: { showingImagePicker = true }) {
+                                        Label("Add Photo", systemImage: "plus.circle.fill")
+                                            .font(.caption.bold())
+                                            .foregroundColor(Theme.neonCyan)
                                     }
-                                    .foregroundColor(.blue)
-                                    .frame(width: 96, height: 96)
-                                    .background(Color.blue.opacity(0.08))
-                                    .cornerRadius(12)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4]))
-                                            .foregroundColor(.blue.opacity(0.5))
-                                    )
+                                }
+                            }
+
+                            HStack(spacing: 12) {
+                                ForEach(Array(selectedImages.enumerated()), id: \.offset) { index, img in
+                                    ZStack(alignment: .topTrailing) {
+                                        Image(uiImage: img)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 96, height: 96)
+                                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 14)
+                                                    .stroke(Theme.emerald, lineWidth: 1.5)
+                                            )
+
+                                        Button(action: {
+                                            selectedImages.remove(at: index)
+                                            HapticManager.light()
+                                        }) {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .foregroundColor(.white)
+                                                .background(Circle().fill(Color.black.opacity(0.7)))
+                                        }
+                                        .padding(4)
+                                    }
+                                }
+
+                                if selectedImages.count < 3 {
+                                    Button(action: { showingImagePicker = true }) {
+                                        VStack(spacing: 6) {
+                                            Image(systemName: "camera.fill")
+                                                .font(.title3)
+                                            Text("Add #\(selectedImages.count + 1)")
+                                                .font(.caption2.bold())
+                                        }
+                                        .foregroundColor(Theme.neonCyan)
+                                        .frame(width: 96, height: 96)
+                                        .background(Theme.neonCyan.opacity(0.08))
+                                        .cornerRadius(14)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 14)
+                                                .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4]))
+                                                .foregroundColor(Theme.neonCyan.opacity(0.4))
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
+                        .padding(16)
+                        .glassCard(cornerRadius: 18)
 
-                    if let err = errorMessage {
-                        Text(err).font(.caption).foregroundColor(.red).multilineTextAlignment(.center)
-                    }
+                        if let err = errorMessage {
+                            Text(err)
+                                .font(.caption)
+                                .foregroundColor(Theme.crimson)
+                                .multilineTextAlignment(.center)
+                        }
 
-                    Button(action: enrollProfile) {
-                        if isProcessing {
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .frame(maxWidth: .infinity).padding()
-                                .background(Color.blue).clipShape(RoundedRectangle(cornerRadius: 14))
-                        } else {
-                            Text("Save Profile").font(.headline)
-                                .frame(maxWidth: .infinity).padding()
-                                .background(canSave ? Color.blue : Color.gray.opacity(0.4))
-                                .foregroundColor(.white).clipShape(RoundedRectangle(cornerRadius: 14))
+                        // Save Button
+                        Button(action: enrollProfile) {
+                            if isProcessing {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Theme.neonGradient)
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                            } else {
+                                Text("Save & Activate Biometrics")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(canSave ? Theme.neonGradient : LinearGradient(colors: [Color.gray.opacity(0.3)], startPoint: .top, endPoint: .bottom))
+                                    .foregroundColor(canSave ? .black : .secondary)
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                    .shadow(color: canSave ? Theme.neonCyan.opacity(0.4) : Color.clear, radius: 8)
+                            }
+                        }
+                        .disabled(!canSave || isProcessing)
+
+                        if profile != nil {
+                            Button("Reset Biometrics Profile", role: .destructive) {
+                                UserProfile.clear()
+                                profile = nil
+                                HapticManager.medium()
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(Theme.crimson)
+                            .padding(.top, 4)
                         }
                     }
-                    .disabled(!canSave || isProcessing)
-
-                    if profile != nil {
-                        Button("Delete Current Profile", role: .destructive) {
-                            UserProfile.clear()
-                            profile = nil
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                        .font(.subheadline).padding(.top, 4)
-                    }
+                    .padding(16)
                 }
-                .padding()
             }
-            .navigationBarItems(trailing: Button("Cancel") { presentationMode.wrappedValue.dismiss() })
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .foregroundColor(Theme.neonCyan)
+                }
+            }
             .sheet(isPresented: $showingImagePicker) {
                 ImagePicker(image: $pickerImage, sourceType: .photoLibrary)
                     .onDisappear {
-                        if let img = pickerImage { selectedImages.append(img); pickerImage = nil }
+                        if let img = pickerImage {
+                            selectedImages.append(img)
+                            pickerImage = nil
+                            HapticManager.light()
+                        }
                     }
             }
             .onAppear {
@@ -129,11 +210,14 @@ struct ProfileOnboardingView: View {
     }
 
     private func enrollProfile() {
-        isProcessing = true; errorMessage = nil
+        isProcessing = true
+        errorMessage = nil
+
         DispatchQueue.global(qos: .userInitiated).async {
             var sigs: [FaceBiometricSignature] = []
             var photos: [Data] = []
             let req = VNDetectFaceLandmarksRequest()
+
             for img in selectedImages {
                 guard let cg = img.cgImage else { continue }
                 let h = VNImageRequestHandler(
@@ -146,13 +230,14 @@ struct ProfileOnboardingView: View {
                    let lm = face.landmarks,
                    let sig = extractSig(from: lm, bbox: face.boundingBox) {
                     sigs.append(sig)
-                    if let d = img.jpegData(compressionQuality: 0.7) { photos.append(d) }
+                    if let d = img.jpegData(compressionQuality: 0.75) { photos.append(d) }
                 }
             }
+
             DispatchQueue.main.async {
                 isProcessing = false
                 if sigs.isEmpty {
-                    errorMessage = "No clear face detected. Please use clearer front-facing photos."
+                    errorMessage = "No clear face detected. Please use well-lit front-facing portraits."
                 } else {
                     let p = UserProfile(
                         name: name.trimmingCharacters(in: .whitespaces),
@@ -160,7 +245,10 @@ struct ProfileOnboardingView: View {
                         signatures: sigs,
                         dateCreated: Date()
                     )
-                    p.save(); profile = p; presentationMode.wrappedValue.dismiss()
+                    p.save()
+                    profile = p
+                    HapticManager.success()
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
         }
