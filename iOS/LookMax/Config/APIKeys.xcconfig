@@ -1,0 +1,10 @@
+// LookMax API Keys Configuration
+// 
+// HOW TO USE:
+// 1. Duplicate this file and rename to: APIKeys.local.xcconfig
+// 2. Add your Gemini API key to the duplicate
+// 3. The .local.xcconfig is gitignored - keep your key private
+//
+// Get your Gemini API key at: https://aistudio.google.com/app/apikey
+
+GEMINI_API_KEY = 

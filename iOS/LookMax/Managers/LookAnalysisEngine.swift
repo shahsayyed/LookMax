@@ -304,6 +304,94 @@ enum LookAnalysisEngine {
         )
     }
 
+
+    // MARK: - Gemini VLM Result Merger
+
+    /// Merges a Gemini VLM evaluation with the locally derived Vision analysis.
+    /// VLM scores are used as the primary source; Vision scores fill gaps when VLM is unavailable.
+    static func merge(
+        gemini: GeminiLookEvaluation,
+        visionResult: LookAnalysisResult
+    ) -> LookAnalysisResult {
+
+        // Convert GeminiTweaks -> StyleSuggestions for display
+        let tweakSuggestions: [StyleSuggestion] = gemini.tweaks.map { tweak in
+            StyleSuggestion(
+                category: tweak.category,
+                icon: iconForCategory(tweak.category),
+                iconColor: colorForCategory(tweak.category),
+                title: tweak.title,
+                recommendation: tweak.recommendation,
+                effortTime: tweak.effortTime
+            )
+        }
+
+        // Blend: prefer Gemini's richer suggestions but keep any Vision-specific suggestions
+        // that don't duplicate Gemini's categories
+        let geminiCategories = Set(gemini.tweaks.map { $0.category.lowercased() })
+        let uniqueVisionSuggestions = visionResult.suggestions.filter { sug in
+            !geminiCategories.contains(sug.category.lowercased())
+        }
+        let combinedSuggestions = tweakSuggestions + uniqueVisionSuggestions.prefix(2)
+
+        // Good points: Gemini's + Vision's (de-duped by prefix)
+        var mergedGood = gemini.goodPoints
+        for vp in visionResult.goodPoints {
+            if !mergedGood.contains(where: { $0.hasPrefix(vp.prefix(20)) }) {
+                mergedGood.append(vp)
+            }
+        }
+
+        // Bad / improvement points
+        var mergedBad = gemini.improvementPoints
+        for vp in visionResult.badPoints {
+            if !mergedBad.contains(where: { $0.hasPrefix(vp.prefix(20)) }) {
+                mergedBad.append(vp)
+            }
+        }
+
+        return LookAnalysisResult(
+            score: gemini.overallScore,
+            headlineBadge: gemini.headlineBadge,
+            goodPoints: Array(mergedGood.prefix(4)),
+            badPoints: Array(mergedBad.prefix(4)),
+            suggestions: Array(combinedSuggestions.prefix(6)),
+            detectedOutfitColor: visionResult.detectedOutfitColor,
+            detectedFaceShape: visionResult.detectedFaceShape,
+            lightingScore: visionResult.lightingScore,
+            postureScore: gemini.sharpnessScore,        // Use sharpness as posture proxy
+            fitScore: gemini.formalityScore,
+            groomingScore: gemini.occasionMatchScore,
+            postureNote: gemini.postureNote,
+            fitNote: gemini.fitNote,
+            styleNote: gemini.styleNote
+        )
+    }
+
+    private static func iconForCategory(_ category: String) -> String {
+        let lower = category.lowercased()
+        if lower.contains("collar") || lower.contains("lapel") { return "tshirt.fill" }
+        if lower.contains("posture") || lower.contains("back") { return "figure.stand" }
+        if lower.contains("shoe") || lower.contains("foot") { return "shoe.fill" }
+        if lower.contains("acces") || lower.contains("watch") { return "watch.analog" }
+        if lower.contains("hair") || lower.contains("groom") { return "comb.fill" }
+        if lower.contains("color") || lower.contains("colour") { return "paintpalette.fill" }
+        if lower.contains("light") { return "sun.max.fill" }
+        if lower.contains("fit") || lower.contains("tailor") { return "scissors" }
+        return "sparkles"
+    }
+
+    private static func colorForCategory(_ category: String) -> Color {
+        let lower = category.lowercased()
+        if lower.contains("collar") || lower.contains("fit") || lower.contains("tailor") { return .purple }
+        if lower.contains("posture") { return .blue }
+        if lower.contains("hair") || lower.contains("groom") { return .green }
+        if lower.contains("light") { return .yellow }
+        if lower.contains("color") || lower.contains("colour") { return .orange }
+        if lower.contains("acces") { return .cyan }
+        return .gray
+    }
+
     // MARK: - Occasion Profile
     private struct OccasionProfile {
         let baseline: Double       // Starting score before modifiers

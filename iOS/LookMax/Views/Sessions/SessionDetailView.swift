@@ -10,6 +10,8 @@ struct SessionDetailView: View {
     @State private var selectedLookId: UUID?
     @State private var showingDeleteLookConfirm = false
     @State private var lookToDelete: LookItem?
+    @State private var isDeepAnalyzing = false      // Gemini VLM call in flight
+    @State private var deepAnalysisError: String?   // Shown as a dismissable banner
     @State private var showingCustomCamera = false
     @State private var showingLibraryPicker = false
     @State private var showingComparison = false
@@ -108,15 +110,65 @@ struct SessionDetailView: View {
                         }
                         .padding(.horizontal)
 
+                        // Phase 1: Vision (instant, on-device)
                         if isAnalyzing {
                             HStack(spacing: 12) {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: Theme.neonCyan))
-                                Text("AI Consultant analyzing pose & style…")
-                                    .font(.subheadline)
+                                Text("Biometric scan in progress…")
+                                    .font(.subheadline.bold())
                                     .foregroundColor(Theme.neonCyan)
                             }
                             .padding()
+                            .glassCard(cornerRadius: 14)
+                            .padding(.horizontal)
+                        }
+
+                        // Phase 2: Gemini VLM deep analysis
+                        if isDeepAnalyzing {
+                            HStack(spacing: 12) {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: Theme.emerald))
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Deep AI Style Analysis")
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(.white)
+                                    Text("Gemini is evaluating formality, fit & occasion match…")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(Theme.emerald.opacity(0.1))
+                                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.emerald.opacity(0.3), lineWidth: 1))
+                            )
+                            .padding(.horizontal)
+                        }
+
+                        // VLM error banner (dismissable)
+                        if let err = deepAnalysisError {
+                            HStack(spacing: 8) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(Theme.warmAmber)
+                                Text(err)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Button("Dismiss") { deepAnalysisError = nil }
+                                    .font(.caption.bold())
+                                    .foregroundColor(Theme.warmAmber)
+                            }
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Theme.warmAmber.opacity(0.08))
+                                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Theme.warmAmber.opacity(0.3), lineWidth: 1))
+                            )
+                            .padding(.horizontal)
                         }
                     }
                     .padding(.top, 12)
@@ -201,6 +253,7 @@ struct SessionDetailView: View {
         incomingImage = nil
         isAnalyzing = true
 
+        // ─── Phase 1: On-Device Vision Analysis (instant) ───
         DispatchQueue.global(qos: .userInitiated).async {
             guard let cgImage = uiImage.cgImage else {
                 DispatchQueue.main.async { isAnalyzing = false }
@@ -216,7 +269,7 @@ struct SessionDetailView: View {
             let handler = VNImageRequestHandler(cgImage: cgImage, orientation: orientation, options: [:])
             try? handler.perform([faceRequest, faceQualityRequest, bodyPoseRequest, classificationRequest])
 
-            let analysis = LookAnalysisEngine.analyze(
+            let visionAnalysis = LookAnalysisEngine.analyze(
                 faces: faceRequest.results ?? [],
                 faceQualityRequest: faceQualityRequest,
                 bodyPoses: bodyPoseRequest.results ?? [],
@@ -227,30 +280,80 @@ struct SessionDetailView: View {
 
             let imagePath = SessionStorageManager.shared.saveImage(uiImage)
 
-            let lookItem = LookItem(
+            // Build initial look from Vision scores (shown immediately to user)
+            let initialLook = LookItem(
                 imagePath: imagePath,
-                score: analysis.score,
-                headlineBadge: analysis.headlineBadge,
-                goodPoints: analysis.goodPoints,
-                badPoints: analysis.badPoints,
-                suggestions: analysis.suggestions,
-                detectedOutfitColor: analysis.detectedOutfitColor,
-                detectedFaceShape: analysis.detectedFaceShape,
-                lightingScore: analysis.lightingScore,
-                postureScore: analysis.postureScore,
-                fitScore: analysis.fitScore,
-                groomingScore: analysis.groomingScore,
-                postureNote: analysis.postureNote,
-                fitNote: analysis.fitNote,
-                styleNote: analysis.styleNote
+                score: visionAnalysis.score,
+                headlineBadge: visionAnalysis.headlineBadge,
+                goodPoints: visionAnalysis.goodPoints,
+                badPoints: visionAnalysis.badPoints,
+                suggestions: visionAnalysis.suggestions,
+                detectedOutfitColor: visionAnalysis.detectedOutfitColor,
+                detectedFaceShape: visionAnalysis.detectedFaceShape,
+                lightingScore: visionAnalysis.lightingScore,
+                postureScore: visionAnalysis.postureScore,
+                fitScore: visionAnalysis.fitScore,
+                groomingScore: visionAnalysis.groomingScore,
+                postureNote: visionAnalysis.postureNote,
+                fitNote: visionAnalysis.fitNote,
+                styleNote: visionAnalysis.styleNote
             )
 
             DispatchQueue.main.async {
-                session.looks.append(lookItem)
+                session.looks.append(initialLook)
                 SessionStorageManager.shared.updateSession(session)
-                selectedLookId = lookItem.id
+                selectedLookId = initialLook.id
                 isAnalyzing = false
                 HapticManager.success()
+
+                // ─── Phase 2: Gemini VLM Deep Analysis (async, enriches the look) ───
+                isDeepAnalyzing = true
+                deepAnalysisError = nil
+
+                Task {
+                    defer { isDeepAnalyzing = false }
+                    do {
+                        let geminiResult = try await GeminiVisionService.shared.evaluate(
+                            image: uiImage,
+                            occasion: session.occasion
+                        )
+
+                        // Merge Gemini scores with Vision result
+                        let merged = LookAnalysisEngine.merge(
+                            gemini: geminiResult,
+                            visionResult: visionAnalysis
+                        )
+
+                        // Find and update the look we just added
+                        if let idx = session.looks.firstIndex(where: { $0.id == initialLook.id }) {
+                            session.looks[idx] = LookItem(
+                                id: initialLook.id,
+                                imagePath: imagePath,
+                                score: merged.score,
+                                headlineBadge: merged.headlineBadge,
+                                goodPoints: merged.goodPoints,
+                                badPoints: merged.badPoints,
+                                suggestions: merged.suggestions,
+                                detectedOutfitColor: merged.detectedOutfitColor,
+                                detectedFaceShape: merged.detectedFaceShape,
+                                lightingScore: merged.lightingScore,
+                                postureScore: merged.postureScore,
+                                fitScore: merged.fitScore,
+                                groomingScore: merged.groomingScore,
+                                postureNote: merged.postureNote,
+                                fitNote: merged.fitNote,
+                                styleNote: merged.styleNote
+                            )
+                            SessionStorageManager.shared.updateSession(session)
+                            HapticManager.medium()  // Subtle confirmation that deep analysis landed
+                        }
+                    } catch GeminiServiceError.missingAPIKey {
+                        // Silent fail when no API key — Vision scores are still shown
+                        print("[GeminiVisionService] No API key configured. Using on-device Vision scores only.")
+                    } catch {
+                        deepAnalysisError = error.localizedDescription
+                    }
+                }
             }
         }
     }
