@@ -8,6 +8,8 @@ struct ContentView: View {
     @State private var selectedSession: LookSession?
     @State private var selectedTab: Int = 0
     @State private var showingGlobalComparison = false
+    @State private var savedLooksHidden = false
+    @State private var dailyInspirationHidden = false
 
     var body: some View {
         NavigationView {
@@ -18,9 +20,9 @@ struct ContentView: View {
                     // Top Bar / Brand
                     HStack {
                         Text("STYLED")
-                            .font(.system(size: 13, weight: .black, design: .rounded))
+                            .font(.system(size: 15, weight: .black, design: .rounded))
                             .foregroundColor(.white)
-                            .tracking(2.0)
+                            .tracking(2.5)
 
                         Spacer()
 
@@ -28,9 +30,9 @@ struct ContentView: View {
                             HapticManager.light()
                             showingOnboarding = true
                         }) {
-                            Image(systemName: "person.crop.circle.badge.checkmark")
-                                .font(.system(size: 18))
-                                .foregroundColor(Theme.neonCyan)
+                            Image(systemName: "person.circle")
+                                .font(.system(size: 22, weight: .medium))
+                                .foregroundColor(.white.opacity(0.8))
                         }
                     }
                     .padding(.horizontal, 20)
@@ -53,12 +55,12 @@ struct ContentView: View {
                     } else {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 14) {
+                                // ─── My Style Sessions ───
                                 HStack {
                                     Text("MY STYLE SESSIONS")
                                         .font(.system(size: 12, weight: .bold, design: .rounded))
                                         .foregroundColor(.secondary)
                                         .tracking(0.8)
-
                                     Spacer()
                                 }
                                 .padding(.horizontal, 20)
@@ -72,13 +74,100 @@ struct ContentView: View {
                                         }
                                         .padding(.horizontal, 16)
                                 }
+
+                                // ─── Saved Looks ───
+                                HStack {
+                                    Text("Saved Looks")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundColor(.white)
+
+                                    Spacer()
+
+                                    Button(action: {
+                                        withAnimation { savedLooksHidden.toggle() }
+                                        HapticManager.light()
+                                    }) {
+                                        HStack(spacing: 2) {
+                                            Text(savedLooksHidden ? "Show" : "Hide")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                            Image(systemName: savedLooksHidden ? "chevron.down" : "chevron.right")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal, 20)
+                                .padding(.top, 10)
+
+                                if !savedLooksHidden {
+                                    // Placeholder saved looks row
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 12) {
+                                            ForEach(0..<3) { _ in
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(Theme.surfaceDark)
+                                                    .frame(width: 90, height: 110)
+                                                    .overlay(
+                                                        Image(systemName: "bookmark.fill")
+                                                            .foregroundColor(Theme.neonCyan.opacity(0.4))
+                                                            .font(.title2)
+                                                    )
+                                            }
+                                        }
+                                        .padding(.horizontal, 20)
+                                    }
+                                }
+
+                                // ─── Daily Inspiration ───
+                                HStack {
+                                    Text("Daily Inspiration")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundColor(.white)
+
+                                    Spacer()
+
+                                    Button(action: {
+                                        withAnimation { dailyInspirationHidden.toggle() }
+                                        HapticManager.light()
+                                    }) {
+                                        HStack(spacing: 2) {
+                                            Text(dailyInspirationHidden ? "Show" : "Hide")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                            Image(systemName: dailyInspirationHidden ? "chevron.down" : "chevron.right")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal, 20)
+                                .padding(.top, 6)
+
+                                if !dailyInspirationHidden {
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 12) {
+                                            ForEach(0..<4) { _ in
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(Theme.cardDark)
+                                                    .frame(width: 130, height: 80)
+                                                    .overlay(
+                                                        Image(systemName: "sparkles")
+                                                            .foregroundColor(Theme.neonCyan.opacity(0.4))
+                                                            .font(.title2)
+                                                    )
+                                            }
+                                        }
+                                        .padding(.horizontal, 20)
+                                    }
+                                }
                             }
-                            .padding(.bottom, 100)
+                            .padding(.bottom, 110)
                         }
                     }
                 }
 
-                // Bottom Tab Bar
+                // Bottom Tab Bar (5 tabs)
                 bottomTabBar
             }
             .navigationBarHidden(true)
@@ -104,9 +193,7 @@ struct ContentView: View {
         }
         .preferredColorScheme(.dark)
         .onAppear {
-            if profile == nil {
-                showingOnboarding = true
-            }
+            if profile == nil { showingOnboarding = true }
             seedSampleDataIfNeeded()
         }
     }
@@ -118,27 +205,32 @@ struct ContentView: View {
         return $storage.sessions[idx]
     }
 
-    // MARK: - Bottom Tab Bar
+    // MARK: - 5-Tab Bottom Bar (matches design: Home, Discover, Sessions, Wardrobe, Profile)
     private var bottomTabBar: some View {
         HStack(spacing: 0) {
             tabItem(icon: "house.fill", title: "Home", tab: 0)
-            tabItem(icon: "slider.horizontal.below.rectangle", title: "Compare", tab: 1)
-            tabItem(icon: "bookmark.fill", title: "Saved", tab: 2)
-            tabItem(icon: "sparkles", title: "Inspiration", tab: 3)
+            tabItem(icon: "safari.fill", title: "Discover", tab: 1)
+            tabItem(icon: "list.bullet.rectangle.fill", title: "Sessions", tab: 2)
+            tabItem(icon: "tshirt.fill", title: "Wardrobe", tab: 3)
+            tabItem(icon: "person.fill", title: "Profile", tab: 4)
         }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 8)
         .padding(.top, 10)
-        .padding(.bottom, 24)
+        .padding(.bottom, 26)
         .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Theme.cardDark.opacity(0.95))
-                .background(.ultraThinMaterial)
+            Rectangle()
+                .fill(Theme.cardDark.opacity(0.97))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24)
-                        .stroke(Theme.cardBorder, lineWidth: 1)
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                )
+                .overlay(
+                    Rectangle()
+                        .frame(height: 0.5)
+                        .foregroundColor(Theme.cardBorder),
+                    alignment: .top
                 )
         )
-        .padding(.horizontal, 16)
     }
 
     private func tabItem(icon: String, title: String, tab: Int) -> some View {
@@ -146,40 +238,25 @@ struct ContentView: View {
         return Button(action: {
             HapticManager.light()
             selectedTab = tab
-            if tab == 1 {
-                showingGlobalComparison = true
-            }
+            if tab == 1 { showingGlobalComparison = true }
         }) {
             VStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 18, weight: isSelected ? .bold : .medium))
-                    .foregroundColor(isSelected ? Theme.neonCyan : .secondary)
+                    .font(.system(size: 20, weight: isSelected ? .bold : .regular))
+                    .foregroundColor(isSelected ? Theme.neonCyan : Color(white: 0.45))
 
                 Text(title)
-                    .font(.system(size: 10, weight: isSelected ? .bold : .regular))
-                    .foregroundColor(isSelected ? Theme.neonCyan : .secondary)
+                    .font(.system(size: 10, weight: isSelected ? .semibold : .regular))
+                    .foregroundColor(isSelected ? Theme.neonCyan : Color(white: 0.45))
             }
             .frame(maxWidth: .infinity)
         }
     }
 
-    // Initial sample session setup for preview & testing
     private func seedSampleDataIfNeeded() {
         if storage.sessions.isEmpty {
-            let session1 = LookSession(
-                title: "Business Meeting",
-                occasion: .businessMeeting,
-                createdAt: Date(),
-                looks: [],
-                tags: ["Formal", "Confident", "Sharp"]
-            )
-            let session2 = LookSession(
-                title: "Date Night",
-                occasion: .dateNight,
-                createdAt: Date().addingTimeInterval(-86400 * 2),
-                looks: [],
-                tags: ["Romantic", "Stylish", "Elegant"]
-            )
+            let session1 = LookSession(title: "Business Meeting", occasion: .businessMeeting, createdAt: Date(), looks: [], tags: ["Formal", "Confident", "Sharp"])
+            let session2 = LookSession(title: "Date Night", occasion: .dateNight, createdAt: Date().addingTimeInterval(-86400 * 2), looks: [], tags: ["Romantic", "Stylish", "Elegant"])
             storage.addSession(session2)
             storage.addSession(session1)
         }

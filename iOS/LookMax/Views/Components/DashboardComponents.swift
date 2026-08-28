@@ -11,7 +11,7 @@ struct ProfileHeaderBanner: View {
                 Image(uiImage: img)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 48, height: 48)
+                    .frame(width: 52, height: 52)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Theme.neonCyan, lineWidth: 2))
                     .neonGlow(color: Theme.neonCyan, radius: 4)
@@ -19,9 +19,8 @@ struct ProfileHeaderBanner: View {
                 ZStack {
                     Circle()
                         .fill(Theme.surfaceDark)
-                        .frame(width: 48, height: 48)
+                        .frame(width: 52, height: 52)
                         .overlay(Circle().stroke(Theme.cardBorder, lineWidth: 1))
-
                     Image(systemName: "person.fill")
                         .font(.title3)
                         .foregroundColor(Theme.neonCyan)
@@ -31,29 +30,28 @@ struct ProfileHeaderBanner: View {
             // Name & Subtitle
             VStack(alignment: .leading, spacing: 3) {
                 Text(profile?.name ?? "Sarah Johnson")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
 
                 Text("San Francisco, CA")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
 
                 // Glowing Biometrics Active Pill
-                HStack(spacing: 4) {
-                    Circle()
-                        .fill(Theme.emerald)
-                        .frame(width: 6, height: 6)
-                        .shadow(color: Theme.emerald, radius: 3)
+                HStack(spacing: 5) {
+                    Image(systemName: "faceid")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(Theme.emerald)
 
                     Text("Biometrics Active")
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
                         .foregroundColor(Theme.emerald)
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 2)
+                .padding(.horizontal, 9)
+                .padding(.vertical, 3)
                 .background(Theme.emerald.opacity(0.12))
                 .clipShape(Capsule())
-                .overlay(Capsule().stroke(Theme.emerald.opacity(0.3), lineWidth: 0.8))
+                .overlay(Capsule().stroke(Theme.emerald.opacity(0.35), lineWidth: 0.8))
             }
 
             Spacer()
@@ -85,36 +83,37 @@ struct StartSessionCTA: View {
             HStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(Color.black.opacity(0.25))
+                        .fill(Color.black.opacity(0.2))
                         .frame(width: 36, height: 36)
-
                     Image(systemName: "plus")
-                        .font(.system(size: 16, weight: .heavy))
+                        .font(.system(size: 17, weight: .heavy))
                         .foregroundColor(.black)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("START NEW STYLE SESSION")
+                    Text("START NEW STYLE SESSION ✨")
                         .font(.system(size: 14, weight: .heavy, design: .rounded))
                         .foregroundColor(.black)
-                        .tracking(0.5)
+                        .tracking(0.3)
 
                     Text("Generate New Look")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.black.opacity(0.75))
+                        .foregroundColor(.black.opacity(0.70))
                 }
 
                 Spacer()
-
-                Image(systemName: "sparkles")
-                    .font(.title3)
-                    .foregroundColor(.black.opacity(0.8))
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 14)
-            .background(Theme.neonGradient)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: Theme.neonCyan.opacity(0.5), radius: 12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Theme.neonCyan, lineWidth: 2.5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Theme.neonGradient)
+                    )
+            )
+            .shadow(color: Theme.neonCyan.opacity(0.55), radius: 12)
         }
     }
 }
@@ -122,35 +121,54 @@ struct StartSessionCTA: View {
 struct SessionCardView: View {
     let session: LookSession
 
+    /// Returns a formatted date string and a status string/color pair
+    private var sessionMeta: (date: String, status: String, statusColor: Color) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        let dateStr = formatter.string(from: session.createdAt)
+
+        // Derive a fake "days left" / "completed" status from date
+        let daysSince = Calendar.current.dateComponents([.day], from: session.createdAt, to: Date()).day ?? 0
+        if session.looks.isEmpty {
+            let daysLeft = max(0, 7 - daysSince)
+            if daysLeft == 0 {
+                return (dateStr, "Expired", Theme.crimson)
+            }
+            return (dateStr, "\(daysLeft) days left", Theme.warmAmber)
+        } else {
+            return (dateStr, "✅ Completed", Theme.emerald)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Header Row: Occasion Badge + Top Pick Badge
+            // Header Row: Title + TOP PICK badge (Neon Cyan per design)
             HStack(alignment: .center) {
-                Text(session.title.uppercased())
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                Text(session.title)
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
 
                 Spacer()
 
                 if let best = session.bestLook {
-                    HStack(spacing: 4) {
-                        Text("TOP PICK:")
-                            .font(.system(size: 10, weight: .black, design: .rounded))
-                            .foregroundColor(.black)
-
-                        Text(String(format: "%.1f/10", best.score))
-                            .font(.system(size: 10, weight: .black, design: .rounded))
-                            .foregroundColor(.black)
-                    }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Theme.emeraldGradient)
-                    .clipShape(Capsule())
-                    .shadow(color: Theme.emerald.opacity(0.5), radius: 6)
+                    Text("TOP PICK: \(String(format: "%.1f", best.score))/10")
+                        .font(.system(size: 11, weight: .black, design: .rounded))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule().fill(
+                                LinearGradient(
+                                    colors: [Theme.neonCyan, Theme.electricBlue],
+                                    startPoint: .leading, endPoint: .trailing
+                                )
+                            )
+                        )
+                        .shadow(color: Theme.neonCyan.opacity(0.5), radius: 6)
                 }
             }
 
-            // Horizontal Scrollable Thumbnail Deck
+            // Horizontal Thumbnail Deck (real images or placeholder blocks)
             if !session.looks.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -160,7 +178,7 @@ struct SessionCardView: View {
                                     Image(uiImage: img)
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(width: 72, height: 90)
+                                        .frame(width: 76, height: 96)
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 10)
@@ -181,35 +199,55 @@ struct SessionCardView: View {
                     }
                 }
             } else {
-                Text("No looks captured yet. Tap to start evaluation.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .italic()
-                    .padding(.vertical, 12)
+                // Placeholder item-style blocks matching the design screenshot
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(0..<4, id: \.self) { _ in
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Theme.surfaceDark)
+                                .frame(width: 76, height: 96)
+                                .overlay(
+                                    Image(systemName: "tshirt")
+                                        .foregroundColor(.secondary)
+                                )
+                        }
+                    }
+                }
             }
 
-            // Footer Metadata Row
-            HStack {
-                // Occasion Tag Pill
+            // Footer: Occasion pill + Date pill + Status pill + Total Looks
+            let meta = sessionMeta
+            HStack(spacing: 6) {
+                // Occasion badge
                 HStack(spacing: 4) {
                     Image(systemName: session.occasion.icon)
-                        .font(.system(size: 10))
+                        .font(.system(size: 9))
                     Text(session.occasion.rawValue.uppercased())
                         .font(.system(size: 9, weight: .bold, design: .rounded))
                 }
-                .foregroundColor(session.occasion.color)
+                .foregroundColor(.white)
                 .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(session.occasion.color.opacity(0.12))
+                .padding(.vertical, 4)
+                .background(session.occasion.color.opacity(0.85))
                 .clipShape(Capsule())
 
-                Text("•")
-                    .foregroundColor(.secondary)
-                    .font(.caption2)
+                // Date pill (dark)
+                Text(meta.date)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.white.opacity(0.12))
+                    .clipShape(Capsule())
 
-                Text(session.formattedDate)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                // Status pill
+                Text(meta.status)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(meta.statusColor)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(meta.statusColor.opacity(0.15))
+                    .clipShape(Capsule())
 
                 Spacer()
 
@@ -218,10 +256,10 @@ struct SessionCardView: View {
                     .foregroundColor(.secondary)
             }
 
-            // Tags Footer
+            // Tags
             Text(session.tagsFormatted)
                 .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.white.opacity(0.7))
+                .foregroundColor(.white.opacity(0.6))
         }
         .padding(16)
         .glassCard(cornerRadius: 18)
