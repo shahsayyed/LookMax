@@ -1,0 +1,16 @@
+# ─── LookMax ML Data — DO NOT commit large image datasets ───
+data/1_Raw_Scrapes/**/*
+data/2_VLM_Processing/filtered_rejected/**/*
+data/3_CoreML_Training_Data/**/*
+
+# Keep the folder structure (gitkeep files) but ignore images
+!data/**/.gitkeep
+!data/2_VLM_Processing/metadata_logs/*.jsonl
+
+# Virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

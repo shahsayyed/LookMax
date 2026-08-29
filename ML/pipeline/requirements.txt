@@ -1,0 +1,29 @@
+# ─── LookMax ML Pipeline Dependencies ───────────────────────
+# Networking / Scraping
+requests>=2.32.0
+aiohttp>=3.9.0
+beautifulsoup4>=4.12.0
+tqdm>=4.66.0
+
+# Image Processing & Heuristics
+opencv-python-headless>=4.9.0
+Pillow>=10.3.0
+numpy>=1.26.0
+
+# Local VLM — MLX for Apple Silicon (M-series native)
+mlx>=0.14.0; sys_platform == 'darwin'
+mlx-vlm>=0.1.0; sys_platform == 'darwin'
+
+# Google Gemini (cloud fallback)
+google-genai>=1.0.0
+
+# PyTorch with MPS (Apple Silicon GPU) — install via pip with macOS arm64 wheel
+torch>=2.3.0
+torchvision>=0.18.0
+
+# CoreML Export
+coremltools>=7.2
+
+# Utilities
+scikit-learn>=1.5.0
+pandas>=2.2.0
