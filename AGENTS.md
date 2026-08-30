@@ -1,7 +1,7 @@
-# Agent Rules for FaceReportDemo
+# Agent Rules for LookMax
 
-1. **Always Verify Builds**:
-   Whenever changes are made to the codebase, run a build test using `xcodebuild` or `swiftc` to ensure there are no build errors.
+1. **Verify iOS App Builds When App Code Changes**:
+   Whenever changes are made to the iOS application codebase (under `iOS/`), run a build test using `xcodebuild` to ensure there are no build errors. Do not run `xcodebuild` for Python ML scripts or pipeline-only changes.
 
 2. **Automatic Re-deployment**:
-   Automatically trigger the build so that the newest binaries are prepared and deployed for testing on the simulator or target device.
+   Automatically trigger the iOS build when iOS code is modified so that the newest binaries are prepared for testing on the simulator or target device.

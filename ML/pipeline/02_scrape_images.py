@@ -62,7 +62,7 @@ SCRAPED_LOG = (
 
 HEADERS = {"User-Agent": USER_AGENT}
 
-# ─── Search queries per demographic category ─────────────────────────────────
+# ─── Search queries per demographic and aesthetic category ──────────────────
 FASHION_QUERIES = [
     # --- BUSINESS & FORMAL MEETING ---
     "man business meeting suit", "woman corporate office attire", 
@@ -88,6 +88,31 @@ FASHION_QUERIES = [
     # --- CASUAL EVERYDAY ---
     "weekend casual outfit man", "relaxed everyday style woman",
     "lazy weekend clothes", "comfortable home outfit", "running errands outfit"
+]
+
+FACIAL_QUERIES = [
+    # --- MEN FACIAL GROOMING & HAIRSTYLES ---
+    "man portrait messy hair", "unshaven tired man portrait", "man beard grooming closeup",
+    "man styled haircut portrait", "man clean shaven portrait", "man eyeglasses portrait",
+    "man jawline profile portrait", "man smiling casual headshot", "young man natural selfie face",
+    "mature man grey hair portrait", "senior man portrait face", "man bedhead morning portrait",
+    "man stubble beard portrait", "man bald head grooming portrait", "man curly hair fade portrait",
+    "man textured crop haircut", "man pompadour hairstyle face", "man patchy beard close up",
+    "tired man dark circles face", "man passport photo natural face", "man acne skin texture face",
+    
+    # --- WOMEN FACIAL GROOMING & HAIRSTYLES ---
+    "woman portrait natural face", "woman messy bun hair portrait", "woman skincare natural makeup portrait",
+    "woman curly hair closeup portrait", "woman layered haircut portrait", "woman professional headshot face",
+    "woman eyeglasses portrait", "mature woman elegant portrait", "senior woman smiling face",
+    "woman candid natural lighting portrait", "woman bob haircut face portrait", "woman bangs hairstyle portrait",
+    "woman pixie cut portrait", "woman tired morning face portrait", "woman natural skin closeup",
+    "woman glowing skincare portrait", "woman passport photo neutral face", "woman minimal makeup portrait",
+    
+    # --- DEMOGRAPHIC SPECIFIC FACIAL SHOTS ---
+    "college student guy selfie face", "young woman college selfie portrait",
+    "35 year old man portrait face", "40 year old woman portrait natural",
+    "50 year old man beard portrait", "60 year old woman smiling portrait",
+    "mature gentleman portrait headshot", "senior grandmother smiling portrait"
 ]
 
 # ─── Utilities ────────────────────────────────────────────────────────────────
@@ -132,7 +157,7 @@ def download_image(url: str, dest_dir: Path, seen_hashes: set,
 
 # ─── Source 1: Unsplash ───────────────────────────────────────────────────────
 def scrape_unsplash(api_key: str, dest_dir: Path, seen_urls: set,
-                    seen_hashes: set, limit: int, dry_run: bool) -> int:
+                    seen_hashes: set, limit: int, queries: list, dry_run: bool) -> int:
     if not api_key:
         print("    ⚠  UNSPLASH_KEY not set — skipping Unsplash")
         return 0
@@ -141,9 +166,9 @@ def scrape_unsplash(api_key: str, dest_dir: Path, seen_urls: set,
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     image_urls: list[str] = []
-    per_page = min(30, limit // len(FASHION_QUERIES) + 1)
+    per_page = min(30, max(10, limit // len(queries) + 1))
 
-    for query in FASHION_QUERIES:
+    for query in queries:
         for page in range(1, 4):   # up to 3 pages per query
             params = {
                 "query": query, "per_page": per_page,
@@ -202,7 +227,7 @@ def scrape_unsplash(api_key: str, dest_dir: Path, seen_urls: set,
 
 # ─── Source 2: Pexels ────────────────────────────────────────────────────────
 def scrape_pexels(api_key: str, dest_dir: Path, seen_urls: set,
-                  seen_hashes: set, limit: int, dry_run: bool) -> int:
+                  seen_hashes: set, limit: int, queries: list, dry_run: bool) -> int:
     if not api_key:
         print("    ⚠  PEXELS_KEY not set — skipping Pexels")
         return 0
@@ -213,12 +238,12 @@ def scrape_pexels(api_key: str, dest_dir: Path, seen_urls: set,
     image_urls: list[str] = []
     per_page = 80
 
-    for query in FASHION_QUERIES:
+    for query in queries:
         for page in range(1, 4):
             try:
                 resp = requests.get(
                     "https://api.pexels.com/v1/search",
-                    params={"query": query, "per_page": per_page, "page": page},
+                    params={"query": query, "per_page": per_page, "page": page, "orientation": "portrait"},
                     headers={**HEADERS, "Authorization": api_key},
                     timeout=15,
                 )
@@ -264,7 +289,7 @@ def scrape_pexels(api_key: str, dest_dir: Path, seen_urls: set,
 
 # ─── Source 3: Pixabay ───────────────────────────────────────────────────────
 def scrape_pixabay(api_key: str, dest_dir: Path, seen_urls: set,
-                   seen_hashes: set, limit: int, dry_run: bool) -> int:
+                   seen_hashes: set, limit: int, queries: list, dry_run: bool) -> int:
     if not api_key:
         print("    ⚠  PIXABAY_KEY not set — skipping Pixabay")
         return 0
@@ -275,7 +300,7 @@ def scrape_pixabay(api_key: str, dest_dir: Path, seen_urls: set,
     image_urls: list[str] = []
     per_page = 200
 
-    for query in FASHION_QUERIES:
+    for query in queries:
         for page in range(1, 4):
             try:
                 resp = requests.get(
@@ -330,15 +355,28 @@ def scrape_pixabay(api_key: str, dest_dir: Path, seen_urls: set,
 # ─── Main ─────────────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="LookMax Phase 2 — Image Scraper")
-    parser.add_argument("--limit",   type=int,    default=300,
-                        help="Images per source (default: 300)")
+    parser.add_argument("--limit",   type=int,    default=1000,
+                        help="Images per source (default: 1000)")
     parser.add_argument("--sources", nargs="+",
                         choices=["unsplash", "pexels", "pixabay"],
                         default=["unsplash", "pexels", "pixabay"],
                         help="Which sources to scrape")
+    parser.add_argument("--type", choices=["face", "fashion", "all"], default="all",
+                        help="Target domain to scrape: face, fashion, or all (default: all)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Preview without downloading")
     args = parser.parse_args()
+
+    # Determine active query set
+    if args.type == "face":
+        active_queries = FACIAL_QUERIES
+        folder_suffix = "_facial"
+    elif args.type == "fashion":
+        active_queries = FASHION_QUERIES
+        folder_suffix = "_fashion"
+    else:
+        active_queries = FACIAL_QUERIES + FASHION_QUERIES
+        folder_suffix = "_all"
 
     # API keys from environment
     unsplash_key = os.environ.get("UNSPLASH_KEY", "")
@@ -346,9 +384,10 @@ def main():
     pixabay_key  = os.environ.get("PIXABAY_KEY", "")
 
     print(f"\n{'═'*62}")
-    print(f"  LookMax ML Pipeline — Phase 2: Image Scraping")
+    print(f"  LookMax ML Pipeline — Phase 2: Image Scraping ({args.type.upper()})")
     print(f"{'═'*62}")
     print(f"  Sources    : {', '.join(args.sources)}")
+    print(f"  Target Type: {args.type} ({len(active_queries)} queries)")
     print(f"  Limit/src  : {args.limit}")
     print(f"  Workers    : {DOWNLOAD_WORKERS} threads")
     print(f"  Dry-run    : {args.dry_run}")
@@ -366,27 +405,27 @@ def main():
         print(f"    export UNSPLASH_KEY=your_key")
         print(f"    export PEXELS_KEY=your_key")
         print(f"    export PIXABAY_KEY=your_key")
-        print(f"\n  Re-run: python3 ML/pipeline/02_scrape_images.py")
+        print(f"\n  Re-run: python3 ML/pipeline/02_scrape_images.py --type {args.type}")
         sys.exit(0)
 
     seen_urls:   set = load_seen(SCRAPED_LOG)
     seen_hashes: set = set()
     print(f"  Skip log   : {len(seen_urls)} previously seen URLs")
 
-    dest_unsplash = RAW_SCRAPES_DIR / "unsplash_fashion"
-    dest_pexels   = RAW_SCRAPES_DIR / "pexels_fashion"
-    dest_pixabay  = RAW_SCRAPES_DIR / "pixabay_fashion"
+    dest_unsplash = RAW_SCRAPES_DIR / f"unsplash{folder_suffix}"
+    dest_pexels   = RAW_SCRAPES_DIR / f"pexels{folder_suffix}"
+    dest_pixabay  = RAW_SCRAPES_DIR / f"pixabay{folder_suffix}"
 
     total = 0
     if "unsplash" in args.sources:
         total += scrape_unsplash(unsplash_key, dest_unsplash, seen_urls,
-                                 seen_hashes, args.limit, args.dry_run)
+                                 seen_hashes, args.limit, active_queries, args.dry_run)
     if "pexels" in args.sources:
         total += scrape_pexels(pexels_key, dest_pexels, seen_urls,
-                               seen_hashes, args.limit, args.dry_run)
+                               seen_hashes, args.limit, active_queries, args.dry_run)
     if "pixabay" in args.sources:
         total += scrape_pixabay(pixabay_key, dest_pixabay, seen_urls,
-                                seen_hashes, args.limit, args.dry_run)
+                                seen_hashes, args.limit, active_queries, args.dry_run)
 
     all_imgs = sum(1 for ext in IMAGE_EXTENSIONS
                    for _ in RAW_SCRAPES_DIR.rglob(f"*{ext}"))

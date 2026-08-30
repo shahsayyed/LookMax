@@ -5,7 +5,7 @@
     "query": "fit check slouch",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Slouching posture and fit critiques (Needs Improvement)"
+    "description": "Men Under 35 \u2014 Slouching posture and fit critiques (Needs Improvement)"
   },
   {
     "category": "men_u35_first_suit_critique",
@@ -13,7 +13,7 @@
     "query": "first suit fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Initial suit fittings and tailoring issues (Needs Improvement / Average)"
+    "description": "Men Under 35 \u2014 Initial suit fittings and tailoring issues (Needs Improvement / Average)"
   },
   {
     "category": "men_u35_baggy_clothes_help",
@@ -21,7 +21,7 @@
     "query": "baggy clothes advice",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Oversized / poorly proportioned clothing (Needs Improvement)"
+    "description": "Men Under 35 \u2014 Oversized / poorly proportioned clothing (Needs Improvement)"
   },
   {
     "category": "men_u35_skinny_guy_style",
@@ -29,7 +29,7 @@
     "query": "skinny guy fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Slim builds with fit feedback (Needs Improvement / Average)"
+    "description": "Men Under 35 \u2014 Slim builds with fit feedback (Needs Improvement / Average)"
   },
   {
     "category": "men_u35_messy_lazy_outfit",
@@ -37,7 +37,7 @@
     "query": "lazy outfit advice",
     "sort": "relevance",
     "time": "all",
-    "description": "Men Under 35 — Casual unstructured daily wear (Needs Improvement)"
+    "description": "Men Under 35 \u2014 Casual unstructured daily wear (Needs Improvement)"
   },
   {
     "category": "men_u35_everyday_college_casual",
@@ -45,7 +45,7 @@
     "query": "college casual outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Everyday university and campus style (Average)"
+    "description": "Men Under 35 \u2014 Everyday university and campus style (Average)"
   },
   {
     "category": "men_u35_basic_tshirt_jeans",
@@ -53,7 +53,7 @@
     "query": "t shirt and jeans fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Baseline casual t-shirt and denim (Average)"
+    "description": "Men Under 35 \u2014 Baseline casual t-shirt and denim (Average)"
   },
   {
     "category": "men_u35_summer_casual_fit",
@@ -61,7 +61,7 @@
     "query": "summer casual outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Warm weather shorts, tees, and linen (Average)"
+    "description": "Men Under 35 \u2014 Warm weather shorts, tees, and linen (Average)"
   },
   {
     "category": "men_u35_fall_layering_casual",
@@ -69,7 +69,7 @@
     "query": "fall layering outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Autumn jackets, flannels, and sweaters (Average / Polished)"
+    "description": "Men Under 35 \u2014 Autumn jackets, flannels, and sweaters (Average / Polished)"
   },
   {
     "category": "men_u35_smart_casual_date_night",
@@ -77,7 +77,7 @@
     "query": "date night outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Sharp evening and smart casual date outfits (Polished)"
+    "description": "Men Under 35 \u2014 Sharp evening and smart casual date outfits (Polished)"
   },
   {
     "category": "men_u35_bespoke_tailored_suit",
@@ -85,7 +85,7 @@
     "query": "tailored suit bespoke fit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — High-end tailoring and fitted suits (Polished)"
+    "description": "Men Under 35 \u2014 High-end tailoring and fitted suits (Polished)"
   },
   {
     "category": "men_u35_wedding_guest_suit",
@@ -93,7 +93,7 @@
     "query": "wedding guest suit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Formal and semi-formal wedding guest attire (Polished)"
+    "description": "Men Under 35 \u2014 Formal and semi-formal wedding guest attire (Polished)"
   },
   {
     "category": "men_u35_streetwear_oversized_hoodie",
@@ -101,7 +101,7 @@
     "query": "hoodie fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Streetwear oversized hoodies and casual silhouettes (Average)"
+    "description": "Men Under 35 \u2014 Streetwear oversized hoodies and casual silhouettes (Average)"
   },
   {
     "category": "men_u35_skater_street_casual",
@@ -109,7 +109,7 @@
     "query": "skater casual street",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Skateboarding and relaxed street fashion (Average)"
+    "description": "Men Under 35 \u2014 Skateboarding and relaxed street fashion (Average)"
   },
   {
     "category": "men_u35_minimalist_streetwear",
@@ -117,7 +117,7 @@
     "query": "minimalist street fit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Clean silhouette minimalist streetwear (Polished)"
+    "description": "Men Under 35 \u2014 Clean silhouette minimalist streetwear (Polished)"
   },
   {
     "category": "men_u35_vintage_japanese_streetwear",
@@ -125,7 +125,7 @@
     "query": "japanese streetwear fit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Tokyo street style and vintage workwear (Polished)"
+    "description": "Men Under 35 \u2014 Tokyo street style and vintage workwear (Polished)"
   },
   {
     "category": "men_u35_techwear_aesthetic",
@@ -133,7 +133,7 @@
     "query": "techwear outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Modern functional and techwear outfits (Polished)"
+    "description": "Men Under 35 \u2014 Modern functional and techwear outfits (Polished)"
   },
   {
     "category": "men_u35_runway_high_fashion",
@@ -141,7 +141,7 @@
     "query": "high fashion street runway",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Avant-garde and high-fashion styling (Polished)"
+    "description": "Men Under 35 \u2014 Avant-garde and high-fashion styling (Polished)"
   },
   {
     "category": "men_u35_outfits_daily_look",
@@ -149,7 +149,7 @@
     "query": "guy casual daily outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Daily community outfit posts (Average / Polished)"
+    "description": "Men Under 35 \u2014 Daily community outfit posts (Average / Polished)"
   },
   {
     "category": "men_u35_outfits_party_event",
@@ -157,16 +157,15 @@
     "query": "guy party nightlife outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Under 35 — Nightlife, party, and event fashion (Polished)"
+    "description": "Men Under 35 \u2014 Nightlife, party, and event fashion (Polished)"
   },
-
   {
     "category": "men_35_50_dad_outfit_critique",
     "subreddit": "mensfashion",
     "query": "dad outfit advice fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Practical dad outfits and casual critique (Needs Improvement / Average)"
+    "description": "Men 35-50 \u2014 Practical dad outfits and casual critique (Needs Improvement / Average)"
   },
   {
     "category": "men_35_50_40s_casual_advice",
@@ -174,7 +173,7 @@
     "query": "40s casual clothes advice",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Middle-aged casual wardrobe advice (Needs Improvement / Average)"
+    "description": "Men 35-50 \u2014 Middle-aged casual wardrobe advice (Needs Improvement / Average)"
   },
   {
     "category": "men_35_50_slouch_posture_fit",
@@ -182,7 +181,7 @@
     "query": "posture slouching fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Slouching and posture issues in clothing (Needs Improvement)"
+    "description": "Men 35-50 \u2014 Slouching and posture issues in clothing (Needs Improvement)"
   },
   {
     "category": "men_35_50_wrinkled_ill_fitting",
@@ -190,7 +189,7 @@
     "query": "ill fitting suit critique",
     "sort": "relevance",
     "time": "all",
-    "description": "Men 35-50 — Poorly fitting jackets and trousers (Needs Improvement)"
+    "description": "Men 35-50 \u2014 Poorly fitting jackets and trousers (Needs Improvement)"
   },
   {
     "category": "men_35_50_style_makeover",
@@ -198,7 +197,7 @@
     "query": "middle aged style makeover",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Wardrobe refresh and style transformations (Average)"
+    "description": "Men 35-50 \u2014 Wardrobe refresh and style transformations (Average)"
   },
   {
     "category": "men_35_50_office_business_casual",
@@ -206,7 +205,7 @@
     "query": "business casual office fit",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Professional workplace business casual (Average)"
+    "description": "Men 35-50 \u2014 Professional workplace business casual (Average)"
   },
   {
     "category": "men_35_50_weekend_polo_chinos",
@@ -214,7 +213,7 @@
     "query": "polo chinos weekend fit",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Weekend smart casual polos and chinos (Average)"
+    "description": "Men 35-50 \u2014 Weekend smart casual polos and chinos (Average)"
   },
   {
     "category": "men_35_50_smart_casual_dinner",
@@ -222,7 +221,7 @@
     "query": "smart casual dinner blazer",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Evening smart casual blazers and shirts (Average / Polished)"
+    "description": "Men 35-50 \u2014 Evening smart casual blazers and shirts (Average / Polished)"
   },
   {
     "category": "men_35_50_fitted_blazer_jeans",
@@ -230,7 +229,7 @@
     "query": "blazer with jeans fit",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Modern tailored blazer paired with denim (Polished)"
+    "description": "Men 35-50 \u2014 Modern tailored blazer paired with denim (Polished)"
   },
   {
     "category": "men_35_50_classic_navy_suit",
@@ -238,7 +237,7 @@
     "query": "classic navy suit tailoring",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Sharp classic navy and charcoal suits (Polished)"
+    "description": "Men 35-50 \u2014 Sharp classic navy and charcoal suits (Polished)"
   },
   {
     "category": "men_35_50_sartorial_double_breasted",
@@ -246,7 +245,7 @@
     "query": "double breasted suit sartorial",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Sartorial double-breasted tailoring (Polished)"
+    "description": "Men 35-50 \u2014 Sartorial double-breasted tailoring (Polished)"
   },
   {
     "category": "men_35_50_executive_business_formal",
@@ -254,7 +253,7 @@
     "query": "executive formal business suit",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — High-level corporate formal attire (Polished)"
+    "description": "Men 35-50 \u2014 High-level corporate formal attire (Polished)"
   },
   {
     "category": "men_35_50_business_casual_work",
@@ -262,7 +261,7 @@
     "query": "men business casual office",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Office business casual looks (Average / Polished)"
+    "description": "Men 35-50 \u2014 Office business casual looks (Average / Polished)"
   },
   {
     "category": "men_35_50_blazer_trousers_combo",
@@ -270,7 +269,7 @@
     "query": "blazer trousers fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Separates: blazer and trouser combinations (Polished)"
+    "description": "Men 35-50 \u2014 Separates: blazer and trouser combinations (Polished)"
   },
   {
     "category": "men_35_50_selvedge_denim_boots",
@@ -278,7 +277,7 @@
     "query": "fit check denim boots",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Heritage raw denim and leather boots (Average / Polished)"
+    "description": "Men 35-50 \u2014 Heritage raw denim and leather boots (Average / Polished)"
   },
   {
     "category": "men_35_50_styleboard_grid",
@@ -286,16 +285,15 @@
     "query": "men smart casual outfit grid",
     "sort": "top",
     "time": "all",
-    "description": "Men 35-50 — Coordinated outfit arrangements and styling (Polished)"
+    "description": "Men 35-50 \u2014 Coordinated outfit arrangements and styling (Polished)"
   },
-
   {
     "category": "men_o50_older_man_fit_critique",
     "subreddit": "mensfashion",
     "query": "older man fit check",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Fit feedback and clothing critiques for seniors (Needs Improvement / Average)"
+    "description": "Men Over 50 \u2014 Fit feedback and clothing critiques for seniors (Needs Improvement / Average)"
   },
   {
     "category": "men_o50_senior_casual_outfit",
@@ -303,7 +301,7 @@
     "query": "senior casual everyday outfit",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Everyday relaxed senior casual wear (Average)"
+    "description": "Men Over 50 \u2014 Everyday relaxed senior casual wear (Average)"
   },
   {
     "category": "men_o50_mature_posture_standing",
@@ -311,7 +309,7 @@
     "query": "mature man standing fit",
     "sort": "relevance",
     "time": "all",
-    "description": "Men Over 50 — Full-body standing portraits and posture (Needs Improvement / Average)"
+    "description": "Men Over 50 \u2014 Full-body standing portraits and posture (Needs Improvement / Average)"
   },
   {
     "category": "men_o50_elderly_suit_fitting",
@@ -319,7 +317,7 @@
     "query": "elderly man suit fit",
     "sort": "relevance",
     "time": "all",
-    "description": "Men Over 50 — Senior suit fittings and comfort tailoring (Average)"
+    "description": "Men Over 50 \u2014 Senior suit fittings and comfort tailoring (Average)"
   },
   {
     "category": "men_o50_tweed_jacket_gentleman",
@@ -327,7 +325,7 @@
     "query": "tweed jacket mature gentleman",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Classic tweed blazers and heritage styling (Polished)"
+    "description": "Men Over 50 \u2014 Classic tweed blazers and heritage styling (Polished)"
   },
   {
     "category": "men_o50_classic_menswear_over50",
@@ -335,7 +333,7 @@
     "query": "classic menswear over 50",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Distinguished classic menswear and tailoring (Polished)"
+    "description": "Men Over 50 \u2014 Distinguished classic menswear and tailoring (Polished)"
   },
   {
     "category": "men_o50_silver_fox_sharp_suit",
@@ -343,7 +341,7 @@
     "query": "silver fox sharp suit",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Sharp modern bespoke suits for older men (Polished)"
+    "description": "Men Over 50 \u2014 Sharp modern bespoke suits for older men (Polished)"
   },
   {
     "category": "men_o50_mature_sartorial_overcoat",
@@ -351,7 +349,7 @@
     "query": "mature sartorial coat tailored",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Winter overcoats, wool layers, and sartorial coats (Polished)"
+    "description": "Men Over 50 \u2014 Winter overcoats, wool layers, and sartorial coats (Polished)"
   },
   {
     "category": "men_o50_linen_summer_suit",
@@ -359,7 +357,7 @@
     "query": "older man elegant linen suit",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Summer linen suits and Mediterranean style (Polished)"
+    "description": "Men Over 50 \u2014 Summer linen suits and Mediterranean style (Polished)"
   },
   {
     "category": "men_o50_vintage_classic_menswear",
@@ -367,16 +365,15 @@
     "query": "vintage menswear suit jacket",
     "sort": "top",
     "time": "all",
-    "description": "Men Over 50 — Vintage tailoring, trench coats, and wool jackets (Polished)"
+    "description": "Men Over 50 \u2014 Vintage tailoring, trench coats, and wool jackets (Polished)"
   },
-
   {
     "category": "women_u35_slouch_fit_critique",
     "subreddit": "femalefashionadvice",
     "query": "fit check slouching posture",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Posture critiques and ill-fitting garments (Needs Improvement)"
+    "description": "Women Under 35 \u2014 Posture critiques and ill-fitting garments (Needs Improvement)"
   },
   {
     "category": "women_u35_awkward_dress_critique",
@@ -384,7 +381,7 @@
     "query": "awkward dress fit critique",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Unflattering dress fits and sizing issues (Needs Improvement)"
+    "description": "Women Under 35 \u2014 Unflattering dress fits and sizing issues (Needs Improvement)"
   },
   {
     "category": "women_u35_baggy_unflattering",
@@ -392,7 +389,7 @@
     "query": "baggy unflattering clothes advice",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Proportions and sizing challenges (Needs Improvement)"
+    "description": "Women Under 35 \u2014 Proportions and sizing challenges (Needs Improvement)"
   },
   {
     "category": "women_u35_lazy_day_casual",
@@ -400,7 +397,7 @@
     "query": "lazy casual outfit university",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Casual sweatpants and loungewear (Needs Improvement / Average)"
+    "description": "Women Under 35 \u2014 Casual sweatpants and loungewear (Needs Improvement / Average)"
   },
   {
     "category": "women_u35_everyday_jeans_tee",
@@ -408,7 +405,7 @@
     "query": "everyday t shirt jeans outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Daily denim and top basics (Average)"
+    "description": "Women Under 35 \u2014 Daily denim and top basics (Average)"
   },
   {
     "category": "women_u35_casual_summer_sundress",
@@ -416,7 +413,7 @@
     "query": "casual summer sundress outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Sundresses and warm-weather casual (Average)"
+    "description": "Women Under 35 \u2014 Sundresses and warm-weather casual (Average)"
   },
   {
     "category": "women_u35_fall_sweater_layers",
@@ -424,7 +421,7 @@
     "query": "fall cozy sweater outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Knitwear, cardigans, and autumn boots (Average)"
+    "description": "Women Under 35 \u2014 Knitwear, cardigans, and autumn boots (Average)"
   },
   {
     "category": "women_u35_smart_casual_workplace",
@@ -432,7 +429,7 @@
     "query": "smart casual workplace 20s",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Early-career professional and smart casual (Average / Polished)"
+    "description": "Women Under 35 \u2014 Early-career professional and smart casual (Average / Polished)"
   },
   {
     "category": "women_u35_date_night_chic",
@@ -440,7 +437,7 @@
     "query": "date night chic outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Evening chic date night looks (Polished)"
+    "description": "Women Under 35 \u2014 Evening chic date night looks (Polished)"
   },
   {
     "category": "women_u35_tailored_power_suit",
@@ -448,7 +445,7 @@
     "query": "tailored power suit woman",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Sharp tailored pantsuits and blazers (Polished)"
+    "description": "Women Under 35 \u2014 Sharp tailored pantsuits and blazers (Polished)"
   },
   {
     "category": "women_u35_cocktail_elegant_dress",
@@ -456,7 +453,7 @@
     "query": "cocktail dress elegant fit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Semi-formal cocktail dresses (Polished)"
+    "description": "Women Under 35 \u2014 Semi-formal cocktail dresses (Polished)"
   },
   {
     "category": "women_u35_evening_gala_gown",
@@ -464,7 +461,7 @@
     "query": "evening gala gown portrait",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Formal floor-length gowns and event wear (Polished)"
+    "description": "Women Under 35 \u2014 Formal floor-length gowns and event wear (Polished)"
   },
   {
     "category": "women_u35_minimalist_aesthetic",
@@ -472,7 +469,7 @@
     "query": "minimalist aesthetic outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Clean lines and monochrome minimalist fashion (Polished)"
+    "description": "Women Under 35 \u2014 Clean lines and monochrome minimalist fashion (Polished)"
   },
   {
     "category": "women_u35_clean_girl_aesthetic",
@@ -480,7 +477,7 @@
     "query": "clean girl aesthetic street",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Contemporary curated street styling (Polished)"
+    "description": "Women Under 35 \u2014 Contemporary curated street styling (Polished)"
   },
   {
     "category": "women_u35_outfits_evening_dress",
@@ -488,7 +485,7 @@
     "query": "evening dress fit check",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Evening dresses and party looks (Polished)"
+    "description": "Women Under 35 \u2014 Evening dresses and party looks (Polished)"
   },
   {
     "category": "women_u35_outfits_casual_daily",
@@ -496,7 +493,7 @@
     "query": "casual cute daily outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Daily community outfit checks (Average)"
+    "description": "Women Under 35 \u2014 Daily community outfit checks (Average)"
   },
   {
     "category": "women_u35_trendy_brunch_look",
@@ -504,7 +501,7 @@
     "query": "trendy brunch outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Weekend brunch and stylish daywear (Average / Polished)"
+    "description": "Women Under 35 \u2014 Weekend brunch and stylish daywear (Average / Polished)"
   },
   {
     "category": "women_u35_petite_casual_outfit",
@@ -512,7 +509,7 @@
     "query": "petite casual everyday outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Petite frame everyday style (Average)"
+    "description": "Women Under 35 \u2014 Petite frame everyday style (Average)"
   },
   {
     "category": "women_u35_petite_tailored_suit",
@@ -520,7 +517,7 @@
     "query": "petite tailored professional suit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Petite tailored business and suits (Polished)"
+    "description": "Women Under 35 \u2014 Petite tailored business and suits (Polished)"
   },
   {
     "category": "women_u35_plussize_casual_cute",
@@ -528,7 +525,7 @@
     "query": "plus size casual cute outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Plus-size casual and daywear (Average)"
+    "description": "Women Under 35 \u2014 Plus-size casual and daywear (Average)"
   },
   {
     "category": "women_u35_plussize_formal_dress",
@@ -536,7 +533,7 @@
     "query": "plus size elegant formal dress",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Plus-size formal and evening dresses (Polished)"
+    "description": "Women Under 35 \u2014 Plus-size formal and evening dresses (Polished)"
   },
   {
     "category": "women_u35_streetwear_female_fit",
@@ -544,16 +541,15 @@
     "query": "female streetwear fit",
     "sort": "top",
     "time": "all",
-    "description": "Women Under 35 — Women's streetwear and urban fashion (Average / Polished)"
+    "description": "Women Under 35 \u2014 Women's streetwear and urban fashion (Average / Polished)"
   },
-
   {
     "category": "women_35_50_mom_casual_outfit",
     "subreddit": "femalefashionadvice",
     "query": "40s mom everyday outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Everyday practical mom outfits (Average)"
+    "description": "Women 35-50 \u2014 Everyday practical mom outfits (Average)"
   },
   {
     "category": "women_35_50_middle_aged_critique",
@@ -561,7 +557,7 @@
     "query": "middle aged woman fit critique",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Fit feedback and styling questions (Needs Improvement / Average)"
+    "description": "Women 35-50 \u2014 Fit feedback and styling questions (Needs Improvement / Average)"
   },
   {
     "category": "women_35_50_slouching_tired_posture",
@@ -569,7 +565,7 @@
     "query": "slouching posture fit check",
     "sort": "relevance",
     "time": "all",
-    "description": "Women 35-50 — Posture and fatigue cues in outfits (Needs Improvement)"
+    "description": "Women 35-50 \u2014 Posture and fatigue cues in outfits (Needs Improvement)"
   },
   {
     "category": "women_35_50_unflattering_office",
@@ -577,7 +573,7 @@
     "query": "unflattering office clothes advice",
     "sort": "relevance",
     "time": "all",
-    "description": "Women 35-50 — Workplace wardrobe critiques (Needs Improvement)"
+    "description": "Women 35-50 \u2014 Workplace wardrobe critiques (Needs Improvement)"
   },
   {
     "category": "women_35_50_capsule_wardrobe",
@@ -585,7 +581,7 @@
     "query": "capsule wardrobe 40s fit",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Coordinated minimalist capsule wardrobe (Average / Polished)"
+    "description": "Women 35-50 \u2014 Coordinated minimalist capsule wardrobe (Average / Polished)"
   },
   {
     "category": "women_35_50_corporate_executive",
@@ -593,7 +589,7 @@
     "query": "corporate executive business formal woman",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Executive formalwear and corporate tailoring (Polished)"
+    "description": "Women 35-50 \u2014 Executive formalwear and corporate tailoring (Polished)"
   },
   {
     "category": "women_35_50_smart_linen_blazer",
@@ -601,7 +597,7 @@
     "query": "smart casual linen blazer 40s",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Smart casual blazers, trousers, and silk shirts (Polished)"
+    "description": "Women 35-50 \u2014 Smart casual blazers, trousers, and silk shirts (Polished)"
   },
   {
     "category": "women_35_50_sophisticated_dinner",
@@ -609,7 +605,7 @@
     "query": "sophisticated dinner dress woman",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Elegant dinner dresses and evening styling (Polished)"
+    "description": "Women 35-50 \u2014 Elegant dinner dresses and evening styling (Polished)"
   },
   {
     "category": "women_35_50_mature_effortless_chic",
@@ -617,7 +613,7 @@
     "query": "mature women effortless chic",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Effortless chic and European style (Polished)"
+    "description": "Women 35-50 \u2014 Effortless chic and European style (Polished)"
   },
   {
     "category": "women_35_50_tailored_monochrome",
@@ -625,7 +621,7 @@
     "query": "tailored monochrome outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Tailored monochrome suits and coats (Polished)"
+    "description": "Women 35-50 \u2014 Tailored monochrome suits and coats (Polished)"
   },
   {
     "category": "women_35_50_business_casual_blazer",
@@ -633,7 +629,7 @@
     "query": "women business casual blazer pants",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Professional business casual combinations (Average / Polished)"
+    "description": "Women 35-50 \u2014 Professional business casual combinations (Average / Polished)"
   },
   {
     "category": "women_35_50_creative_mature_outfit",
@@ -641,16 +637,15 @@
     "query": "colorful creative mature outfit",
     "sort": "top",
     "time": "all",
-    "description": "Women 35-50 — Vibrant creative expression and unique styling (Average / Polished)"
+    "description": "Women 35-50 \u2014 Vibrant creative expression and unique styling (Average / Polished)"
   },
-
   {
     "category": "women_o50_style_advice_over50",
     "subreddit": "femalefashionadvice",
     "query": "women over 50 style advice",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Fashion and styling advice for women over 50 (Average)"
+    "description": "Women Over 50 \u2014 Fashion and styling advice for women over 50 (Average)"
   },
   {
     "category": "women_o50_senior_casual_clothes",
@@ -658,7 +653,7 @@
     "query": "senior woman casual clothes",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Comfortable daily senior attire (Average)"
+    "description": "Women Over 50 \u2014 Comfortable daily senior attire (Average)"
   },
   {
     "category": "women_o50_mature_slouch_posture",
@@ -666,7 +661,7 @@
     "query": "mature woman posture outfit",
     "sort": "relevance",
     "time": "all",
-    "description": "Women Over 50 — Slouching posture in senior clothing (Needs Improvement)"
+    "description": "Women Over 50 \u2014 Slouching posture in senior clothing (Needs Improvement)"
   },
   {
     "category": "women_o50_elderly_dress_fit",
@@ -674,7 +669,7 @@
     "query": "elderly woman dress fit critique",
     "sort": "relevance",
     "time": "all",
-    "description": "Women Over 50 — Senior dress fittings and alterations (Needs Improvement / Average)"
+    "description": "Women Over 50 \u2014 Senior dress fittings and alterations (Needs Improvement / Average)"
   },
   {
     "category": "women_o50_chic_over_60",
@@ -682,7 +677,7 @@
     "query": "chic over 60 outfit fit",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Elegant style and chic tailoring for women 60+ (Polished)"
+    "description": "Women Over 50 \u2014 Elegant style and chic tailoring for women 60+ (Polished)"
   },
   {
     "category": "women_o50_senior_evening_gown",
@@ -690,7 +685,7 @@
     "query": "elegant senior evening dress gown",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Formal evening dresses and gala wear (Polished)"
+    "description": "Women Over 50 \u2014 Formal evening dresses and gala wear (Polished)"
   },
   {
     "category": "women_o50_cashmere_blazer_mature",
@@ -698,7 +693,7 @@
     "query": "mature woman cashmere blazer",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Cashmere knitwear and luxury tailoring (Polished)"
+    "description": "Women Over 50 \u2014 Cashmere knitwear and luxury tailoring (Polished)"
   },
   {
     "category": "women_o50_sophisticated_tailored",
@@ -706,7 +701,7 @@
     "query": "sophisticated older woman tailored",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Structured tailored outerwear and suits (Polished)"
+    "description": "Women Over 50 \u2014 Structured tailored outerwear and suits (Polished)"
   },
   {
     "category": "women_o50_vintage_elegant_dress",
@@ -714,16 +709,15 @@
     "query": "vintage elegant dress mature",
     "sort": "top",
     "time": "all",
-    "description": "Women Over 50 — Timeless vintage dresses and classic coats (Polished)"
+    "description": "Women Over 50 \u2014 Timeless vintage dresses and classic coats (Polished)"
   },
-
   {
     "category": "posture_forward_head_standing",
     "subreddit": "Posture",
     "query": "forward head posture standing",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Forward head and tech neck side profiles (Needs Improvement)"
+    "description": "Posture \u2014 Forward head and tech neck side profiles (Needs Improvement)"
   },
   {
     "category": "posture_anterior_pelvic_tilt",
@@ -731,7 +725,7 @@
     "query": "anterior pelvic tilt side view",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Anterior pelvic tilt lumbar curvature (Needs Improvement)"
+    "description": "Posture \u2014 Anterior pelvic tilt lumbar curvature (Needs Improvement)"
   },
   {
     "category": "posture_rounded_shoulders_slouch",
@@ -739,7 +733,7 @@
     "query": "rounded shoulders slouching standing",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Rounded shoulders and upper back slouch (Needs Improvement)"
+    "description": "Posture \u2014 Rounded shoulders and upper back slouch (Needs Improvement)"
   },
   {
     "category": "posture_hunchback_kyphosis",
@@ -747,7 +741,7 @@
     "query": "kyphosis hunchback posture check",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Thoracic kyphosis and standing alignment (Needs Improvement)"
+    "description": "Posture \u2014 Thoracic kyphosis and standing alignment (Needs Improvement)"
   },
   {
     "category": "posture_full_body_standing_check",
@@ -755,7 +749,7 @@
     "query": "standing posture check full body",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Full-body standing posture assessments (Average / Needs Improvement)"
+    "description": "Posture \u2014 Full-body standing posture assessments (Average / Needs Improvement)"
   },
   {
     "category": "posture_good_upright_alignment",
@@ -763,7 +757,7 @@
     "query": "good posture upright standing",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Upright neutral spine posture (Polished)"
+    "description": "Posture \u2014 Upright neutral spine posture (Polished)"
   },
   {
     "category": "posture_correction_before_after",
@@ -771,7 +765,7 @@
     "query": "posture correction before after",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Before and after posture transformation comparisons"
+    "description": "Posture \u2014 Before and after posture transformation comparisons"
   },
   {
     "category": "posture_confident_standing_portrait",
@@ -779,7 +773,7 @@
     "query": "confident standing posture portrait",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Confident open posture portraits (Polished)"
+    "description": "Posture \u2014 Confident open posture portraits (Polished)"
   },
   {
     "category": "posture_progress_standing_full",
@@ -787,7 +781,7 @@
     "query": "posture standing full body",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Progress pictures displaying full standing alignment (Average / Polished)"
+    "description": "Posture \u2014 Progress pictures displaying full standing alignment (Average / Polished)"
   },
   {
     "category": "posture_desk_slouch_seated_standing",
@@ -795,75 +789,74 @@
     "query": "desk posture standing check",
     "sort": "top",
     "time": "all",
-    "description": "Posture — Ergonomic alignment and standing postures (Needs Improvement / Average)"
+    "description": "Posture \u2014 Ergonomic alignment and standing postures (Needs Improvement / Average)"
   },
-
   {
     "category": "feed_outfits_top_all",
     "subreddit": "OUTFITS",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/OUTFITS Top All-Time posts (High-Volume Polished)"
+    "description": "Subreddit Feed \u2014 r/OUTFITS Top All-Time posts (High-Volume Polished)"
   },
   {
     "category": "feed_outfits_hot",
     "subreddit": "OUTFITS",
     "listing": "hot",
-    "description": "Subreddit Feed — r/OUTFITS Hot active community outfits"
+    "description": "Subreddit Feed \u2014 r/OUTFITS Hot active community outfits"
   },
   {
     "category": "feed_malefashionadvice_top_all",
     "subreddit": "malefashionadvice",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/malefashionadvice Top All-Time fits"
+    "description": "Subreddit Feed \u2014 r/malefashionadvice Top All-Time fits"
   },
   {
     "category": "feed_femalefashionadvice_top_all",
     "subreddit": "femalefashionadvice",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/femalefashionadvice Top All-Time fits"
+    "description": "Subreddit Feed \u2014 r/femalefashionadvice Top All-Time fits"
   },
   {
     "category": "feed_streetwear_top_all",
     "subreddit": "streetwear",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/streetwear Top All-Time streetwear fits"
+    "description": "Subreddit Feed \u2014 r/streetwear Top All-Time streetwear fits"
   },
   {
     "category": "feed_mensfashion_top_all",
     "subreddit": "mensfashion",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/mensfashion Top All-Time menswear fits"
+    "description": "Subreddit Feed \u2014 r/mensfashion Top All-Time menswear fits"
   },
   {
     "category": "feed_femalefashion_top_all",
     "subreddit": "femalefashion",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/femalefashion Top All-Time curated looks"
+    "description": "Subreddit Feed \u2014 r/femalefashion Top All-Time curated looks"
   },
   {
     "category": "feed_outfitoftheday_hot",
     "subreddit": "outfitoftheday",
     "listing": "hot",
-    "description": "Subreddit Feed — r/outfitoftheday Hot daily OOTD posts"
+    "description": "Subreddit Feed \u2014 r/outfitoftheday Hot daily OOTD posts"
   },
   {
     "category": "feed_outfitoftheday_top_all",
     "subreddit": "outfitoftheday",
     "listing": "top",
     "time": "all",
-    "description": "Subreddit Feed — r/outfitoftheday Top All-Time OOTD posts"
+    "description": "Subreddit Feed \u2014 r/outfitoftheday Top All-Time OOTD posts"
   },
   {
     "category": "feed_throwingfits_hot",
     "subreddit": "ThrowingFits",
     "listing": "hot",
-    "description": "Subreddit Feed — r/ThrowingFits Contemporary menswear"
+    "description": "Subreddit Feed \u2014 r/ThrowingFits Contemporary menswear"
   },
   {
     "category": "body_bigmen_fit_check",
@@ -871,7 +864,7 @@
     "query": "outfit fit check",
     "sort": "top",
     "time": "all",
-    "description": "Diverse Body Types — Big & tall menswear fit checks"
+    "description": "Diverse Body Types \u2014 Big & tall menswear fit checks"
   },
   {
     "category": "body_tall_fit_check",
@@ -879,166 +872,6 @@
     "query": "fit check tall outfit",
     "sort": "top",
     "time": "all",
-    "description": "Diverse Heights — Tall menswear and womenswear fits"
-  },
-  {
-    "category": "body_malegrooming_style_check",
-    "subreddit": "malegrooming",
-    "query": "full body style advice",
-    "sort": "top",
-    "time": "all",
-    "description": "Posture & Grooming — Full body grooming and style critique"
-  },
-  {
-    "category": "face_men_u35_haircut_advice",
-    "subreddit": "malehairadvice",
-    "query": "haircut advice",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Haircut advice and style transformation (Needs Improvement / Average)"
-  },
-  {
-    "category": "face_men_u35_messy_hair_critique",
-    "subreddit": "malehairadvice",
-    "query": "messy hair what should I do",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Messy / unstyled hair improvement"
-  },
-  {
-    "category": "face_men_u35_receding_hairline_advice",
-    "subreddit": "malehairadvice",
-    "query": "receding hairline advice",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Hairline and forehead proportion styling"
-  },
-  {
-    "category": "face_men_u35_fade_buzzcut_style",
-    "subreddit": "malehairadvice",
-    "query": "buzz cut or fade",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Fade and short buzzcut looks (Average / Polished)"
-  },
-  {
-    "category": "face_men_u35_beard_shaping_advice",
-    "subreddit": "malegrooming",
-    "query": "beard shape advice",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Beard styling and trimming (Needs Improvement / Average)"
-  },
-  {
-    "category": "face_men_u35_patchy_beard_critique",
-    "subreddit": "beards",
-    "query": "patchy beard keep or shave",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Patchy vs full beard evaluation"
-  },
-  {
-    "category": "face_men_u35_stubble_clean_shave",
-    "subreddit": "malegrooming",
-    "query": "clean shave or stubble",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Facial Grooming — Jawline definition and facial hair options"
-  },
-  {
-    "category": "face_men_u35_skincare_routine_check",
-    "subreddit": "SkincareAddiction",
-    "query": "skin redness routine check",
-    "sort": "top",
-    "time": "all",
-    "description": "Facial Grooming — Skin texture and redness analysis"
-  },
-  {
-    "category": "face_men_u35_honest_face_feedback",
-    "subreddit": "amiugly",
-    "query": "how to improve face",
-    "sort": "top",
-    "time": "all",
-    "description": "Facial Aesthetics — Candid face selfies and aesthetic feedback"
-  },
-  {
-    "category": "face_men_u35_face_glowup_critique",
-    "subreddit": "GlowUps",
-    "query": "face glow up before after",
-    "sort": "top",
-    "time": "all",
-    "description": "Facial Aesthetics — Facial transformation before and afters"
-  },
-  {
-    "category": "face_men_35_50_salt_pepper_grooming",
-    "subreddit": "malegrooming",
-    "query": "salt and pepper beard trimming",
-    "sort": "top",
-    "time": "all",
-    "description": "Men 35-50 Facial Grooming — Mature facial hair and beard styling"
-  },
-  {
-    "category": "face_men_35_50_haircut_thinning",
-    "subreddit": "malehairadvice",
-    "query": "mature man haircut thinning",
-    "sort": "top",
-    "time": "all",
-    "description": "Men 35-50 Facial Grooming — Mature gentleman haircut critique"
-  },
-  {
-    "category": "face_men_o50_grey_beard_neat",
-    "subreddit": "beards",
-    "query": "grey beard grooming older man",
-    "sort": "top",
-    "time": "all",
-    "description": "Men Over 50 Facial Grooming — Senior beard grooming and styling"
-  },
-  {
-    "category": "face_women_u35_bangs_haircut_advice",
-    "subreddit": "femalehairadvice",
-    "query": "bangs or no bangs advice",
-    "sort": "top",
-    "time": "all",
-    "description": "Women Facial Grooming — Hairstyle and face framing analysis"
-  },
-  {
-    "category": "face_women_u35_short_hair_makeover",
-    "subreddit": "femalehairadvice",
-    "query": "short hair makeover critique",
-    "sort": "top",
-    "time": "all",
-    "description": "Women Facial Grooming — Pixie, bob, and short haircut evaluation"
-  },
-  {
-    "category": "face_women_u35_curly_hair_routine",
-    "subreddit": "curlyhair",
-    "query": "curly hair routine before after",
-    "sort": "top",
-    "time": "all",
-    "description": "Women Facial Grooming — Curly hair definition and frizz management"
-  },
-  {
-    "category": "face_women_u35_eyebrow_shaping",
-    "subreddit": "Eyebrows",
-    "query": "eyebrow shape advice",
-    "sort": "top",
-    "time": "all",
-    "description": "Women Facial Grooming — Eyebrow arch and grooming"
-  },
-  {
-    "category": "face_women_35_50_skincare_critique",
-    "subreddit": "30PlusSkinCare",
-    "query": "skin routine advice 30s 40s",
-    "sort": "top",
-    "time": "all",
-    "description": "Women 35-50 Facial Grooming — Skin clarity and mature skin care"
-  },
-  {
-    "category": "face_women_o50_mature_chic_hair",
-    "subreddit": "femalehairadvice",
-    "query": "grey hair stylish haircut",
-    "sort": "top",
-    "time": "all",
-    "description": "Women Over 50 Facial Grooming — Mature women chic haircut advice"
+    "description": "Diverse Heights \u2014 Tall menswear and womenswear fits"
   }
 ]

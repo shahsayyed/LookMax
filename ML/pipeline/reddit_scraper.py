@@ -2,23 +2,25 @@
 LookMax ML Pipeline — Reddit Playwright JSON Image Scraper
 ============================================================
 Scrapes high-resolution image URLs from Reddit's .json endpoints using an
-authenticated Chromium persistent browser session via Playwright.
+authenticated Chromium persistent browser session via Playwright with
+human-like browsing simulation and streaming, on-the-fly image downloads.
 
 Key Capabilities:
   1. Persistent Authentication: Uses Chromium user_data_dir so you only log in once.
-  2. Anti-Rate-Limit Protection:
-     - Safe randomized delays (3.5s–7.0s per request)
-     - Batch cooldowns (pause 15–25s every 10 requests) to keep sliding windows clear
-     - Inter-category pauses (6–10s)
-     - Intelligent exponential backoff (30s -> 60s -> 120s) on HTTP 429 or challenge pages
-  3. Search & Subreddit Endpoints: Crawls standard feeds (hot/top/new) AND keyword search queries
+  2. Human-Like Anti-Rate-Limit Protection:
+     - Human browsing delays (5.0s–10.0s per request) with natural reading pauses
+     - Simulated gentle scrolling and mouse interaction
+     - Periodic batch cooling pauses (30s every 8 requests) to let sliding rate counters reset
+     - Inter-category pauses (15s between search terms / subreddits)
+     - Intelligent exponential backoff (30s -> 60s -> 120s -> 240s) on HTTP 429 or challenge pages
+  3. Real-Time Streaming Downloads: Downloads images concurrently in background threads
+     *during* the rate-limit delay between Reddit requests. No waiting to download at the end!
+  4. Search & Subreddit Endpoints: Crawls standard feeds (hot/top/new) AND keyword search queries
      (e.g., r/malefashionadvice/search.json?q=tailored+suit&restrict_sr=1&sort=top).
-  4. Gallery & Preview Extraction: Handles direct images, multi-image galleries (media_metadata),
-     and high-res preview fallbacks, decoding HTML entities (&amp; -> &).
   5. 110+ Pre-Configured Curated Queries: Out-of-the-box catalog in reddit_queries.json covering all
      6 demographic brackets, 3 aesthetic tiers, and posture variations.
-  6. Incremental State & Downloader: Saves JSON progress after every category and optionally
-     downloads images directly into LookMax's 1_Raw_Scrapes/ directory.
+  6. Incremental State & Multi-Level Deduplication: Saves JSON progress and disk files after every
+     page/category, never repeating existing URLs or identical image files.
 
 Usage Examples:
   # 1. First-time setup: interactive login
@@ -27,14 +29,11 @@ Usage Examples:
   # 2. Verify stored session
   python3 ML/pipeline/reddit_scraper.py --check-session
 
-  # 3. Scrape 110+ diverse queries catalog with anti-rate-limit protection
-  python3 ML/pipeline/reddit_scraper.py --queries-file ML/pipeline/reddit_queries.json --limit 50
+  # 3. Scrape and stream-download 110+ diverse queries catalog (10,000 images)
+  python3 ML/pipeline/reddit_scraper.py --queries-file ML/pipeline/reddit_queries.json --download --limit 100 --target-total 10000
 
-  # 4. Scrape with custom rate-limiting and direct download
-  python3 ML/pipeline/reddit_scraper.py --download --limit 100 --delay-min 4.0 --delay-max 8.0 --batch-size 8
-
-  # 5. Search a specific term across a subreddit
-  python3 ML/pipeline/reddit_scraper.py --subreddit malefashionadvice --query "tailored suit" --limit 100
+  # 4. Search a specific term on a subreddit with streaming download
+  python3 ML/pipeline/reddit_scraper.py --subreddit malefashionadvice --query "tailored suit" --download --limit 75
 """
 
 from __future__ import annotations
@@ -50,7 +49,7 @@ import random
 import re
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from urllib.parse import parse_qs, quote_plus, urlencode, urlparse, urlunparse
@@ -92,11 +91,11 @@ except ImportError:
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     )
-    REDDIT_DELAY_MIN_SEC = 3.5
-    REDDIT_DELAY_MAX_SEC = 7.0
-    REDDIT_BATCH_SIZE = 10
-    REDDIT_BATCH_COOLDOWN_SEC = 20.0
-    REDDIT_CATEGORY_COOLDOWN_SEC = 8.0
+    REDDIT_DELAY_MIN_SEC = 5.0
+    REDDIT_DELAY_MAX_SEC = 10.0
+    REDDIT_BATCH_SIZE = 8
+    REDDIT_BATCH_COOLDOWN_SEC = 30.0
+    REDDIT_CATEGORY_COOLDOWN_SEC = 15.0
     DOWNLOAD_WORKERS = 8
     IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
     REDDIT_SOURCES = [
@@ -225,7 +224,7 @@ def create_persistent_context(
 ) -> BrowserContext:
     """
     Launch a persistent Chromium context storing session cookies in user_data_dir.
-    Automatically tries installed Google Chrome on macOS to avoid Apple Silicon ImageIO crashes.
+    Automatically prioritizes installed Google Chrome to avoid Apple Silicon ImageIO crashes.
 
     Args:
         playwright: Active Playwright instance.
@@ -512,7 +511,8 @@ def fetch_json(
 ) -> Optional[Dict[str, Any]]:
     """
     Navigate to a Reddit .json URL using an authenticated Playwright page and parse JSON.
-    Implements intelligent exponential backoff on HTTP 429/403 or challenge pages.
+    Emulates human interaction (natural reading pauses, gentle scrolling) and handles
+    exponential backoff on HTTP 429/403 or challenge pages.
 
     Args:
         url: The .json URL to fetch.
@@ -528,8 +528,12 @@ def fetch_json(
             response = page.goto(url, wait_until="domcontentloaded", timeout=35000)
             status = response.status if response else 0
 
-            # Small human DOM settling delay
-            time.sleep(random.uniform(0.3, 0.7))
+            # Human reading pause & gentle activity simulation
+            time.sleep(random.uniform(0.8, 1.6))
+            try:
+                page.mouse.wheel(0, random.randint(100, 350))
+            except Exception:
+                pass
 
             if status in (401, 403, 429, 503):
                 # Exponential cooldown: 30s -> 60s -> 120s -> 240s
@@ -754,10 +758,38 @@ def extract_image_urls(json_data: Dict[str, Any]) -> List[str]:
     return urls
 
 
+# ─── Streaming Image Downloader ───────────────────────────────────────────────
+
+def _download_single_image(url: str, dest_dir: Path, seen_hashes: Set[str]) -> Optional[str]:
+    """Download a single image URL and verify hash deduplication."""
+    import requests
+    headers = {"User-Agent": USER_AGENT}
+    try:
+        resp = requests.get(url, headers=headers, timeout=25, stream=True)
+        if resp.status_code != 200:
+            return None
+        raw_bytes = resp.content
+        if len(raw_bytes) < 10_000:  # Skip tiny/corrupted images
+            return None
+
+        sha = hashlib.sha256(raw_bytes).hexdigest()
+        short_hash = sha[:16]
+        if short_hash in seen_hashes:
+            return None
+        seen_hashes.add(short_hash)
+
+        ext = ".jpg"
+        out_file = dest_dir / f"{short_hash}{ext}"
+        out_file.write_bytes(raw_bytes)
+        return out_file.name
+    except Exception:
+        return None
+
+
 # ─── Category Scraping Engine with Rate-Limiting Controls ─────────────────────
 
 class RateLimitTracker:
-    """Tracks page requests and enforces periodic cooling-off pauses."""
+    """Tracks page requests and enforces human browsing pauses."""
 
     def __init__(
         self,
@@ -776,9 +808,9 @@ class RateLimitTracker:
         """Call after each request. Executes randomized delay and batch cooldowns."""
         self.request_count += 1
         if self.batch_size > 0 and self.request_count % self.batch_size == 0:
-            pause = self.batch_cooldown + random.uniform(1.0, 4.0)
+            pause = self.batch_cooldown + random.uniform(2.0, 6.0)
             logger.info(
-                "⏸ [Anti-Rate-Limit] Batch pause: cooling down for %.1fs after %d requests...",
+                "⏸ [Human Cooldown] Batch pause: cooling down for %.1fs after %d requests...",
                 pause,
                 self.request_count,
             )
@@ -790,7 +822,7 @@ class RateLimitTracker:
 
     def pause_after_category(self, cat_name: str) -> None:
         """Call after finishing a category before moving to the next."""
-        pause = self.category_cooldown + random.uniform(0.5, 2.0)
+        pause = self.category_cooldown + random.uniform(1.0, 4.0)
         logger.info("⏸ [Cooldown] Pausing %.1fs before next category (finished '%s')...", pause, cat_name)
         time.sleep(pause)
 
@@ -801,9 +833,12 @@ def scrape_category_target(
     tracker: RateLimitTracker,
     limit: int = 100,
     global_seen_urls: Optional[Set[str]] = None,
-) -> List[str]:
+    download_dir: Optional[Path] = None,
+    download_pool: Optional[ThreadPoolExecutor] = None,
+    seen_hashes: Optional[Set[str]] = None,
+) -> Tuple[List[str], int]:
     """
-    Scrape image URLs for a single category/query specification.
+    Scrape image URLs for a single category/query specification with real-time streaming downloads.
 
     Args:
         category_spec: Dict containing category metadata:
@@ -817,9 +852,12 @@ def scrape_category_target(
         tracker: RateLimitTracker instance.
         limit: Max images to collect for this category.
         global_seen_urls: Set of all previously seen URLs to prevent duplicate scraping.
+        download_dir: Optional root directory to streamingly save downloaded images.
+        download_pool: Optional ThreadPoolExecutor for background downloads.
+        seen_hashes: Optional Set of already downloaded image hashes.
 
     Returns:
-        List[str]: Collected deduplicated image URLs for this category.
+        Tuple[List[str], int]: (Collected URLs list, Count of newly saved images on disk)
     """
     cat_name = category_spec.get("category", "unnamed_category")
     subreddit = category_spec.get("subreddit", "")
@@ -836,6 +874,12 @@ def scrape_category_target(
 
     category_urls: List[str] = []
     seen_in_cat: Set[str] = set()
+    download_futures: List[Future] = []
+    cat_dest_dir: Optional[Path] = None
+
+    if download_dir:
+        cat_dest_dir = download_dir / cat_name
+        cat_dest_dir.mkdir(parents=True, exist_ok=True)
 
     page = context.new_page()
 
@@ -864,18 +908,27 @@ def scrape_category_target(
 
             batch_urls = extract_image_urls(json_data)
             new_in_batch = 0
+            newly_added_urls: List[str] = []
+
             for u in batch_urls:
                 if u not in seen_in_cat and (global_seen_urls is None or u not in global_seen_urls):
                     seen_in_cat.add(u)
                     if global_seen_urls is not None:
                         global_seen_urls.add(u)
                     category_urls.append(u)
+                    newly_added_urls.append(u)
                     new_in_batch += 1
                     if len(category_urls) >= limit:
                         break
 
+            # Streaming download: Dispatch image downloads in background threads right now!
+            if cat_dest_dir and download_pool and seen_hashes is not None and newly_added_urls:
+                for u in newly_added_urls:
+                    fut = download_pool.submit(_download_single_image, u, cat_dest_dir, seen_hashes)
+                    download_futures.append(fut)
+
             logger.info(
-                "  [%s] Page %d: Found %d images (+%d new, %d/%d total for category)",
+                "  [%s] Page %d: Found %d images (+%d new | %d/%d total for category)",
                 cat_name,
                 page_num,
                 len(batch_urls),
@@ -898,8 +951,24 @@ def scrape_category_target(
     finally:
         page.close()
 
-    logger.info("✔ [%s] Finished category: %d images collected", cat_name, len(category_urls))
-    return category_urls
+    # Wait for all streaming downloads for this category to complete
+    saved_on_disk = 0
+    if download_futures:
+        for fut in as_completed(download_futures):
+            res = fut.result()
+            if res:
+                saved_on_disk += 1
+        logger.info(
+            "✔ [%s] Category complete: %d URLs scraped -> %d images saved to %s",
+            cat_name,
+            len(category_urls),
+            saved_on_disk,
+            cat_dest_dir,
+        )
+    else:
+        logger.info("✔ [%s] Finished category: %d image URLs collected", cat_name, len(category_urls))
+
+    return category_urls, saved_on_disk
 
 
 def normalize_categories(
@@ -950,11 +1019,13 @@ def scrape_categories(
     batch_cooldown: float = REDDIT_BATCH_COOLDOWN_SEC,
     category_cooldown: float = REDDIT_CATEGORY_COOLDOWN_SEC,
     output_json_path: Optional[Union[Path, str]] = None,
+    download_dir: Optional[Union[Path, str]] = None,
     target_total: Optional[int] = None,
+    max_download_workers: int = DOWNLOAD_WORKERS,
 ) -> Dict[str, List[str]]:
     """
-    Scrape image URLs across multiple categories or subreddits with rate-limiting controls
-    and incremental progress persistence.
+    Scrape image URLs across multiple categories with rate-limiting controls,
+    incremental progress persistence, and concurrent streaming downloads.
 
     Args:
         categories: Specifications of categories / queries.
@@ -965,7 +1036,9 @@ def scrape_categories(
         batch_cooldown: Duration of batch cooldown in seconds.
         category_cooldown: Duration of pause between categories in seconds.
         output_json_path: Optional path to save intermediate progress after each category.
+        download_dir: Optional root directory to streamingly save downloaded images.
         target_total: Optional global image limit across all categories.
+        max_download_workers: Threads for streaming image downloads.
 
     Returns:
         Dict[str, List[str]]: Mapping of category name -> list of image URLs.
@@ -997,50 +1070,78 @@ def scrape_categories(
             except Exception as e:
                 logger.warning("Could not load existing output JSON: %s", e)
 
+    # Pre-populate seen hashes with existing file stems on disk
+    seen_hashes: Set[str] = set()
+    dl_path: Optional[Path] = None
+    if download_dir:
+        dl_path = Path(download_dir).resolve()
+        dl_path.mkdir(parents=True, exist_ok=True)
+        for f in dl_path.rglob("*"):
+            if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS:
+                seen_hashes.add(f.stem)
+        if seen_hashes:
+            logger.info("Found %d pre-existing image files on disk; skipping duplicates.", len(seen_hashes))
+
     total_collected = sum(len(urls) for urls in results.values())
-    logger.info("Total categories to process: %d (Current total images: %d)", len(specs), total_collected)
+    total_downloaded_session = 0
+    logger.info("Total categories to process: %d (Current total URLs: %d)", len(specs), total_collected)
 
-    for i, spec in enumerate(specs, start=1):
-        if target_total and total_collected >= target_total:
-            logger.info("🎯 Reached global target limit of %d total images! Stopping scrape.", target_total)
-            break
+    download_pool = ThreadPoolExecutor(max_workers=max_download_workers) if dl_path else None
 
-        cat_name = spec.get("category", f"category_{i}")
-        logger.info("\n─── [%d/%d] Category: %s ───", i, len(specs), cat_name)
+    try:
+        for i, spec in enumerate(specs, start=1):
+            if target_total and total_collected >= target_total:
+                logger.info("🎯 Reached global target limit of %d total images! Stopping scrape.", target_total)
+                break
 
-        existing_urls = results.get(cat_name, [])
-        if len(existing_urls) >= limit:
-            logger.info("Category '%s' already has %d/%d images. Skipping.", cat_name, len(existing_urls), limit)
-            continue
+            cat_name = spec.get("category", f"category_{i}")
+            logger.info("\n─── [%d/%d] Category: %s ───", i, len(specs), cat_name)
 
-        needed = limit - len(existing_urls)
-        new_urls = scrape_category_target(
-            category_spec=spec,
-            context=context,
-            tracker=tracker,
-            limit=needed,
-            global_seen_urls=global_seen_urls,
-        )
+            existing_urls = results.get(cat_name, [])
+            if len(existing_urls) >= limit:
+                logger.info("Category '%s' already has %d/%d images. Skipping.", cat_name, len(existing_urls), limit)
+                continue
 
-        # Merge results
-        combined = list(existing_urls)
-        for u in new_urls:
-            if u not in combined:
-                combined.append(u)
-        results[cat_name] = combined
-        total_collected = sum(len(urls) for urls in results.values())
+            needed = limit - len(existing_urls)
+            new_urls, newly_downloaded = scrape_category_target(
+                category_spec=spec,
+                context=context,
+                tracker=tracker,
+                limit=needed,
+                global_seen_urls=global_seen_urls,
+                download_dir=dl_path,
+                download_pool=download_pool,
+                seen_hashes=seen_hashes,
+            )
 
-        # Save progress incrementally
-        if output_json_path:
-            save_results_to_json(results, output_json_path)
+            total_downloaded_session += newly_downloaded
 
-        if i < len(specs) and (not target_total or total_collected < target_total):
-            tracker.pause_after_category(cat_name)
+            # Merge results
+            combined = list(existing_urls)
+            for u in new_urls:
+                if u not in combined:
+                    combined.append(u)
+            results[cat_name] = combined
+            total_collected = sum(len(urls) for urls in results.values())
+
+            # Save progress incrementally to JSON
+            if output_json_path:
+                save_results_to_json(results, output_json_path)
+
+            if i < len(specs) and (not target_total or total_collected < target_total):
+                tracker.pause_after_category(cat_name)
+
+    finally:
+        if download_pool:
+            download_pool.shutdown(wait=True)
+
+    if dl_path:
+        logger.info("Session complete: %d new image files downloaded to disk at %s", total_downloaded_session, dl_path)
 
     return results
 
 
-# ─── Results Output & Image Downloader ────────────────────────────────────────
+# ─── Results Output & Summary ─────────────────────────────────────────────────
 
 def save_results_to_json(results: Dict[str, List[str]], filepath: Union[Path, str]) -> None:
     """Save category image URL map to a JSON file."""
@@ -1051,121 +1152,34 @@ def save_results_to_json(results: Dict[str, List[str]], filepath: Union[Path, st
     logger.debug("Saved %d categories of URLs to %s", len(results), path)
 
 
-def print_scrape_summary(results: Dict[str, List[str]]) -> None:
+def print_scrape_summary(results: Dict[str, List[str]], download_dir: Optional[Union[Path, str]] = None) -> None:
     """Print a clean summary of scraped image counts per category."""
     total_images = sum(len(urls) for urls in results.values())
-    print("\n" + "═" * 70)
-    print("  LookMax — Reddit Scraping Summary")
-    print("═" * 70)
+    total_disk_files = 0
+    if download_dir:
+        dp = Path(download_dir).resolve()
+        if dp.exists():
+            total_disk_files = sum(1 for f in dp.rglob("*") if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS)
+
+    print("\n" + "═" * 72)
+    print("  LookMax — Reddit Scraping & Download Summary")
+    print("═" * 72)
     for cat, urls in results.items():
         if urls:
-            print(f"  📁 {cat:<36} : {len(urls):>5} images")
-    print("─" * 70)
+            print(f"  📁 {cat:<38} : {len(urls):>5} URLs")
+    print("─" * 72)
     print(f"  🌟 Total Categories Extracted     : {len(results):>5}")
-    print(f"  🌟 Total Unique Images Extracted  : {total_images:>5}")
-    print("═" * 70 + "\n")
-
-
-def _download_single_image(url: str, dest_dir: Path, seen_hashes: Set[str]) -> Optional[str]:
-    """Download a single image URL and verify hash deduplication."""
-    import requests
-    headers = {"User-Agent": USER_AGENT}
-    try:
-        resp = requests.get(url, headers=headers, timeout=25, stream=True)
-        if resp.status_code != 200:
-            return None
-        raw_bytes = resp.content
-        if len(raw_bytes) < 10_000:  # Skip tiny/corrupted images
-            return None
-
-        sha = hashlib.sha256(raw_bytes).hexdigest()
-        if sha in seen_hashes:
-            return None
-        seen_hashes.add(sha)
-
-        ext = ".jpg"
-        out_file = dest_dir / f"{sha[:16]}{ext}"
-        out_file.write_bytes(raw_bytes)
-        return out_file.name
-    except Exception:
-        return None
-
-
-def download_images(
-    image_map: Dict[str, List[str]],
-    output_dir: Union[Path, str] = RAW_SCRAPES_DIR,
-    max_workers: int = DOWNLOAD_WORKERS,
-) -> Dict[str, int]:
-    """
-    Download image URLs to disk organized by category subfolders.
-
-    Args:
-        image_map: Dict mapping category name -> list of image URLs.
-        output_dir: Root directory to download raw image categories into.
-        max_workers: Concurrency thread limit.
-
-    Returns:
-        Dict[str, int]: Count of successfully downloaded images per category.
-    """
-    try:
-        from tqdm import tqdm
-        has_tqdm = True
-    except ImportError:
-        has_tqdm = False
-
-    base_dir = Path(output_dir).resolve()
-    base_dir.mkdir(parents=True, exist_ok=True)
-
-    downloaded_counts: Dict[str, int] = {}
-    seen_hashes: Set[str] = set()
-
-    # Pre-populate seen hashes with existing file stems on disk
-    for f in base_dir.rglob("*"):
-        if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS:
-            seen_hashes.add(f.stem)
-
-    if seen_hashes:
-        logger.info("Found %d pre-existing image files on disk; skipping duplicates.", len(seen_hashes))
-
-    print(f"\nDownloading images to {base_dir} (workers={max_workers})...")
-
-    for cat_name, urls in image_map.items():
-        if not urls:
-            downloaded_counts[cat_name] = 0
-            continue
-
-        cat_dir = base_dir / cat_name
-        cat_dir.mkdir(parents=True, exist_ok=True)
-
-        saved = 0
-        pbar = tqdm(total=len(urls), unit="img", desc=f"  {cat_name[:24]}") if has_tqdm else None
-
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {
-                executor.submit(_download_single_image, u, cat_dir, seen_hashes): u
-                for u in urls
-            }
-            for fut in as_completed(futures):
-                res = fut.result()
-                if res:
-                    saved += 1
-                if pbar:
-                    pbar.update(1)
-
-        if pbar:
-            pbar.close()
-
-        downloaded_counts[cat_name] = saved
-        logger.info("Category '%s': %d/%d images saved to %s", cat_name, saved, len(urls), cat_dir)
-
-    return downloaded_counts
+    print(f"  🌟 Total Unique Image URLs        : {total_images:>5}")
+    if download_dir:
+        print(f"  💾 Total Image Files on Disk      : {total_disk_files:>5} ({download_dir})")
+    print("═" * 72 + "\n")
 
 
 # ─── Main CLI Entrypoint ──────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="LookMax — Playwright Reddit JSON Image Scraper with Anti-Rate-Limit Controls",
+        description="LookMax — Playwright Reddit Scraper with Human-Like Browsing & Streaming Downloads",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
@@ -1238,7 +1252,7 @@ def main() -> None:
     parser.add_argument(
         "--download",
         action="store_true",
-        help="Download the scraped images directly to the raw scrapes directory.",
+        help="Streamingly download images to disk concurrently during scraping delays.",
     )
     parser.add_argument(
         "--download-dir",
@@ -1360,9 +1374,9 @@ def main() -> None:
 
     _ensure_playwright()
 
-    print(f"\n{'═' * 68}")
-    print("  LookMax — Reddit Playwright JSON Scraper (Rate-Limit Protected)")
-    print(f"{'═' * 68}")
+    print(f"\n{'═' * 72}")
+    print("  LookMax — Reddit Scraper (Human-Like Browsing & Streaming Downloads)")
+    print(f"{'═' * 72}")
     if args.chrome_profile:
         print(f"  Chrome Prof  : {args.chrome_profile}")
     else:
@@ -1371,14 +1385,14 @@ def main() -> None:
     print(f"  Limit/cat    : {args.limit}")
     if args.target_total:
         print(f"  Target Total : {args.target_total} images")
-    print(f"  Delays       : {args.delay_min}s - {args.delay_max}s randomized per request")
-    print(f"  Batch Pause  : {args.batch_cooldown}s every {args.batch_size} requests")
-    print(f"  Cat Pause    : {args.category_cooldown}s between categories")
+    print(f"  Pacing       : {args.delay_min}s - {args.delay_max}s randomized human browsing delay")
+    print(f"  Batch Pause  : {args.batch_cooldown}s cooldown every {args.batch_size} requests")
+    print(f"  Cat Pause    : {args.category_cooldown}s cooldown between categories")
     print(f"  Output JSON  : {args.output}")
-    print(f"  Download     : {args.download}")
+    print(f"  Stream Down  : {args.download} (concurrently during rate-limit pauses)")
     if args.download:
         print(f"  Download Dir : {args.download_dir}")
-    print(f"{'═' * 68}\n")
+    print(f"{'═' * 72}\n")
 
     with sync_playwright() as p:
         context = create_persistent_context(
@@ -1398,7 +1412,7 @@ def main() -> None:
                     "Run with --login if you experience rate limits."
                 )
 
-            # Perform Scraping
+            # Perform Scraping & Streaming Downloads
             results = scrape_categories(
                 categories=categories_input,
                 context=context,
@@ -1408,20 +1422,14 @@ def main() -> None:
                 batch_cooldown=args.batch_cooldown,
                 category_cooldown=args.category_cooldown,
                 output_json_path=args.output,
+                download_dir=args.download_dir if args.download else None,
                 target_total=args.target_total,
+                max_download_workers=DOWNLOAD_WORKERS,
             )
 
             # Save Final Results to JSON & Print Summary
             save_results_to_json(results, args.output)
-            print_scrape_summary(results)
-
-            # Optional Image Download
-            if args.download:
-                download_images(
-                    image_map=results,
-                    output_dir=args.download_dir,
-                    max_workers=DOWNLOAD_WORKERS,
-                )
+            print_scrape_summary(results, download_dir=args.download_dir if args.download else None)
 
         finally:
             context.close()

@@ -1,0 +1,466 @@
+[
+  {
+    "category": "face_men_u35_hair_messy",
+    "subreddit": "malehairadvice",
+    "query": "messy hair fix",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Unstyled/messy hair (Needs Improvement)"
+  },
+  {
+    "category": "face_men_u35_hair_thinning",
+    "subreddit": "malehairadvice",
+    "query": "thinning hair advice",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Thinning hair/receding hairline (Needs Improvement)"
+  },
+  {
+    "category": "face_men_u35_beard_unkempt",
+    "subreddit": "malegrooming",
+    "query": "unkempt beard help",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Unkempt patchy beard (Needs Improvement)"
+  },
+  {
+    "category": "face_men_u35_skin_acne",
+    "subreddit": "SkincareAddiction",
+    "query": "acne help male",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Acne prone skin (Needs Improvement)"
+  },
+  {
+    "category": "face_men_u35_ugly_advice",
+    "subreddit": "amiugly",
+    "query": "M18 am i ugly",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Candid face advice (Needs Improvement/Average)"
+  },
+  {
+    "category": "face_men_u35_hair_average",
+    "subreddit": "malehairadvice",
+    "query": "everyday haircut",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Basic everyday haircut (Average)"
+  },
+  {
+    "category": "face_men_u35_beard_trim",
+    "subreddit": "malegrooming",
+    "query": "beard trim advice",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Standard beard trim (Average)"
+  },
+  {
+    "category": "face_men_u35_skin_basic",
+    "subreddit": "SkincareAddiction",
+    "query": "basic routine male",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Normal skin (Average)"
+  },
+  {
+    "category": "face_men_u35_hair_fade",
+    "subreddit": "malehairadvice",
+    "query": "fresh fade",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Sharp styled haircut (Polished)"
+  },
+  {
+    "category": "face_men_u35_beard_perfect",
+    "subreddit": "malegrooming",
+    "query": "perfect beard shape",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Well groomed beard (Polished)"
+  },
+  {
+    "category": "face_men_u35_glowup",
+    "subreddit": "GlowUps",
+    "query": "M20 to M25 glow up",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Under 35 - Facial glow up (Polished)"
+  },
+  {
+    "category": "face_men_35_50_hair_balding",
+    "subreddit": "malehairadvice",
+    "query": "balding 40s advice",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Balding hair (Needs Improvement)"
+  },
+  {
+    "category": "face_men_35_50_beard_patchy",
+    "subreddit": "malegrooming",
+    "query": "patchy beard 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Poor beard growth (Needs Improvement)"
+  },
+  {
+    "category": "face_men_35_50_skin_tired",
+    "subreddit": "SkincareAddiction",
+    "query": "tired eyes dark circles men",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Tired looking skin/eyes (Needs Improvement)"
+  },
+  {
+    "category": "face_men_35_50_hair_normal",
+    "subreddit": "malehairadvice",
+    "query": "haircut 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Standard haircut (Average)"
+  },
+  {
+    "category": "face_men_35_50_beard_average",
+    "subreddit": "beards",
+    "query": "short beard 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Average beard (Average)"
+  },
+  {
+    "category": "face_men_35_50_skin_aging",
+    "subreddit": "30PlusSkinCare",
+    "query": "anti aging men",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Normal aging skin (Average)"
+  },
+  {
+    "category": "face_men_35_50_hair_styled",
+    "subreddit": "malehairadvice",
+    "query": "stylish haircut 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Styled sophisticated hair (Polished)"
+  },
+  {
+    "category": "face_men_35_50_beard_majestic",
+    "subreddit": "beards",
+    "query": "epic beard trim",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Epic perfectly shaped beard (Polished)"
+  },
+  {
+    "category": "face_men_35_50_glowup",
+    "subreddit": "GlowUps",
+    "query": "M40 glow up",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 - Middle aged glow up (Polished)"
+  },
+  {
+    "category": "face_men_o50_hair_messy",
+    "subreddit": "malehairadvice",
+    "query": "messy hair older man",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Unkempt hair (Needs Improvement)"
+  },
+  {
+    "category": "face_men_o50_beard_wild",
+    "subreddit": "beards",
+    "query": "wild grey beard",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Wild unshaped beard (Needs Improvement)"
+  },
+  {
+    "category": "face_men_o50_skin_neglected",
+    "subreddit": "30PlusSkinCare",
+    "query": "sun damage men 60s",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Sun damaged skin (Needs Improvement)"
+  },
+  {
+    "category": "face_men_o50_hair_short",
+    "subreddit": "malehairadvice",
+    "query": "short haircut older guy",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Simple short hair (Average)"
+  },
+  {
+    "category": "face_men_o50_beard_trim",
+    "subreddit": "malegrooming",
+    "query": "trimmed grey beard",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Trimmed beard (Average)"
+  },
+  {
+    "category": "face_men_o50_skin_normal",
+    "subreddit": "30PlusSkinCare",
+    "query": "skincare men 50+",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Normal skin (Average)"
+  },
+  {
+    "category": "face_men_o50_hair_distinguished",
+    "subreddit": "malehairadvice",
+    "query": "distinguished grey hair",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Stylish grey hair (Polished)"
+  },
+  {
+    "category": "face_men_o50_beard_sharp",
+    "subreddit": "beards",
+    "query": "sharp grey beard",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Perfectly shaped grey beard (Polished)"
+  },
+  {
+    "category": "face_men_o50_glowup",
+    "subreddit": "GlowUps",
+    "query": "M50 glow up",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 - Senior glow up (Polished)"
+  },
+  {
+    "category": "face_women_u35_hair_frizzy",
+    "subreddit": "femalehairadvice",
+    "query": "frizzy messy hair help",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Messy/frizzy hair (Needs Improvement)"
+  },
+  {
+    "category": "face_women_u35_brows_messy",
+    "subreddit": "Eyebrows",
+    "query": "messy eyebrows fix",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Unshaped eyebrows (Needs Improvement)"
+  },
+  {
+    "category": "face_women_u35_skin_acne",
+    "subreddit": "SkincareAddiction",
+    "query": "cystic acne help female",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Acne prone skin (Needs Improvement)"
+  },
+  {
+    "category": "face_women_u35_ugly_advice",
+    "subreddit": "amiugly",
+    "query": "F19 am i ugly",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Candid face advice (Needs Improvement/Average)"
+  },
+  {
+    "category": "face_women_u35_hair_everyday",
+    "subreddit": "femalehairadvice",
+    "query": "everyday hairstyle",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Normal everyday hair (Average)"
+  },
+  {
+    "category": "face_women_u35_makeup_basic",
+    "subreddit": "MakeupAddiction",
+    "query": "no makeup makeup look",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Basic makeup (Average)"
+  },
+  {
+    "category": "face_women_u35_skin_clear",
+    "subreddit": "SkincareAddiction",
+    "query": "basic routine clear skin",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Clear healthy skin (Average)"
+  },
+  {
+    "category": "face_women_u35_hair_salon",
+    "subreddit": "femalehairadvice",
+    "query": "fresh salon blowout",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Perfect salon hair (Polished)"
+  },
+  {
+    "category": "face_women_u35_brows_perfect",
+    "subreddit": "Eyebrows",
+    "query": "perfectly shaped brows",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Sculpted eyebrows (Polished)"
+  },
+  {
+    "category": "face_women_u35_makeup_glam",
+    "subreddit": "MakeupAddiction",
+    "query": "glam makeup look",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Glamorous makeup (Polished)"
+  },
+  {
+    "category": "face_women_u35_glowup",
+    "subreddit": "GlowUps",
+    "query": "F20 to F25 glow up",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Under 35 - Facial glow up (Polished)"
+  },
+  {
+    "category": "face_women_35_50_hair_damaged",
+    "subreddit": "femalehairadvice",
+    "query": "damaged hair 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Damaged hair (Needs Improvement)"
+  },
+  {
+    "category": "face_women_35_50_skin_tired",
+    "subreddit": "30PlusSkinCare",
+    "query": "tired looking skin 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Tired skin (Needs Improvement)"
+  },
+  {
+    "category": "face_women_35_50_makeup_dated",
+    "subreddit": "MakeupAddiction",
+    "query": "outdated makeup advice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Dated makeup style (Needs Improvement)"
+  },
+  {
+    "category": "face_women_35_50_hair_normal",
+    "subreddit": "femalehairadvice",
+    "query": "low maintenance haircut 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Low maintenance hair (Average)"
+  },
+  {
+    "category": "face_women_35_50_skin_routine",
+    "subreddit": "30PlusSkinCare",
+    "query": "skincare routine 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Normal skin (Average)"
+  },
+  {
+    "category": "face_women_35_50_makeup_work",
+    "subreddit": "MakeupAddiction",
+    "query": "work makeup look 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Professional makeup (Average)"
+  },
+  {
+    "category": "face_women_35_50_hair_chic",
+    "subreddit": "femalehairadvice",
+    "query": "chic haircut 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Stylish chic hair (Polished)"
+  },
+  {
+    "category": "face_women_35_50_skin_glowing",
+    "subreddit": "30PlusSkinCare",
+    "query": "glowing skin success 40s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Glowing skin (Polished)"
+  },
+  {
+    "category": "face_women_35_50_glowup",
+    "subreddit": "GlowUps",
+    "query": "F40 glow up",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 - Glow up success (Polished)"
+  },
+  {
+    "category": "face_women_o50_hair_thinning",
+    "subreddit": "femalehairadvice",
+    "query": "thinning hair 60s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Thinning hair (Needs Improvement)"
+  },
+  {
+    "category": "face_women_o50_skin_dry",
+    "subreddit": "30PlusSkinCare",
+    "query": "dry mature skin help",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Dry mature skin (Needs Improvement)"
+  },
+  {
+    "category": "face_women_o50_brows_sparse",
+    "subreddit": "Eyebrows",
+    "query": "sparse eyebrows older",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Sparse eyebrows (Needs Improvement)"
+  },
+  {
+    "category": "face_women_o50_hair_grey",
+    "subreddit": "femalehairadvice",
+    "query": "natural grey hair transition",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Normal grey hair (Average)"
+  },
+  {
+    "category": "face_women_o50_skin_normal",
+    "subreddit": "30PlusSkinCare",
+    "query": "routine for 60s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Standard mature skincare (Average)"
+  },
+  {
+    "category": "face_women_o50_makeup_light",
+    "subreddit": "MakeupAddiction",
+    "query": "light makeup mature skin",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Light makeup (Average)"
+  },
+  {
+    "category": "face_women_o50_hair_elegant",
+    "subreddit": "femalehairadvice",
+    "query": "elegant mature haircut",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Beautifully styled mature hair (Polished)"
+  },
+  {
+    "category": "face_women_o50_skin_radiant",
+    "subreddit": "30PlusSkinCare",
+    "query": "radiant skin 60s",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Radiant healthy mature skin (Polished)"
+  },
+  {
+    "category": "face_women_o50_glowup",
+    "subreddit": "GlowUps",
+    "query": "F50 glow up",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 - Beautiful senior glow up (Polished)"
+  }
+]

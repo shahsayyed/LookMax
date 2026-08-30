@@ -9,6 +9,17 @@ without touching any of the execution scripts.
 import os
 from pathlib import Path
 
+try:
+    from dotenv import load_dotenv
+    # Load .env from repository root if it exists
+    env_path = Path(__file__).resolve().parent.parent.parent / ".env"
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+    else:
+        load_dotenv()
+except ImportError:
+    pass
+
 # ─── Repository Root ─────────────────────────────────────────────────────────
 # Resolve dynamically from this file's location so the pipeline is portable
 REPO_ROOT  = Path(__file__).resolve().parent.parent.parent   # LookMax/
@@ -44,11 +55,11 @@ REDDIT_TOP_PERIODS = ["all", "year"]    # For "top" listing only
 REDDIT_PROFILE_DIR = PIPELINE / "reddit_profile"
 REDDIT_QUERIES_FILE = PIPELINE / "reddit_queries.json"
 REDDIT_SCRAPE_OUTPUT_JSON = METADATA_LOGS_DIR / "reddit_images.json"
-REDDIT_DELAY_MIN_SEC = 3.5          # Safe randomized minimum delay per request (seconds)
-REDDIT_DELAY_MAX_SEC = 7.0          # Safe randomized maximum delay per request (seconds)
-REDDIT_BATCH_SIZE = 10              # Number of page requests before triggering a cooling-off pause
-REDDIT_BATCH_COOLDOWN_SEC = 20.0    # Duration of cooling-off pause between request batches (seconds)
-REDDIT_CATEGORY_COOLDOWN_SEC = 8.0  # Duration of pause between switching categories (seconds)
+REDDIT_DELAY_MIN_SEC = 5.0          # Human-like randomized minimum delay per request (seconds)
+REDDIT_DELAY_MAX_SEC = 10.0         # Human-like randomized maximum delay per request (seconds)
+REDDIT_BATCH_SIZE = 8               # Requests before triggering a human cooling-off pause
+REDDIT_BATCH_COOLDOWN_SEC = 30.0    # Duration of human browsing cooldown pause (seconds)
+REDDIT_CATEGORY_COOLDOWN_SEC = 15.0 # Duration of pause between switching categories (seconds)
 
 # ─── Demographic Folder Buckets ──────────────────────────────────────────────
 DEMOGRAPHICS = [
@@ -69,7 +80,7 @@ AESTHETIC_TIERS = [
 # ─── Image Quality Heuristics (Phase 3 — Step A) ─────────────────────────────
 MIN_IMAGE_DIMENSION_PX  = 480        # Shortest edge in pixels
 MAX_ASPECT_RATIO        = 2.5        # Width/height or height/width cap
-BLUR_LAPLACIAN_THRESHOLD = 100.0     # Variance below this → image is blurry
+BLUR_LAPLACIAN_THRESHOLD = 60.0      # Variance below this → image is blurry
 
 # ─── VLM Classification Settings (Phase 3 — Step B) ─────────────────────────
 
@@ -83,12 +94,12 @@ MLX_MODEL_ID = "mlx-community/Qwen2-VL-7B-Instruct-4bit"
 OLLAMA_HOST  = "http://localhost:11434"
 OLLAMA_MODEL = "llava:7b"  # Compatible with Ollama 0.32.x; alternatives: "llava:13b"
 
-# Gemini (cloud fallback — set GEMINI_API_KEY env var)
-GEMINI_MODEL = "gemini-2.0-flash"
+# Gemini Cloud API
+GEMINI_MODEL = "gemma-4-31b-it"
 
 # VLM batch concurrency
-VLM_PARALLEL_WORKERS = 4            # Concurrent VLM calls (adjust per RAM available)
-VLM_REQUEST_TIMEOUT_SEC = 45        # Per-image VLM timeout
+VLM_PARALLEL_WORKERS = 8            # Concurrent VLM worker threads
+VLM_REQUEST_TIMEOUT_SEC = 30        # Per-image VLM timeout
 
 # ─── Training Hyperparameters (Phase 4) ──────────────────────────────────────
 BACKBONE = "mobilenet_v3_large"     # "mobilenet_v3_large" | "fastvit_t8"

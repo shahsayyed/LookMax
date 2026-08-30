@@ -65,6 +65,10 @@ Thumbs.db
 
 # Local API keys (never commit)
 iOS/LookMax/Config/APIKeys.local.xcconfig
+.env
+.env.*
+*.env
+local.env
 
 # ML Pipeline & Large Image Datasets
 ML/data/1_Raw_Scrapes/**/*

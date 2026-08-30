@@ -208,6 +208,7 @@ def export_to_coreml(
     image_size: int,
     class_labels: list[str],
     output_dir: Path,
+    stream: str = "Outfit",
 ) -> Path:
     """
     Converts a trained PyTorch model to .mlpackage using coremltools.
@@ -244,13 +245,14 @@ def export_to_coreml(
     mlmodel.author  = "LookMax ML Pipeline"
     mlmodel.license = "Proprietary — NexurTech"
     mlmodel.short_description = (
-        f"LookMax aesthetic tier classifier for {demographic.replace('_', ' ')}. "
+        f"LookMax {stream} aesthetic tier classifier for {demographic.replace('_', ' ')}. "
         f"Input: 224×224 RGB image. Output: Probability for "
         f"[1_Needs_Improvement, 2_Average, 3_Polished]."
     )
     mlmodel.version = "1.0"
 
     # ── User-defined metadata ─────────────────────────────────────────────
+    mlmodel.user_defined_metadata["stream"] = stream
     mlmodel.user_defined_metadata["demographic"] = demographic
     mlmodel.user_defined_metadata["classes"] = ", ".join(class_labels)
     mlmodel.user_defined_metadata["input_size"] = str(image_size)
@@ -258,7 +260,7 @@ def export_to_coreml(
 
     # ── Save ─────────────────────────────────────────────────────────────
     output_dir.mkdir(parents=True, exist_ok=True)
-    pkg_path = output_dir / f"LookMax_{demographic}.mlpackage"
+    pkg_path = output_dir / f"LookMax_{stream}_{demographic}.mlpackage"
     mlmodel.save(str(pkg_path))
 
     return pkg_path
@@ -272,37 +274,41 @@ def train_demographic(
     device: "torch.device",
     args,
     dry_run: bool,
+    stream: str = "Outfit",
 ) -> dict:
     """
-    Full train → validate → export cycle for one demographic.
+    Full train → validate → export cycle for one demographic in a given stream.
     Returns a metrics dict.
     """
-    demo_dir = TRAINING_DATA_DIR / demographic
-    header(f"Training: {demographic}")
+    demo_dir = TRAINING_DATA_DIR / stream / demographic
+    if not demo_dir.exists():
+        demo_dir = TRAINING_DATA_DIR / demographic
+
+    header(f"Training: [{stream}] {demographic}")
 
     # ── Check dataset size ───────────────────────────────────────────────
     class_folders = [demo_dir / t for t in AESTHETIC_TIERS]
     class_counts = {}
     for cf in class_folders:
-        imgs = list(cf.glob("*.jpg")) + list(cf.glob("*.jpeg")) + \
-               list(cf.glob("*.png")) + list(cf.glob("*.webp"))
+        imgs = [f for f in cf.glob("*") if f.is_file() and not f.name.startswith(".")]
         class_counts[cf.name] = len(imgs)
 
     total_images = sum(class_counts.values())
+    print(f"  Stream   : {stream}")
     print(f"  Dataset  :")
     for cls, cnt in class_counts.items():
         print(f"    {cls:30s}: {cnt} images")
     print(f"    {'TOTAL':30s}: {total_images} images")
 
     if total_images < 30:
-        print(f"  {YELLOW}⚠  Skipping {demographic} — insufficient data "
+        print(f"  {YELLOW}⚠  Skipping [{stream}] {demographic} — insufficient data "
               f"(need ≥30 images, have {total_images}).{RESET}")
-        return {"demographic": demographic, "status": "skipped_insufficient_data",
+        return {"stream": stream, "demographic": demographic, "status": "skipped_insufficient_data",
                 "total_images": total_images}
 
     if dry_run:
         print(f"  {YELLOW}[DRY-RUN] Would train {args.epochs} epoch(s) on {total_images} images.{RESET}")
-        return {"demographic": demographic, "status": "dry_run", "total_images": total_images}
+        return {"stream": stream, "demographic": demographic, "status": "dry_run", "total_images": total_images}
 
     # ── Build DataLoaders ────────────────────────────────────────────────
     full_dataset = ImageFolder(
@@ -394,12 +400,14 @@ def train_demographic(
             image_size=args.image_size,
             class_labels=class_labels,
             output_dir=MODELS_DIR,
+            stream=stream,
         )
         pkg_size_mb = sum(f.stat().st_size for f in pkg_path.rglob("*") if f.is_file()) / 1_048_576
         print(f"  {GREEN}✅ Exported: {pkg_path.name} ({pkg_size_mb:.1f} MB){RESET}")
 
         # Save metrics JSON alongside model
         metrics = {
+            "stream": stream,
             "demographic": demographic,
             "status": "trained",
             "total_images": total_images,
@@ -413,7 +421,7 @@ def train_demographic(
             "image_size": args.image_size,
             "classes": class_labels,
         }
-        metrics_path = MODELS_DIR / f"LookMax_{demographic}_metrics.json"
+        metrics_path = MODELS_DIR / f"LookMax_{stream}_{demographic}_metrics.json"
         with open(metrics_path, "w") as f:
             json.dump(metrics, f, indent=2)
 
@@ -421,7 +429,7 @@ def train_demographic(
 
     except Exception as e:
         print(f"  ✗ CoreML export failed: {e}")
-        return {"demographic": demographic, "status": "export_failed", "error": str(e)}
+        return {"stream": stream, "demographic": demographic, "status": "export_failed", "error": str(e)}
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -429,8 +437,11 @@ def train_demographic(
 # ──────────────────────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(
-        description="LookMax Phase 4 — CoreML Model Training & Export"
+        description="LookMax Phase 4 — CoreML Model Training & Export (Dual-Stream)"
     )
+    parser.add_argument("--stream",      type=str,   default="all",
+                        choices=["Outfit", "Face_Grooming", "all"],
+                        help="Which stream to train (Outfit, Face_Grooming, or all)")
     parser.add_argument("--epochs",     type=int,   default=NUM_EPOCHS)
     parser.add_argument("--batch-size", type=int,   default=BATCH_SIZE)
     parser.add_argument("--lr",         type=float, default=LEARNING_RATE, dest="learning_rate")
@@ -451,8 +462,9 @@ def main():
         sys.exit(1)
 
     print(f"\n{'═'*58}")
-    print(f"  LookMax ML Pipeline — Phase 4: CoreML Training")
+    print(f"  LookMax ML Pipeline — Phase 4: CoreML Training (Dual-Stream)")
     print(f"{'═'*58}")
+    print(f"  Stream     : {args.stream}")
     print(f"  Backbone   : {args.backbone}")
     print(f"  Epochs     : {args.epochs}")
     print(f"  Batch size : {args.batch_size}")
@@ -462,16 +474,20 @@ def main():
 
     device = get_device()
 
+    active_streams = ["Outfit", "Face_Grooming"] if args.stream == "all" else [args.stream]
     targets = [args.demographic] if args.demographic else DEMOGRAPHICS
 
     all_metrics = []
-    for demographic in targets:
-        demo_dir = TRAINING_DATA_DIR / demographic
-        if not demo_dir.exists():
-            print(f"\n  {YELLOW}⚠ Skipping {demographic} — folder not found.{RESET}")
-            continue
-        result = train_demographic(demographic, device, args, dry_run=args.dry_run)
-        all_metrics.append(result)
+    for stream in active_streams:
+        for demographic in targets:
+            demo_dir = TRAINING_DATA_DIR / stream / demographic
+            if not demo_dir.exists():
+                demo_dir = TRAINING_DATA_DIR / demographic
+            if not demo_dir.exists():
+                print(f"\n  {YELLOW}⚠ Skipping [{stream}] {demographic} — folder not found.{RESET}")
+                continue
+            result = train_demographic(demographic, device, args, dry_run=args.dry_run, stream=stream)
+            all_metrics.append(result)
 
     # ── Final Summary ─────────────────────────────────────────────────────
     print(f"\n{'═'*58}")
@@ -481,7 +497,8 @@ def main():
         status = m.get("status", "unknown")
         val_acc = m.get("best_val_accuracy", None)
         acc_str = f"val_acc={val_acc:.1%}" if val_acc else ""
-        print(f"  {m['demographic']:25s} → {status:25s} {acc_str}")
+        stream_name = m.get("stream", "Outfit")
+        print(f"  [{stream_name:13s}] {m['demographic']:20s} → {status:25s} {acc_str}")
 
     print(f"\n  .mlpackage files → {MODELS_DIR}")
     print(f"  Drag & drop into your Xcode project to begin iOS integration.")
