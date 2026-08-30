@@ -64,30 +64,30 @@ HEADERS = {"User-Agent": USER_AGENT}
 
 # ─── Search queries per demographic category ─────────────────────────────────
 FASHION_QUERIES = [
-    # General fashion
-    "men fashion outfit street style",
-    "women fashion outfit street style",
-    "men business formal suit",
-    "women business professional attire",
-    "men casual outfit style",
-    "women casual outfit style",
-    "men smart casual outfit",
-    "women smart casual outfit",
-    # Posture & body
-    "man standing posture full body",
-    "woman standing posture full body",
-    "man confident posture portrait",
-    "woman confident posture portrait",
-    # Age brackets
-    "mature man fashion over 50",
-    "mature woman fashion over 50",
-    "young man street fashion",
-    "young woman street fashion",
-    # Date & formal
-    "man date night outfit",
-    "woman evening dress outfit",
-    "man formal suit gala",
-    "woman formal gown event",
+    # --- BUSINESS & FORMAL MEETING ---
+    "man business meeting suit", "woman corporate office attire", 
+    "man formal meeting clothes", "woman professional presentation outfit",
+    "messy business suit man", "ill fitting corporate clothes", "business casual everyday",
+    
+    # --- WEDDING EVENT ---
+    "man wedding guest suit", "woman wedding guest dress", 
+    "formal wedding attire", "groomsmen suit outfit",
+    "casual clothes at wedding", "awkward wedding guest outfit", "plain dress formal event",
+    
+    # --- NIGHT OUT & PARTY (Impress) ---
+    "man night out club outfit", "woman party dress night out",
+    "man date night style", "woman evening date outfit",
+    "stylish party outfit impress", "glamorous night out style",
+    "bad party outfit", "messy club clothes", "average bar outfit",
+    
+    # --- HOLIDAYS & VACATION ---
+    "man summer holiday beach outfit", "woman vacation resort wear", 
+    "man winter holiday coat", "woman tropical holiday style",
+    "tourist holiday outfit casual", "awkward vacation clothes", "plain travel outfit",
+    
+    # --- CASUAL EVERYDAY ---
+    "weekend casual outfit man", "relaxed everyday style woman",
+    "lazy weekend clothes", "comfortable home outfit", "running errands outfit"
 ]
 
 # ─── Utilities ────────────────────────────────────────────────────────────────
@@ -211,7 +211,7 @@ def scrape_pexels(api_key: str, dest_dir: Path, seen_urls: set,
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     image_urls: list[str] = []
-    per_page = min(80, limit // len(FASHION_QUERIES) + 1)
+    per_page = 80
 
     for query in FASHION_QUERIES:
         for page in range(1, 4):
@@ -273,7 +273,7 @@ def scrape_pixabay(api_key: str, dest_dir: Path, seen_urls: set,
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     image_urls: list[str] = []
-    per_page = min(200, limit // len(FASHION_QUERIES) + 1)
+    per_page = 200
 
     for query in FASHION_QUERIES:
         for page in range(1, 4):

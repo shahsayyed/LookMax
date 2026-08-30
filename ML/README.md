@@ -10,6 +10,7 @@ ML/
 │   ├── config.py       # Centralized configuration
 │   ├── 01_setup_environment.py
 │   ├── 02_scrape_images.py
+│   ├── reddit_scraper.py   # Authenticated Playwright Reddit JSON scraper
 │   ├── 03_classify_and_sort.py
 │   └── 04_train_coreml_models.py
 ├── models/             # Exported .mlpackage artifacts for iOS
@@ -25,11 +26,16 @@ ML/
 # 1. Set up folders & verify environment
 python3 ML/pipeline/01_setup_environment.py
 
-# 2. Install dependencies
+# 2. Install dependencies & Playwright browser
 pip install -r ML/pipeline/requirements.txt
-pip install gallery-dl
+playwright install chromium
 
-# 3. Scrape images (adjust --limit for dataset size)
+# 3. Scrape images
+# Option A: Playwright Reddit JSON scraper (authenticated browser session)
+python3 ML/pipeline/reddit_scraper.py --login      # One-time manual login
+python3 ML/pipeline/reddit_scraper.py --download --limit 200
+
+# Option B: Multi-source free APIs (Unsplash, Pexels, Pixabay)
 python3 ML/pipeline/02_scrape_images.py --limit 200
 
 # 4. Classify and auto-sort (choose your VLM engine)

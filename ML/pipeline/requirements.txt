@@ -4,6 +4,7 @@ requests>=2.32.0
 aiohttp>=3.9.0
 beautifulsoup4>=4.12.0
 tqdm>=4.66.0
+playwright>=1.40.0
 
 # Image Processing & Heuristics
 opencv-python-headless>=4.9.0

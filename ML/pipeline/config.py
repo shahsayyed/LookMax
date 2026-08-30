@@ -40,6 +40,16 @@ REDDIT_SOURCES = [
 REDDIT_LISTINGS = ["hot", "top"]
 REDDIT_TOP_PERIODS = ["all", "year"]    # For "top" listing only
 
+# ─── Reddit Playwright Scraper Settings ─────────────────────────────────────
+REDDIT_PROFILE_DIR = PIPELINE / "reddit_profile"
+REDDIT_QUERIES_FILE = PIPELINE / "reddit_queries.json"
+REDDIT_SCRAPE_OUTPUT_JSON = METADATA_LOGS_DIR / "reddit_images.json"
+REDDIT_DELAY_MIN_SEC = 3.5          # Safe randomized minimum delay per request (seconds)
+REDDIT_DELAY_MAX_SEC = 7.0          # Safe randomized maximum delay per request (seconds)
+REDDIT_BATCH_SIZE = 10              # Number of page requests before triggering a cooling-off pause
+REDDIT_BATCH_COOLDOWN_SEC = 20.0    # Duration of cooling-off pause between request batches (seconds)
+REDDIT_CATEGORY_COOLDOWN_SEC = 8.0  # Duration of pause between switching categories (seconds)
+
 # ─── Demographic Folder Buckets ──────────────────────────────────────────────
 DEMOGRAPHICS = [
     "Men_Under_35",
@@ -93,8 +103,8 @@ NUM_CLASSES = len(AESTHETIC_TIERS)  # 3 classes
 EARLY_STOPPING_PATIENCE = 5
 
 # ─── Scraping Rate Limiting ───────────────────────────────────────────────────
-RATE_LIMIT_MIN_SEC = 1.2
-RATE_LIMIT_MAX_SEC = 2.8
+RATE_LIMIT_MIN_SEC = 1.0
+RATE_LIMIT_MAX_SEC = 2.0
 DOWNLOAD_WORKERS   = 8              # Threads for parallel image downloads
 MAX_POSTS_PER_LISTING = 500         # Reddit posts to fetch per subreddit/listing
 

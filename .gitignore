@@ -66,3 +66,48 @@ Thumbs.db
 # Local API keys (never commit)
 iOS/LookMax/Config/APIKeys.local.xcconfig
 
+# ML Pipeline & Large Image Datasets
+ML/data/1_Raw_Scrapes/**/*
+ML/data/2_VLM_Processing/filtered_rejected/**/*
+ML/data/3_CoreML_Training_Data/**/*
+ML/data/3_Training_Data/**/*
+ML/2_VLM_Processing/
+**/metadata_logs/*.txt
+**/metadata_logs/*.json
+scraped_urls.txt
+
+# Keep directory structure
+!ML/data/**/.gitkeep
+!ML/data/**/.keep
+!**/.gitkeep
+
+# Browser Profiles & Temporary Session Data
+**/reddit_profile/
+**/chrome_profile/
+*profile/
+Singleton*
+RunningChromeVersion
+ChromeFeatureState
+
+# ML Models & Checkpoints
+ML/models/*.mlpackage/
+ML/models/*.mlmodel
+*.pth
+*.pt
+*.onnx
+*.bin
+
+# Python Environments & Caches
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+

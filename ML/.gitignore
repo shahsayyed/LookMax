@@ -1,16 +1,49 @@
-# ─── LookMax ML Data — DO NOT commit large image datasets ───
+# ─── LookMax ML Data — DO NOT commit large image datasets or temporary scrape logs ───
 data/1_Raw_Scrapes/**/*
 data/2_VLM_Processing/filtered_rejected/**/*
 data/3_CoreML_Training_Data/**/*
+data/3_Training_Data/**/*
+2_VLM_Processing/
+**/metadata_logs/*.txt
+**/metadata_logs/*.json
+scraped_urls.txt
 
-# Keep the folder structure (gitkeep files) but ignore images
+# Keep the directory structure
 !data/**/.gitkeep
-!data/2_VLM_Processing/metadata_logs/*.jsonl
+!data/**/.keep
+!**/.gitkeep
 
-# Virtual environment
+# ─── Browser Profiles & Temporary Session Data (contains cookies/credentials) ───
+**/reddit_profile/
+**/chrome_profile/
+*profile/
+Singleton*
+RunningChromeVersion
+ChromeFeatureState
+
+# ─── Large ML Models & Checkpoints ───
+models/*.mlpackage/
+models/*.mlmodel
+models/*.pth
+models/*.pt
+models/*.onnx
+models/*.bin
+
+# ─── Python Environment & Caches ───
 .venv/
+venv/
+env/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
 
-# macOS
+# ─── macOS ───
 .DS_Store
+.DS_Store?
+._*
+
