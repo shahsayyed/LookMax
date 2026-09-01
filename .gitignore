@@ -94,6 +94,9 @@ ML/data/fairface/
 *fairface*.zip
 *fairface*.tar*
 *fairface*.csv
+**/Remote AI Image Generations/**
+**/Remote AI Image Generations New/**
+**/Remote AI Image Generations*/
 **/metadata_logs/*.txt
 **/metadata_logs/*.json
 scraped_urls.txt

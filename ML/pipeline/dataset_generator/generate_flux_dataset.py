@@ -77,55 +77,66 @@ WOMEN_GROOMING_VARS = [
     # Level 4-6: Average
     {"desc": "simple ponytail, minimal basic makeup, normal skin with minor blemishes", "score": 5, 
      "labels": {"hair_frizzy_messy": 0, "hair_flat": 0, "hair_styled_voluminous": 0, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 0, "skin_acne": 0, "skin_tired_eyes": 0, "skin_clear": 1, "eyebrows_messy": 0}},
-    {"desc": "straight hair lacking volume, basic mascara and lip gloss, clear skin", "score": 6, 
-     "labels": {"hair_frizzy_messy": 0, "hair_flat": 1, "hair_styled_voluminous": 0, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 0, "skin_acne": 0, "skin_tired_eyes": 0, "skin_clear": 1, "eyebrows_messy": 0}},
+    # Level 1-3: Extreme Flaws (effort-based, no biological traits)
+    {"desc": "severely tangled unbrushed ratty hair, visibly greasy unwashed roots, clumpy uneven mascara, smudged lip color, harsh unblended foundation lines, dry flaky lips", "score": 2, 
+     "labels": {"hair_frizzy_messy": 1, "hair_flat": 0, "hair_styled_voluminous": 0, "makeup_uneven": 1, "makeup_heavy_clashing": 0, "makeup_flawless": 0, "skin_clear": 0, "eyebrows_messy": 1}},
+    {"desc": "flat greasy oily unwashed hair, heavy clashing mismatched makeup, bright clashing eyeshadow poorly applied, dry chapped lips", "score": 2, 
+     "labels": {"hair_frizzy_messy": 0, "hair_flat": 1, "hair_styled_voluminous": 0, "makeup_uneven": 0, "makeup_heavy_clashing": 1, "makeup_flawless": 0, "skin_clear": 0, "eyebrows_messy": 1}},
+    {"desc": "messy unbrushed bun, completely bare face with no makeup effort, dry flaky skin, unplucked sparse eyebrows", "score": 3, 
+     "labels": {"hair_frizzy_messy": 1, "hair_flat": 0, "hair_styled_voluminous": 0, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 0, "skin_clear": 0, "eyebrows_messy": 1}},
+
+    # Level 4-6: Average
+    {"desc": "basic simple ponytail, flat unstyled hair, minimal everyday natural makeup, bare natural skin", "score": 5, 
+     "labels": {"hair_frizzy_messy": 0, "hair_flat": 0, "hair_styled_voluminous": 0, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 0, "skin_clear": 1, "eyebrows_messy": 0}},
+    {"desc": "straight hair lacking volume, basic mascara and lip gloss only, clear natural skin", "score": 6, 
+     "labels": {"hair_frizzy_messy": 0, "hair_flat": 1, "hair_styled_voluminous": 0, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 0, "skin_clear": 1, "eyebrows_messy": 0}},
 
     # Level 7-10: Highly Polished
-    {"desc": "voluminous perfectly styled salon blowout hair, flawless natural no-makeup makeup look, clear glowing glass skin, perfectly shaped eyebrows", "score": 10, 
-     "labels": {"hair_frizzy_messy": 0, "hair_flat": 0, "hair_styled_voluminous": 1, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 1, "skin_acne": 0, "skin_tired_eyes": 0, "skin_clear": 1, "eyebrows_messy": 0}},
-    {"desc": "elegant sleek pulled-back hair, striking flawless evening glam makeup, perfectly blended contour, radiant skin", "score": 10, 
-     "labels": {"hair_frizzy_messy": 0, "hair_flat": 0, "hair_styled_voluminous": 1, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 1, "skin_acne": 0, "skin_tired_eyes": 0, "skin_clear": 1, "eyebrows_messy": 0}}
+    {"desc": "flawless blowout hair with high volume and shine, perfectly blended professional makeup, sharp clean eyeliner, deeply hydrated glowing skin, perfectly shaped eyebrows", "score": 10, 
+     "labels": {"hair_frizzy_messy": 0, "hair_flat": 0, "hair_styled_voluminous": 1, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 1, "skin_clear": 1, "eyebrows_messy": 0}},
+    {"desc": "elegant sleek pulled-back styled hair, striking flawless blended makeup, perfectly contoured face, radiant moisturized glowing skin", "score": 10, 
+     "labels": {"hair_frizzy_messy": 0, "hair_flat": 0, "hair_styled_voluminous": 1, "makeup_uneven": 0, "makeup_heavy_clashing": 0, "makeup_flawless": 1, "skin_clear": 1, "eyebrows_messy": 0}}
 ]
 
 # --- MEN OUTFIT VARIATIONS ---
 MEN_OUTFIT_VARS = [
     # Flaws
-    {"desc": "wearing a severely wrinkled and overly baggy stained grey t-shirt, clashing neon colors, sloppy untucked styling", "score": 2, 
+    {"desc": "wearing a severely wrinkled, heavily stained and overly baggy cheap grey t-shirt, terrible unflattering fit, sloppy untucked styling, mismatched clashing colors", "score": 2, 
      "labels": {"clothes_wrinkled": 1, "clothes_crisp": 0, "fit_too_baggy": 1, "fit_too_tight": 0, "fit_tailored": 0, "colors_clashing": 1, "colors_harmonious": 0, "styling_sloppy": 1, "styling_sharp": 0}},
-    {"desc": "wearing a dress shirt that is uncomfortably tight pulling at the buttons, inappropriate awkward layering with a bulky sweater, wrinkly pants", "score": 3, 
+    {"desc": "wearing a shirt uncomfortably tight pulling at the buttons, inappropriate layering, heavily wrinkled trousers, sloppy overall appearance", "score": 3, 
      "labels": {"clothes_wrinkled": 1, "clothes_crisp": 0, "fit_too_baggy": 0, "fit_too_tight": 1, "fit_tailored": 0, "colors_clashing": 0, "colors_harmonious": 0, "styling_sloppy": 1, "styling_sharp": 0}},
-    {"desc": "wearing ill-fitting overly long pants pooling at the ankles, faded mismatched shirt", "score": 3, 
-     "labels": {"clothes_wrinkled": 0, "clothes_crisp": 0, "fit_too_baggy": 1, "fit_too_tight": 0, "fit_tailored": 0, "colors_clashing": 1, "colors_harmonious": 0, "styling_sloppy": 1, "styling_sharp": 0}},
-    
+    {"desc": "wearing ill-fitting overly long pants pooling at ankles, faded mismatched shirt, wrinkled untucked", "score": 3, 
+     "labels": {"clothes_wrinkled": 1, "clothes_crisp": 0, "fit_too_baggy": 1, "fit_too_tight": 0, "fit_tailored": 0, "colors_clashing": 1, "colors_harmonious": 0, "styling_sloppy": 1, "styling_sharp": 0}},
+
     # Average
-    {"desc": "wearing a basic plain t-shirt and standard jeans, acceptable fit, neutral colors, everyday casual", "score": 5, 
+    {"desc": "wearing a basic plain t-shirt and standard jeans, acceptable average fit, neutral colors, clean everyday casual", "score": 5, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 0, "fit_too_baggy": 0, "fit_too_tight": 0, "fit_tailored": 0, "colors_clashing": 0, "colors_harmonious": 1, "styling_sloppy": 0, "styling_sharp": 0}},
-    
-    # Polished
-    {"desc": "wearing a perfectly tailored sharp navy suit, crisp ironed white shirt, perfectly color matched accessories, highly stylish and sharp", "score": 10, 
+
+    # Polished (diverse: not just suits)
+    {"desc": "wearing a perfectly fitted smart-casual layered streetwear outfit, crisp clean fitted t-shirt under a sleek modern jacket, pristine condition fabrics, flawlessly tailored proportions, highly stylish", "score": 10, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 1, "fit_too_baggy": 0, "fit_too_tight": 0, "fit_tailored": 1, "colors_clashing": 0, "colors_harmonious": 1, "styling_sloppy": 0, "styling_sharp": 1}},
-    {"desc": "wearing a well-fitted smart-casual layered outfit, sleek tailored jacket over a crisp t-shirt, monochromatic harmonious colors", "score": 9, 
+    {"desc": "wearing well-fitted chino trousers and a crisp fitted polo shirt, perfectly color coordinated, pristine clean fabrics, sharp casual styling", "score": 9, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 1, "fit_too_baggy": 0, "fit_too_tight": 0, "fit_tailored": 1, "colors_clashing": 0, "colors_harmonious": 1, "styling_sloppy": 0, "styling_sharp": 1}}
 ]
 
 # --- WOMEN OUTFIT VARIATIONS ---
 WOMEN_OUTFIT_VARS = [
     # Flaws
-    {"desc": "wearing a heavily wrinkled unfitted dress, badly clashing neon colors, extremely sloppy silhouette with bad proportions", "score": 2, 
+    {"desc": "wearing a heavily wrinkled, cheap unfitted casual dress, terrible unflattering fit that distorts proportions, sloppy and messy silhouette, mismatched clashing colors", "score": 2, 
      "labels": {"clothes_wrinkled": 1, "clothes_crisp": 0, "fit_baggy_unflattering": 1, "fit_awkwardly_tight": 0, "fit_tailored": 0, "colors_clashing": 1, "colors_harmonious": 0, "proportions_bad": 1, "proportions_good": 0}},
-    {"desc": "wearing clothes that are uncomfortably tight and riding up, unbalanced awkward proportions, clashing patterns", "score": 3, 
+    {"desc": "wearing clothes that are uncomfortably tight and riding up, unbalanced awkward proportions, clashing mismatched patterns", "score": 3, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 0, "fit_baggy_unflattering": 0, "fit_awkwardly_tight": 1, "fit_tailored": 0, "colors_clashing": 1, "colors_harmonious": 0, "proportions_bad": 1, "proportions_good": 0}},
-    {"desc": "wearing an oversized bulky top that hides the figure unflatteringly, wrinkled fabric", "score": 3, 
+    {"desc": "wearing an oversized bulky top that hides the figure unflatteringly, wrinkled fabric, sloppy silhouette", "score": 3, 
      "labels": {"clothes_wrinkled": 1, "clothes_crisp": 0, "fit_baggy_unflattering": 1, "fit_awkwardly_tight": 0, "fit_tailored": 0, "colors_clashing": 0, "colors_harmonious": 0, "proportions_bad": 1, "proportions_good": 0}},
-    
+
     # Average
-    {"desc": "wearing a standard casual top and jeans, average fit, normal everyday look, neutral matching colors", "score": 5, 
+    {"desc": "wearing a standard casual top and jeans, average fit, normal everyday look, neutral matching colors, clean clothes", "score": 5, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 0, "fit_baggy_unflattering": 0, "fit_awkwardly_tight": 0, "fit_tailored": 0, "colors_clashing": 0, "colors_harmonious": 1, "proportions_bad": 0, "proportions_good": 0}},
-    
-    # Polished
-    {"desc": "wearing a perfectly tailored elegant outfit, highly flattering silhouette, pristine crisp fabrics, perfectly color coordinated, well balanced proportions", "score": 10, 
+
+    # Polished (diverse: not just formal dresses)
+    {"desc": "wearing a perfectly fitted chic casual outfit, stylish cropped jacket and crisp high-waisted trousers, pristine clean fabrics, flawlessly tailored proportions, highly stylish everyday wear", "score": 10, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 1, "fit_baggy_unflattering": 0, "fit_awkwardly_tight": 0, "fit_tailored": 1, "colors_clashing": 0, "colors_harmonious": 1, "proportions_bad": 0, "proportions_good": 1}},
-    {"desc": "wearing a stylish smart-casual layered look, perfectly fitted blazer, harmonious elegant color palette, sharp fashion", "score": 9, 
+    {"desc": "wearing a perfectly fitted midi skirt and crisp tucked-in blouse, beautifully harmonious color palette, pristine fabrics, flattering well-balanced proportions, stylish casual-chic look", "score": 9, 
      "labels": {"clothes_wrinkled": 0, "clothes_crisp": 1, "fit_baggy_unflattering": 0, "fit_awkwardly_tight": 0, "fit_tailored": 1, "colors_clashing": 0, "colors_harmonious": 1, "proportions_bad": 0, "proportions_good": 1}}
 ]
 
@@ -162,7 +173,7 @@ if __name__ == "__main__":
         "black-forest-labs/FLUX.1-dev",
         torch_dtype=torch.bfloat16
     )
-    pipe.enable_model_cpu_offload() 
+    pipe.enable_model_cpu_offload()
 
     print(f"Starting generation of {len(TASKS)} images...")
 

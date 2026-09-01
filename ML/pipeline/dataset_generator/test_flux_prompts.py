@@ -33,7 +33,7 @@ if __name__ == "__main__":
         "black-forest-labs/FLUX.1-dev",
         torch_dtype=torch.bfloat16
     )
-    pipe.enable_model_cpu_offload() 
+    pipe.enable_model_cpu_offload()
 
     print("Generating 4 test images...")
     
