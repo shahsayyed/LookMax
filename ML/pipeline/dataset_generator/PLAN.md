@@ -54,16 +54,27 @@ pip install -r requirements.txt
 
 ## Running the Generation
 
-### Step 1: Test First (Recommended)
+### Step 1: Test First (Required)
 Always validate prompts before committing to the full 24,000-image run:
 
 ```bash
 # Quick 4-image test (one per model category)
 python3 test_flux_prompts.py
 
-# Full 48-image demographic + level validation
+# Full 48-image demographic + level validation (taxonomy v3)
 python3 test_flux_variations.py
 ```
+
+> **v6 taxonomy check:** `test_flux_variations.py` now writes to `test_variations_comprehensive_v6/`. While v5 was generating, its own console logs exposed the real root cause of the persistent flaw-adherence weakness: `"The following part of your input was truncated because CLIP can only handle sequences up to 77 tokens"` — on every single image. v3 through v5 each added more reinforcement text and pushed prompts to 180-220+ CLIP tokens; T5 (512-token budget) saw everything, but CLIP (hard 77-token cap) was silently losing most or all of the flaw/effort description. Confirmed with the real `CLIPTokenizer`: a v5 Outfit prompt's CLIP view cut off *before the outfit description even started*.
+>
+> v6 fixes this by leading every prompt with a short "opener" (core flaw/effort keywords, plus body preservation for outfits) verified to fit completely inside CLIP's 77-token window, even for the longest identity combinations. This should be the most impactful single fix of the whole taxonomy-iteration process — v4/v5's targeted fixes (body-shape reinforcement, evaluative closers) were reasonable ideas but were fighting a token-budget problem underneath them the whole time.
+>
+> For each identity's triplet in the v6 batch, check:
+> - **Is the flaw obviously visible now for every identity**, including the ones that were weakest before (Black man, South Asian man, Hispanic woman)? This is the main thing v6 targets.
+> - **Is body shape/size still consistent across all three tiers?**
+> - **Is Average still as sharp as Flaw and Polished?**
+>
+> If grooming flaw visibility is *still* weak for the same identities after v6 — with the CLIP truncation actually fixed this time — that's real evidence prompt engineering has hit its ceiling for this model/setup, and the next step should be a post-generation VLM QA pass (see the recommendation below) rather than further wording changes. `generate_flux_dataset.py`'s variation text and prompt construction have already been updated to match v6; its `guidance_scale` is deliberately left at 3.5 pending this final visual check.
 
 ### Step 2: Run inside tmux (Critical)
 The full generation takes ~130 hours. Run inside `tmux` so the process survives browser disconnections:
@@ -86,6 +97,27 @@ tmux attach -t fluxgen
 
 ### Step 3: Monitor Progress
 The script prints `[idx/24000] Generating: filename...` for every image. Check the `dataset_output/` folder size periodically.
+
+---
+
+## Qwen-Image-2512 Comparison Test
+
+`test_qwen_variations.py` is the Qwen counterpart to `test_flux_variations.py` — same 48-prompt taxonomy v6 identities/prompts/seeds, so the two output folders (`test_variations_comprehensive_v6/` vs `test_variations_qwen_v6/`) compare image-for-image on prompt adherence. This exists because Flux collapsed toward "attractive" on flaw/average-tier prompts in manual testing (see chat history), while Qwen-Image-2.0 held up on the same prompts.
+
+Setup on the same Vast.ai RTX 5090 box (or a fresh one):
+
+```bash
+bash install_qwen.sh   # installs diffusers-from-source + transformers>=4.51.3 on top of the existing env, does not touch torch
+
+export HF_HOME="/data/huggingface_cache"
+export HF_XET_HIGH_PERFORMANCE=1
+
+tmux new -s qwengen
+python3 test_qwen_variations.py
+# Ctrl+B, D to detach; tmux attach -t qwengen to reattach
+```
+
+Qwen-Image-2512 is Apache 2.0 and not a gated repo, so `HF_TOKEN` is optional (Flux.1 [dev] requires it; Qwen doesn't). First run downloads ~40GB of weights to `HF_HOME`, so make sure `/data` has room alongside the existing Flux cache.
 
 ---
 
@@ -153,6 +185,13 @@ dataset_output/
 | `HF_HUB_ENABLE_HF_TRANSFER deprecated` | Old env var replaced by Xet system | Use `HF_XET_HIGH_PERFORMANCE=1` instead |
 | `File reconstruction error: IO Error` | Corrupted partial download from force-killed process | `rm -rf /data/huggingface_cache/hub/models--black-forest-labs--FLUX.1-dev` and re-run |
 | Schnell ignoring flaw prompts | "Prompt collapse" in 4-step distilled models | Must use FLUX.1 [dev] (28 steps) |
+| Flaw-tier images look attractive/Polished-ish | [dev] softens abstract intensity adjectives ("severely", "unkempt") back toward its aesthetic prior even at 28 steps | Taxonomy v3: concrete sensory flaw detail (grease sheen, flaking, stains) + `guidance_scale=5.0`; validate with `test_flux_variations.py` before running the master script |
+| Master script's grooming labels included `skin_acne`/`skin_dark_circles` | Pre-v2 variation entries were never deleted when the "effort-only, no biology" taxonomy v2 was introduced — silently violated the design principle for ~half of grooming-flaw prompts | Fixed: `MEN_GROOMING_VARS`/`WOMEN_GROOMING_VARS` in `generate_flux_dataset.py` now contain only effort-based v3 entries |
+| "Polished" outfit renders visibly slimmer than "Flaw"/"Average" for the same identity+seed | Outfit-tier language ("flawlessly tailored proportions that flatter the body", "highly stylish") pulls FLUX toward its slim-fashion-model prior, partially overriding the identity's stated build — even with a fixed seed the text still reshapes body proportions through cross-attention. The app must never train the model to treat body size/weight as something "improvement" changes. | Taxonomy v4: identities are structured (age/ethnicity/build/face) so the build word is re-injected directly into the outfit description at every tier ("body shape and size unchanged -- still their natural {build} figure, not slimmer or heavier"), not just stated once in the identity clause |
+| "Average"-tier images visibly blurrier/softer-focus than Flaw/Polished for the same identity+seed | v3's Average descriptions ended with self-referential closers like "an unremarkable average appearance" — describing the *photo* as unremarkable, not just the outfit/grooming effort; FLUX appears to read that as a cue for soft/amateur-snapshot rendering | Taxonomy v4: dropped those closers, and moved a sharp-focus/high-resolution anchor to the FRONT of every prompt (all tiers) instead of only trailing at the very end |
+| v4 full-batch review: grooming Flaw vs Polished still nearly indistinguishable for some identities (Black man, South Asian man, Hispanic woman), clear for others (Caucasian, East Asian) | Same prompt-collapse pattern, only partially addressed by v4's sensory detail — purely descriptive adjectives still get smoothed away for some identities. Risk: if flaw signal is systematically weaker for some ethnicities, the trained model could end up less sensitive to poor grooming in those groups — a fairness bug, not just a quality one. | Taxonomy v5: every Flaw description now restates its core defect a second time in different words and ends with a blunt evaluative closer ("...are the most obvious features... giving an unmistakably low-effort appearance at a glance") |
+| v4 full-batch review: one outfit triplet (45yo Black man, "athletic" build) rendered visibly heavier in Flaw than in Polished despite the same seed and the v4 body clause | v4's body-preservation clause was appended at the very END of the outfit description — not forceful enough to counter "fold lines across the chest and stomach" cueing a rounder torso for a moderate (non-extreme) build under "sloppy" framing | Taxonomy v5: body-preservation clause moved to its own sentence right after the identity, BEFORE the effort description (front-loaded, same principle as the blur fix); also dropped "the fabric hanging in a shapeless overly baggy way that swallows the body" from the Men's Flaw #1 outfit variation in the master script, which was never in the test script and likely contributed to the drift |
+| **ROOT CAUSE, found while v5 was mid-run: CLIP's hard 77-token limit** — the generation logs show `"CLIP can only handle sequences up to 77 tokens"` on every single image | FLUX.1 uses TWO text encoders: CLIP (hard 77-token cap, contributes a global conditioning vector) and T5-XXL (`max_sequence_length=512`, drives most fine-grained detail via cross-attention). Every taxonomy round from v3 onward kept ADDING reinforcement text, growing prompts to 180-220+ tokens. T5 saw all of it, but CLIP silently truncated at 77 — verified with the real `CLIPTokenizer`: for a typical v5 Outfit prompt (45yo Black man), CLIP's view cut off at *"...natural athletic figure throughout"* and **never reached the actual outfit description at all** (`"wearing a heavily wrinkled..."` was entirely invisible to CLIP). This is a better explanation for the identity-dependent flaw-adherence weakness than an "aesthetic prior" theory — each prompt-engineering round made the token-budget problem *worse*, not better, since longer reinforcement text pushes the real content further past the cutoff. | Taxonomy v6: every prompt now leads with a short (10-25 word) "opener" — the variation's core flaw/effort keywords, plus body preservation for outfits — verified with the real CLIP tokenizer to land completely inside the 77-token window even for the longest identity combinations (Middle Eastern ethnicity + "average build"). The full elaborate description (with v5's reinforcement) still follows for T5. The alignment guide is also modestly trimmed (redundant phrasing removed) to leave more budget for the opener + identity. |
 
 ---
 

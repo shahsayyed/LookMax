@@ -25,6 +25,12 @@ data/fairface/
 **/Remote AI Image Generations/**
 **/Remote AI Image Generations New/**
 **/Remote AI Image Generations*/
+*test_variations*/**
+*test_variations*/
+**/*test_variations*/**
+**/*test_variations*/
+!*.py
+!*.sh
 **/metadata_logs/*.txt
 **/metadata_logs/*.json
 scraped_urls.txt

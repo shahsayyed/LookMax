@@ -1,44 +1,30 @@
 import os
 os.environ["HF_XET_HIGH_PERFORMANCE"] = "1"
 import torch
-from diffusers import FluxPipeline
+from diffusers import QwenImagePipeline
 from pathlib import Path
 
 # ==========================================
-# AGGRESSIVE VARIATION TEST SCRIPT (48 Images)
-# Taxonomy v6: CLIP 77-token budget fix
+# QWEN-IMAGE-2512 VARIATION TEST SCRIPT (48 Images)
+# Direct counterpart to test_flux_variations.py -- same taxonomy v6
+# prompts, same identities, same seeds, so the two output folders can
+# be compared image-for-image on prompt adherence between FLUX.1 [dev]
+# and Qwen-Image-2.0.
 #
-# Changes from v5 (see test_variations_comprehensive_v5/ generation logs):
-#  - ROOT CAUSE FOUND: FLUX.1 uses TWO text encoders -- CLIP (hard
-#    77-token limit, contributes a global conditioning vector) and
-#    T5-XXL (max_sequence_length=512, drives most fine-grained detail
-#    via cross-attention). Our v5 prompts ran 180-200+ tokens. T5 saw
-#    all of it, but CLIP silently truncated at 77 -- and for Outfit
-#    prompts specifically, the cutoff landed BEFORE the actual outfit
-#    description even started (verified with the real CLIPTokenizer:
-#    the Men_Outfit_Flaw prompt for the 45yo Black man cut off at
-#    "...natural athletic figure throughout" -- CLIP never saw
-#    "wearing a heavily wrinkled..." at all). This is a better
-#    explanation for weak/inconsistent flaw adherence than "aesthetic
-#    prior" alone: each round of adding reinforcement text (v3->v4->v5)
-#    made the token-budget problem WORSE, not better.
-#  - FIX: every prompt now leads with a short, dense opener (flaw/
-#    effort keywords, plus body-preservation for outfits) guaranteed
-#    to land inside CLIP's 77-token window -- verified with the real
-#    tokenizer below. The full elaborate description (with v5's
-#    repetition + evaluative closer) still follows for T5, which has
-#    room to spare at 512 tokens. The alignment guide is modestly
-#    trimmed (redundant phrasing removed) to leave more of the budget
-#    for the opener + identity.
+# Qwen-Image-2512 is Apache 2.0 (no gated-repo auth needed, unlike
+# FLUX.1 [dev]) and uses a different text-conditioning setup, so the
+# CLIP-77-token truncation issue that motivated the v6 "opener" prefix
+# for Flux does not apply here the same way -- but we keep the same
+# prompt text unchanged for a fair comparison rather than re-tuning it
+# per-model.
 # ==========================================
-HF_TOKEN = os.environ.get("HF_TOKEN")
-if not HF_TOKEN:
-    raise ValueError("Please set HF_TOKEN environment variable with your HuggingFace token.")
 
-OUTPUT_DIR = Path("test_variations_comprehensive_v6")
+OUTPUT_DIR = Path("test_variations_qwen_v6")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-GUIDANCE_SCALE = 5.0
+TRUE_CFG_SCALE = 4.0
+NUM_INFERENCE_STEPS = 40
+NEGATIVE_PROMPT = "blurry, low quality, deformed, extra limbs, watermark, text artifacts"
 
 ALIGN_GROOMING = "front-facing head-and-shoulders portrait, centered face, straight-on eye-level angle, looking at the camera, bright even studio lighting"
 ALIGN_OUTFIT = "front-facing full-body portrait, centered, standing straight, straight-on eye-level angle, looking at the camera, head to toe visible, bright even studio lighting"
@@ -57,11 +43,6 @@ WOMEN_IDENTITIES = [
     {"age": "26-year-old", "ethnicity": "East Asian", "build": "athletic", "face": "heart-shaped face"},
 ]
 
-# "opener" is the short, front-loaded clause guaranteed to fit inside
-# CLIP's 77-token window (verified with the real tokenizer -- see
-# scripts/check_clip_budget.py-style check in PLAN.md). "desc" is the
-# full elaborate description (v5 wording, unchanged) that continues
-# past the CLIP cutoff for T5's benefit.
 MEN_GROOMING_VARS = [
     {"level": "Flaw", "opener": "Greasy unwashed matted hair, patchy neckbeard, dry flaking skin, unibrow.",
      "desc": "visibly oily greasy hair matted flat with individual strands clumped together and a strong visible grease sheen catching the light -- the hair looks unmistakably unwashed and oily, thin patchy neckbeard growing in uneven blotchy patches with bare skin gaps clearly visible, dry flaking dead skin visibly peeling on the forehead, thick unshaped unibrow connecting across the nose. The greasy hair and patchy neglected beard are the most obvious features of his face, giving an unmistakably unkempt, low-effort appearance at a glance"},
@@ -116,11 +97,11 @@ for cat, gender_word, identities, var_sets in [
 
 
 if __name__ == "__main__":
-    print(f"Generating {len(TASKS)} test images with taxonomy v6 (CLIP 77-token budget fix)...")
-    print("Loading FLUX.1 [dev]... This takes a moment.")
+    print(f"Generating {len(TASKS)} test images with Qwen-Image-2512 (same taxonomy v6 prompts as Flux)...")
+    print("Loading Qwen/Qwen-Image-2512... This takes a moment (and a first-run download of ~40GB).")
 
-    pipe = FluxPipeline.from_pretrained(
-        "black-forest-labs/FLUX.1-dev",
+    pipe = QwenImagePipeline.from_pretrained(
+        "Qwen/Qwen-Image-2512",
         torch_dtype=torch.bfloat16
     )
     pipe.enable_model_cpu_offload()
@@ -136,9 +117,6 @@ if __name__ == "__main__":
         alignment = ALIGN_GROOMING if "Grooming" in cat else ALIGN_OUTFIT
 
         if task["is_outfit"]:
-            # Body-preservation folded into the SAME short opener sentence
-            # (not a separate sentence) to keep the CLIP-priority prefix as
-            # compact as possible.
             full_opener = f"{opener} Body stays their natural {task['build']} figure, not slimmer or heavier."
             prompt = (
                 f"{full_opener} A sharp {alignment} of a {ident_str}. "
@@ -148,28 +126,27 @@ if __name__ == "__main__":
             prompt = f"{opener} A sharp {alignment} of a {ident_str}, {desc}. Photorealistic, ultra detailed, tack-sharp crisp focus throughout, 85mm lens."
 
         short_ident = f"{ident_str.split(',')[0]}".replace(' ', '').replace('-year-old', '')
-        filename = f"{idx+1:03d}_{cat}_{level}_{short_ident}_seed{seed}.png"
+        filename = f"qwen_{idx+1:03d}_{cat}_{level}_{short_ident}_seed{seed}.png"
 
         print(f"[{idx+1}/{len(TASKS)}] Generating: {filename}...")
 
         generator = torch.Generator("cpu").manual_seed(seed)
 
         image = pipe(
-            prompt,
+            prompt=prompt,
+            negative_prompt=NEGATIVE_PROMPT,
             height=1024,
             width=1024,
-            guidance_scale=GUIDANCE_SCALE,
-            num_inference_steps=28,
-            max_sequence_length=512,
+            num_inference_steps=NUM_INFERENCE_STEPS,
+            true_cfg_scale=TRUE_CFG_SCALE,
             generator=generator
         ).images[0]
 
         image.save(OUTPUT_DIR / filename)
 
-    print(f"✅ Taxonomy v6 testing complete! Check the '{OUTPUT_DIR}' folder.")
-    print("For each identity, compare the Flaw/Average/Polished triplet (same seed):")
-    print("  1. Is the flaw obviously visible for EVERY identity now (this was the whole point of v6)?")
+    print(f"✅ Qwen-Image-2512 testing complete! Check the '{OUTPUT_DIR}' folder.")
+    print("Compare each identity's Flaw/Average/Polished triplet (same seed) against the")
+    print("matching files in test_variations_comprehensive_v6/ from test_flux_variations.py:")
+    print("  1. Is the flaw obviously visible for EVERY identity?")
     print("  2. Is body shape/size still consistent across all three tiers?")
-    print("  3. Is Average still as sharp as Flaw and Polished?")
-    print("If flaw visibility is STILL weak after this CLIP-budget fix, that's real evidence")
-    print("prompt engineering has hit its ceiling -- move to a VLM auto-QA gate instead.")
+    print("  3. Is Average still as sharp/detailed as Flaw and Polished?")
