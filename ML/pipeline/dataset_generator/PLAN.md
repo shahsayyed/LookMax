@@ -104,20 +104,64 @@ The script prints `[idx/24000] Generating: filename...` for every image. Check t
 
 `test_qwen_variations.py` is the Qwen counterpart to `test_flux_variations.py` — same 48-prompt taxonomy v6 identities/prompts/seeds, so the two output folders (`test_variations_comprehensive_v6/` vs `test_variations_qwen_v6/`) compare image-for-image on prompt adherence. This exists because Flux collapsed toward "attractive" on flaw/average-tier prompts in manual testing (see chat history), while Qwen-Image-2.0 held up on the same prompts.
 
-Setup on the same Vast.ai RTX 5090 box (or a fresh one):
+Setup on a fresh Vast.ai box:
 
 ```bash
-bash install_qwen.sh   # installs diffusers-from-source + transformers>=4.51.3 on top of the existing env, does not touch torch
+mkdir -p /data && cd /data
+git clone <your-repo-url> /data/LookMax
+cd /data/LookMax/ML/pipeline/dataset_generator
 
-export HF_HOME="/data/huggingface_cache"
-export HF_XET_HIGH_PERFORMANCE=1
+bash install_qwen.sh   # checks /data has room, checks torch is present, installs diffusers-from-source + transformers>=4.51.3 -- does not touch torch or /workspace
 
 tmux new -s qwengen
 python3 test_qwen_variations.py
 # Ctrl+B, D to detach; tmux attach -t qwengen to reattach
 ```
 
-Qwen-Image-2512 is Apache 2.0 and not a gated repo, so `HF_TOKEN` is optional (Flux.1 [dev] requires it; Qwen doesn't). First run downloads ~40GB of weights to `HF_HOME`, so make sure `/data` has room alongside the existing Flux cache.
+No `export HF_HOME=...` step needed — `test_qwen_variations.py` pins its own cache to `/data/huggingface_cache` unconditionally at the top of the file (see the comment there for why: three separate incidents proved relying on the shell's env or the script's own checkout location for this both fail across sessions on these boxes). `install_qwen.sh` checks free space against `/data` the same way, independent of your current directory.
+
+Qwen-Image-2512 is Apache 2.0 and not a gated repo, so `HF_TOKEN` is optional (Flux.1 [dev] requires it; Qwen doesn't). First run downloads ~58GB of weights (the 20B transformer plus the large Qwen2.5-VL text encoder) to `/data/huggingface_cache`.
+
+**If you already have a completed download under a different path** (e.g. `/data/dataset_generator/huggingface_cache` from before this fixed-path change), move it once rather than re-downloading:
+```bash
+mv /data/dataset_generator/huggingface_cache /data/huggingface_cache
+```
+
+---
+
+## Taxonomy v7 + Full Dataset Generation (Qwen-Image-2512)
+
+v6 (above) was a prompt-adherence comparison test. v7 is the taxonomy actually used to generate the real dataset, fixing two problems the v6 comparison surfaced on review: flaw-tier severity was flat (one maximally-bad description instead of a gradient), and "Polished" outfits were a jacket monoculture (only one archetype, always involving outerwear). See `qwen_taxonomy_v7.py`'s module docstring for the full rationale.
+
+| Script | Purpose |
+|---|---|
+| `qwen_taxonomy_v7.py` | Shared taxonomy module — independent attribute axes (hair/facial hair/skin/eyebrows; top/fit/fabric/color/bottom/footwear), each with its own severity gradient. Imported by all three scripts below. |
+| `qwen_pipeline_utils.py` | GPU-aware model loader — auto-detects VRAM and picks full-GPU-resident (`.to("cuda")`, needed for parallel batching) vs `enable_model_cpu_offload()` (smaller cards, forces batch size 1). |
+| `test_qwen_prompts_v7.py` | 6 hardcoded prompts demonstrating the two fixes directly. Run first. |
+| `test_qwen_variations_v7.py` | 64-image systematic test (4 identities × 4 tiers × grooming/outfit × men/women). Run second. |
+| `generate_qwen_dataset.py` | The full 24,000-image run. Run last, after reviewing the two test scripts' output. |
+
+### Running the full generation
+
+```bash
+python3 generate_qwen_dataset.py [target_count] [gen_batch_size]
+```
+
+- No args: runs until all 24,000 images exist.
+- `target_count` (e.g. `500`): generate up to that many NEW images this invocation, then exit. Safe to stop and restart anytime — resume is based on which output files already exist, and the task list is seeded deterministically (`random.Random(42)`) so index N always means the same task on every run.
+- `gen_batch_size` (e.g. `4`): how many images to generate in ONE parallel GPU forward pass — real throughput, not just multiple processes. Only takes effect if the detected GPU has enough VRAM to hold the full ~58GB pipeline resident (currently ≥80GB — see `qwen_pipeline_utils.py`); otherwise it's forced to 1 automatically. Start conservative (2-4) and watch `nvidia-smi` before raising it — there's no pre-measured safe ceiling for this model's per-image activation memory yet.
+
+To run unattended in tmux until fully done:
+```bash
+tmux new -s qwengen
+while python3 generate_qwen_dataset.py 500 4; do :; done
+```
+
+Two output files land in `/data/qwen_dataset_output/`:
+- `labels.csv` — training-ready (filename, category, tier, score, binary attribute columns).
+- `generation_log.jsonl` — full provenance, one JSON line per image: exact prompt text, negative prompt, seed, steps, cfg scale, batch size used, timestamp. Use this to trace exactly what produced any specific image.
+
+Each image is written to a `.tmp` name and only renamed to its final filename after its CSV row and log line are both flushed — a run killed mid-image can't leave a half-written file that looks complete and gets silently skipped forever.
 
 ---
 

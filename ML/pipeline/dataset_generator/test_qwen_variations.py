@@ -1,8 +1,48 @@
 import os
+import shutil
+import sys
+from pathlib import Path
+
+# ==========================================
+# DISK SAFETY -- read this if you're setting up on a new machine.
+#
+# HF_HOME is hard-pinned to /data/huggingface_cache below, unconditionally
+# (not derived from the shell environment, and not derived from wherever
+# this script happens to live). Three separate incidents on these Vast.ai
+# boxes proved neither of those can be trusted:
+#   - Shell env: auto-tmux spawns fresh login shells that don't reliably
+#     inherit a .bashrc export, and at least one container image sets its
+#     OWN default (HF_HOME=/workspace/.hf_home).
+#   - Script location: if the repo ever gets cloned into /workspace instead
+#     of /data on a fresh machine (an easy mistake -- /workspace is the
+#     default landing directory when you SSH in), "cache next to the
+#     script" would silently reproduce the exact same bug.
+# /data is where the LARGE disk lives on these boxes -- /workspace is
+# mapped to a tiny ~10GB loop device (see PLAN.md). This block creates
+# /data if missing and aborts BEFORE downloading anything if it doesn't
+# look like the large disk, instead of failing 15-40GB into a download
+# with "No space left on device".
+# ==========================================
+DATA_DIR = Path("/data")
+MIN_FREE_GB = 60  # Qwen-Image-2512's full pipeline is ~58GB on disk
+
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+_free_gb = shutil.disk_usage(DATA_DIR).free / (1024 ** 3)
+if _free_gb < MIN_FREE_GB:
+    sys.exit(
+        f"!! Only {_free_gb:.1f}GB free on {DATA_DIR} -- need at least {MIN_FREE_GB}GB "
+        f"for Qwen-Image-2512's weights.\n"
+        f"!! Run 'df -h' and confirm /data is actually your LARGE disk on this machine "
+        f"(NOT /workspace -- that's a small loop device on these Vast.ai boxes).\n"
+        f"!! If your large disk is mounted somewhere else here, edit DATA_DIR at the "
+        f"top of this script."
+    )
+
+os.environ["HF_HOME"] = str(DATA_DIR / "huggingface_cache")
 os.environ["HF_XET_HIGH_PERFORMANCE"] = "1"
+
 import torch
 from diffusers import QwenImagePipeline
-from pathlib import Path
 
 # ==========================================
 # QWEN-IMAGE-2512 VARIATION TEST SCRIPT (48 Images)
@@ -17,14 +57,30 @@ from pathlib import Path
 # for Flux does not apply here the same way -- but we keep the same
 # prompt text unchanged for a fair comparison rather than re-tuning it
 # per-model.
+#
+# GPU NOTE: the full bf16 pipeline is ~57.7GB on disk (the 20B
+# transformer PLUS the Qwen2.5-VL text encoder, which is much bigger
+# than a typical text encoder -- this is larger than early estimates
+# that only accounted for the transformer alone). That does not fit
+# resident on a single 48GB card, let alone a 32GB one -- confirmed by
+# hitting CUDA OOM with .to("cuda") on an RTX 6000 Ada (47.35GiB used
+# just loading, before generation even started). So this uses
+# enable_model_cpu_offload() same as the Flux scripts, regardless of
+# GPU tier -- diffusers keeps only the actively-running component
+# resident on GPU and swaps the rest to CPU RAM. Only a single 80GB+
+# card (or multi-GPU) could skip offload here.
 # ==========================================
 
 OUTPUT_DIR = Path("test_variations_qwen_v6")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 TRUE_CFG_SCALE = 4.0
-NUM_INFERENCE_STEPS = 40
+NUM_INFERENCE_STEPS = 28  # matches Flux's step count for a fair speed/quality comparison; bump to 40-50 later if adherence looks step-starved
 NEGATIVE_PROMPT = "blurry, low quality, deformed, extra limbs, watermark, text artifacts"
+
+# Safe, free speedup on Ada/Hopper-class GPUs -- no effect on output quality.
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
 
 ALIGN_GROOMING = "front-facing head-and-shoulders portrait, centered face, straight-on eye-level angle, looking at the camera, bright even studio lighting"
 ALIGN_OUTFIT = "front-facing full-body portrait, centered, standing straight, straight-on eye-level angle, looking at the camera, head to toe visible, bright even studio lighting"
@@ -98,6 +154,7 @@ for cat, gender_word, identities, var_sets in [
 
 if __name__ == "__main__":
     print(f"Generating {len(TASKS)} test images with Qwen-Image-2512 (same taxonomy v6 prompts as Flux)...")
+    print(f"HF_HOME (weights download to here): {os.environ['HF_HOME']}")
     print("Loading Qwen/Qwen-Image-2512... This takes a moment (and a first-run download of ~40GB).")
 
     pipe = QwenImagePipeline.from_pretrained(
