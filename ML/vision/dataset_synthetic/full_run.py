@@ -38,6 +38,7 @@ import os
 import random
 import re
 import shutil
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -197,34 +198,120 @@ def group_by_resolution(pending, gen_batch_size):
 # --------------------------------------------------------------------------
 # Benchmark
 # --------------------------------------------------------------------------
-def run_benchmark(data_dir, num_shards=None):
+def run_benchmark(data_dir, num_shards=None, batch_size=1, compare_modes=False, device=None):
     import qwen_pipeline as qp
 
     tasks = build_full_task_list()
+    if compare_modes:
+        print(f"\n{'='*88}\nBENCHMARK: COMPARING MODES ON THIS HARDWARE\n{'='*88}")
+        print("Evaluating throughput across Sequential, Batched, and Concurrent Multi-Worker modes.")
+        sample = [tasks[0], tasks[1], tasks[7000], tasks[7001]]  # 2 grooming square, 2 outfit portrait
+
+        # Warmup
+        print("Running warm-up forward pass...")
+        pipe, can_batch = qp.load_pipeline(device=device)
+        qp.generate(pipe, [sample[0]["task"]], seeds=[sample[0]["index"]], num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
+        qp.unload(pipe)
+
+        results = []
+
+        # Mode 1: Sequential (1 worker, batch=1)
+        print("\n[Mode 1] Testing Sequential Generation (workers=1, batch=1)...")
+        pipe, can_batch = qp.load_pipeline(device=device)
+        t0 = time.time()
+        for item in sample:
+            qp.generate(pipe, [item["task"]], seeds=[item["index"]], num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
+        t_seq = time.time() - t0
+        qp.unload(pipe)
+        results.append(("Sequential (Workers=1, Batch=1)", 1, 1, t_seq))
+        print(f"  -> {len(sample)} images in {t_seq:.1f}s ({t_seq / len(sample):.2f}s/image)")
+
+        # Mode 2: Batched (1 worker, batch=2)
+        if can_batch:
+            print("\n[Mode 2] Testing Batched Generation (workers=1, batch=2)...")
+            pipe, can_batch = qp.load_pipeline(device=device)
+            t0 = time.time()
+            for batch in group_by_resolution(sample, 2):
+                qp.generate(pipe, [item["task"] for item in batch], seeds=[item["index"] for item in batch],
+                            num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
+            t_batch = time.time() - t0
+            qp.unload(pipe)
+            results.append(("Batched (Workers=1, Batch=2)", 1, 2, t_batch))
+            print(f"  -> {len(sample)} images in {t_batch:.1f}s ({t_batch / len(sample):.2f}s/image)")
+        else:
+            print("\n[Mode 2] Batched generation skipped (VRAM offload mode forces batch=1).")
+
+        # Mode 3: Concurrent Independent Workers (workers=2, batch=1)
+        print("\n[Mode 3] Testing Concurrent Independent Workers (workers=2, batch=1)...")
+        script_path = Path(__file__).resolve()
+        sub_dir = Path(data_dir) / "benchmark_multi_worker_tmp"
+        sub_dir.mkdir(parents=True, exist_ok=True)
+        t0 = time.time()
+        cmd_p0 = [
+            sys.executable, str(script_path), "2", "1", "--shard", "0", "--num-shards", "2",
+            "--data-dir", str(sub_dir)
+        ]
+        cmd_p1 = [
+            sys.executable, str(script_path), "2", "1", "--shard", "1", "--num-shards", "2",
+            "--data-dir", str(sub_dir)
+        ]
+        if device:
+            cmd_p0.extend(["--device", device])
+            cmd_p1.extend(["--device", device])
+        p0 = subprocess.Popen(cmd_p0)
+        p1 = subprocess.Popen(cmd_p1)
+        p0.wait()
+        p1.wait()
+        t_concurrent = time.time() - t0
+        shutil.rmtree(sub_dir, ignore_errors=True)
+        results.append(("Concurrent (Workers=2, Batch=1)", 2, 1, t_concurrent))
+        print(f"  -> {len(sample)} images in {t_concurrent:.1f}s ({t_concurrent / len(sample):.2f}s/image)")
+
+        total_production_images = sum(tx.CATEGORY_COUNTS.values())
+        print(f"\n{'='*88}\nBENCHMARK RESULTS & PROJECTIONS (Full 28,000-Image Run)\n{'='*88}")
+        print(f"{'Mode':<34} | {'Workers':>7} | {'Batch':>5} | {'Sec/Image':>9} | {'Img/Min':>7} | {'Full Run Est.':>14}")
+        print("-" * 88)
+        base_sec = results[0][3] / len(sample)
+        for name, workers, b_size, total_t in results:
+            sec_img = total_t / len(sample)
+            img_min = 60.0 / sec_img
+            full_hrs = (sec_img * total_production_images) / 3600.0
+            speedup = base_sec / sec_img
+            speedup_str = f" ({speedup:.2f}x)" if speedup != 1.0 else ""
+            print(f"{name:<34} | {workers:>7} | {b_size:>5} | {sec_img:>8.2f}s | {img_min:>7.1f} | {full_hrs:>10.1f}h{speedup_str}")
+        print("-" * 88)
+        fastest = min(results, key=lambda x: x[3])
+        print(f"Recommendation: Fastest configuration on this hardware is '{fastest[0]}' ({fastest[3] / len(sample):.2f}s/image).\n")
+        return
+
+    # Standard benchmark
     sample = tasks[:5]
     if len(sample) < 5:
         sys.exit("Not enough tasks to benchmark (need at least 5).")
 
-    print("Loading pipeline for benchmark...")
-    pipe, can_batch = qp.load_pipeline()
+    print(f"Loading pipeline for benchmark on {device or 'default device'} (batch_size={batch_size})...")
+    pipe, can_batch = qp.load_pipeline(device=device)
+    effective_batch = batch_size if can_batch else 1
 
+    batches = list(group_by_resolution(sample, effective_batch))
     timings = []
-    for i, item in enumerate(sample):
+    for i, batch in enumerate(batches):
         t0 = time.time()
-        qp.generate(pipe, [item["task"]], seeds=[item["index"]], num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
+        qp.generate(pipe, [item["task"] for item in batch], seeds=[item["index"] for item in batch],
+                    num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
         elapsed = time.time() - t0
         label = "warm-up (discarded)" if i == 0 else "timed"
-        print(f"  image {i+1}/5: {elapsed:.1f}s [{label}]")
+        print(f"  batch {i+1}/{len(batches)} ({len(batch)} image(s)): {elapsed:.1f}s [{label}]")
         if i > 0:
-            timings.append(elapsed)
+            timings.append(elapsed / len(batch))
 
     qp.unload(pipe)
 
-    avg = sum(timings) / len(timings)
+    avg = sum(timings) / len(timings) if timings else 0
     total_images = sum(tx.CATEGORY_COUNTS.values())
     total_seconds = avg * total_images
     total_hours = total_seconds / 3600
-    print(f"\nAverage: {avg:.1f}s/image (over {len(timings)} timed images, first discarded as warm-up)")
+    print(f"\nAverage: {avg:.1f}s/image (over {len(timings)} timed batches, first discarded as warm-up)")
     print(f"Projected total for all {total_images} images: {total_hours:.1f} GPU-hours ({total_seconds/86400:.1f} days)")
 
     if num_shards:
@@ -238,9 +325,66 @@ def run_benchmark(data_dir, num_shards=None):
 
 
 # --------------------------------------------------------------------------
+# Multi-worker runner (orchestrates concurrent workers locally)
+# --------------------------------------------------------------------------
+def run_multi_worker(num_workers, gen_batch_size, target_count, data_dir, device=None):
+    paths = output_paths(data_dir)
+    output_dir = paths["output_dir"]
+    check_disk_space(data_dir)
+    write_schema_files(output_dir)
+
+    print(f"\n{'='*88}\nCONCURRENT MULTI-WORKER RUN ({num_workers} workers, batch_size={gen_batch_size})\n{'='*88}\n")
+    print(f"Spawning {num_workers} independent worker processes simultaneously on the GPU...")
+
+    script_path = Path(__file__).resolve()
+    processes = []
+    t_start = time.time()
+
+    per_worker_target = None
+    if target_count is not None:
+        per_worker_target = (target_count + num_workers - 1) // num_workers
+
+    for k in range(num_workers):
+        cmd = [
+            sys.executable, str(script_path),
+            "--shard", str(k),
+            "--num-shards", str(num_workers),
+            "--batch-size", str(gen_batch_size),
+            "--data-dir", str(data_dir),
+        ]
+        if per_worker_target is not None:
+            cmd.extend(["--target-count", str(per_worker_target)])
+        if device:
+            cmd.extend(["--device", device])
+        print(f"Launching Worker {k}: {' '.join(cmd)}")
+        p = subprocess.Popen(cmd)
+        processes.append((k, p))
+
+    failed = False
+    for k, p in processes:
+        ret = p.wait()
+        if ret != 0:
+            print(f"Worker {k} failed with exit code {ret}!")
+            failed = True
+
+    if failed:
+        sys.exit("One or more worker processes failed. Check logs above before resuming.")
+
+    total_elapsed = time.time() - t_start
+    print(f"\nAll {num_workers} workers completed in {total_elapsed:.1f}s ({total_elapsed/3600:.2f} hours).")
+    print("Auto-merging per-shard label CSVs into per-category CSVs...")
+
+    import merge_shards
+    for category in tx.ALL_CATEGORIES:
+        merge_shards.merge_category(output_dir, category)
+
+    print(f"\nMulti-worker run complete and merged successfully.")
+
+
+# --------------------------------------------------------------------------
 # Main generation loop
 # --------------------------------------------------------------------------
-def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dry_run):
+def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dry_run, device=None):
     paths = output_paths(data_dir)
     output_dir, images_dir = paths["output_dir"], paths["images_dir"]
 
@@ -278,8 +422,8 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
     print(f"This run will generate up to {len(to_process)} new images.")
 
     import qwen_pipeline as qp
-    print("Loading Qwen-Image-2512...")
-    pipe, can_batch = qp.load_pipeline()
+    print(f"Loading Qwen-Image-2512 on {device or 'default device'}...")
+    pipe, can_batch = qp.load_pipeline(device=device)
     effective_batch = gen_batch_size or DEFAULT_GEN_BATCH_SIZE
     if not can_batch and effective_batch > 1:
         print(f"Note: requested gen_batch_size={effective_batch} but this GPU needs CPU offload -- forcing 1.")
@@ -303,25 +447,30 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
 
     generated_this_run = 0
     consecutive_failures = 0
+    worker_tag = f"[Shard {shard}/{num_shards}] " if shard is not None else ""
+
     try:
         for batch in group_by_resolution(to_process, effective_batch):
             filenames = [item["filename"] for item in batch]
             tmp_paths = [images_dir / (fn + ".tmp") for fn in filenames]
             seeds = [item["index"] for item in batch]
 
+            t0 = time.time()
             try:
                 images = qp.generate(pipe, [item["task"] for item in batch], seeds=seeds,
                                       num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
             except Exception as e:
-                print(f"Batch failed (indices {[b['index'] for b in batch]}): {e}")
+                print(f"{worker_tag}Batch failed (indices {[b['index'] for b in batch]}): {e}")
                 for p in tmp_paths:
                     if p.exists():
                         p.unlink()
                 consecutive_failures += len(batch)
                 if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
-                    sys.exit(f"Aborting: {consecutive_failures} consecutive failures "
+                    sys.exit(f"{worker_tag}Aborting: {consecutive_failures} consecutive failures "
                               f"(>= {MAX_CONSECUTIVE_FAILURES}). Check GPU/model state before resuming.")
                 continue
+
+            elapsed = time.time() - t0
 
             for item, filename, tmp_path, image in zip(batch, filenames, tmp_paths, images):
                 image.save(tmp_path)
@@ -345,7 +494,8 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
                 generated_this_run += 1
                 consecutive_failures = 0
                 if generated_this_run % 25 == 0 or generated_this_run == len(to_process):
-                    print(f"  [{generated_this_run}/{len(to_process)}] {filename}")
+                    print(f"  {worker_tag}[{generated_this_run}/{len(to_process)}] {filename} "
+                          f"({len(batch)} image(s) in {elapsed:.1f}s, {elapsed/len(batch):.2f}s/img)")
     finally:
         for f in csv_files.values():
             f.close()
@@ -353,7 +503,7 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
         qp.unload(pipe)
 
     still_remaining = len(pending) - generated_this_run
-    print(f"\nThis run generated {generated_this_run} new images.")
+    print(f"\n{worker_tag}This run generated {generated_this_run} new images.")
     if still_remaining > 0:
         print(f"{still_remaining} still remaining in this invocation's scope. Run again to continue.")
     else:
@@ -362,22 +512,40 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
 
 def main():
     parser = argparse.ArgumentParser(description="LookMax full 28,000-image Qwen-Image-2512 dataset run.")
-    parser.add_argument("target_count", nargs="?", type=int, default=None,
-                         help="Max NEW images this invocation generates before exiting. Omit to run until done.")
-    parser.add_argument("gen_batch_size", nargs="?", type=int, default=None,
-                         help=f"Images per GPU forward pass. Default {DEFAULT_GEN_BATCH_SIZE} -- see module docstring.")
+    parser.add_argument("pos_target_count", nargs="?", type=int, default=None,
+                         help="Max NEW images this invocation generates before exiting (positional).")
+    parser.add_argument("pos_gen_batch_size", nargs="?", type=int, default=None,
+                         help=f"Images per GPU forward pass (positional, default {DEFAULT_GEN_BATCH_SIZE}).")
+    parser.add_argument("--target-count", type=int, default=None, help="Max NEW images to generate.")
+    parser.add_argument("--batch-size", "--gen-batch-size", type=int, default=None,
+                        help=f"Images per GPU forward pass (default {DEFAULT_GEN_BATCH_SIZE}).")
+    parser.add_argument("--num-workers", "--workers", type=int, default=1,
+                        help="Number of concurrent worker processes to run on the GPU (default 1).")
     parser.add_argument("--shard", type=int, default=None, help="This worker's shard index (0-based).")
     parser.add_argument("--num-shards", type=int, default=None, help="Total number of shards.")
-    parser.add_argument("--benchmark", action="store_true", help="Time 5 images, project total GPU-hours, exit.")
+    parser.add_argument("--device", default=None, help="Target PyTorch device, e.g. 'cuda:0'.")
+    parser.add_argument("--benchmark", action="store_true", help="Time images, project total GPU-hours, exit.")
+    parser.add_argument("--compare-modes", action="store_true",
+                        help="Benchmark and compare single vs batched vs concurrent multi-worker modes.")
     parser.add_argument("--dry-run", action="store_true", help="Plan the run and write schema files, touch nothing else.")
     parser.add_argument("--data-dir", default=str(DEFAULT_DATA_DIR), help=f"Large-disk root (default {DEFAULT_DATA_DIR}).")
     args = parser.parse_args()
 
-    if args.benchmark:
-        run_benchmark(args.data_dir, args.num_shards)
+    target_count = args.target_count if args.target_count is not None else args.pos_target_count
+    gen_batch_size = args.batch_size if args.batch_size is not None else (
+        args.pos_gen_batch_size if args.pos_gen_batch_size is not None else DEFAULT_GEN_BATCH_SIZE
+    )
+
+    if args.compare_modes or args.benchmark:
+        run_benchmark(args.data_dir, args.num_shards, batch_size=gen_batch_size,
+                      compare_modes=args.compare_modes, device=args.device)
         return
 
-    run_generation(args.target_count, args.gen_batch_size, args.shard, args.num_shards, args.data_dir, args.dry_run)
+    if args.num_workers > 1 and args.shard is None and not args.dry_run:
+        run_multi_worker(args.num_workers, gen_batch_size, target_count, args.data_dir, device=args.device)
+        return
+
+    run_generation(target_count, gen_batch_size, args.shard, args.num_shards, args.data_dir, args.dry_run, device=args.device)
 
 
 if __name__ == "__main__":

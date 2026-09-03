@@ -34,13 +34,16 @@ prompt shape, not a stale one):
           48-prompt review -- see ML/README.md).
 
 Usage:
+    python3 quick_prompt_test.py --dry-run
     python3 quick_prompt_test.py
+    python3 quick_prompt_test.py --batch-size 3
     python3 quick_prompt_test.py --output-dir /data/quick_prompt_test_output
 """
 import argparse
 import os
 import shutil
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -174,13 +177,50 @@ def check_disk_space(output_dir):
     print(f"Disk check OK: {free_gb:.1f}GB free on {output_dir} (need >= {MIN_FREE_GB}GB).")
 
 
+def run_dry_run(batch_size=1):
+    print(f"{'='*88}\nDRY RUN -- {len(TEST_TASKS)} prompts, no GPU\n{'='*88}\n")
+    items = list(TEST_TASKS.items())
+    
+    # Group by resolution up to batch_size
+    batches = []
+    current_batch = []
+    current_res = None
+    for fn, spec in items:
+        res = spec["resolution"]
+        if current_batch and (res != current_res or len(current_batch) >= batch_size):
+            batches.append(current_batch)
+            current_batch = []
+        current_batch.append((fn, spec))
+        current_res = res
+    if current_batch:
+        batches.append(current_batch)
+
+    print(f"Planned execution: {len(TEST_TASKS)} images in {len(batches)} batch(es) (batch_size={batch_size})\n")
+    for b_idx, batch in enumerate(batches):
+        print(f"--- Batch {b_idx+1}/{len(batches)}: {len(batch)} image(s) at resolution {batch[0][1]['resolution']} ---")
+        for fn, spec in batch:
+            print(f"File: {fn}")
+            print(spec["prompt"])
+            print()
+    print("Dry run complete. No GPU was used.")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Fastest sanity check: 6 hardcoded prompts, real GPU generation, no taxonomy involved."
     )
+    parser.add_argument("--dry-run", action="store_true", help="Print prompts and batch plan without touching GPU.")
+    parser.add_argument("--batch-size", type=int, default=1,
+                        help="Number of same-resolution images per forward pass (default 1).")
+    parser.add_argument("--device", default=None,
+                        help="PyTorch device to use, e.g. 'cuda:0' (default is 'cuda' if available).")
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR),
                          help=f"Where images are written (default {DEFAULT_OUTPUT_DIR}).")
     args = parser.parse_args()
+
+    if args.dry_run:
+        run_dry_run(batch_size=max(1, args.batch_size))
+        return
 
     output_dir = Path(args.output_dir)
     check_disk_space(output_dir)
@@ -191,17 +231,51 @@ def main():
 
     import qwen_pipeline as qp
     print("Loading Qwen-Image-2512 (this can take a while on first run -- ~58GB download)...")
-    pipe, _can_batch = qp.load_pipeline()
+    pipe, can_batch = qp.load_pipeline(device=args.device)
 
-    for i, (filename, spec) in enumerate(TEST_TASKS.items()):
-        print(f"[{i+1}/{len(TEST_TASKS)}] Generating {filename}...")
-        task = {"prompt": spec["prompt"], "resolution": spec["resolution"]}
-        images = qp.generate(pipe, [task], seeds=[42], num_inference_steps=tx.NUM_INFERENCE_STEPS_TEST)
-        images[0].save(output_dir / filename)
+    effective_batch = args.batch_size
+    if not can_batch and effective_batch > 1:
+        print(f"Note: requested batch_size={effective_batch} but this GPU needs CPU offload -- forcing 1.")
+        effective_batch = 1
+    print(f"batch_size for this run: {effective_batch}")
+
+    items = list(TEST_TASKS.items())
+    batches = []
+    current_batch = []
+    current_res = None
+    for fn, spec in items:
+        res = spec["resolution"]
+        if current_batch and (res != current_res or len(current_batch) >= effective_batch):
+            batches.append(current_batch)
+            current_batch = []
+        current_batch.append((fn, spec))
+        current_res = res
+    if current_batch:
+        batches.append(current_batch)
+
+    total_images = len(items)
+    generated_count = 0
+    t_start = time.time()
+
+    for b_idx, batch in enumerate(batches):
+        filenames = [b[0] for b in batch]
+        tasks = [{"prompt": b[1]["prompt"], "resolution": b[1]["resolution"]} for b in batch]
+        seeds = [42 + b_idx * 10 + i for i in range(len(batch))]
+        print(f"[{generated_count + 1}-{generated_count + len(batch)}/{total_images}] Generating: {', '.join(filenames)}...")
+
+        t0 = time.time()
+        images = qp.generate(pipe, tasks, seeds=seeds, num_inference_steps=tx.NUM_INFERENCE_STEPS_TEST)
+        elapsed = time.time() - t0
+        print(f"  -> {len(batch)} image(s) generated in {elapsed:.1f}s ({elapsed / len(batch):.2f}s/image)")
+
+        for img, fn in zip(images, filenames):
+            img.save(output_dir / fn)
+        generated_count += len(batch)
 
     qp.unload(pipe)
+    total_elapsed = time.time() - t_start
 
-    print(f"\nDone. Check '{output_dir}'.")
+    print(f"\nDone in {total_elapsed:.1f}s (average {total_elapsed / total_images:.2f}s/image). Check '{output_dir}'.")
     print("Compare 01 vs 02 for the severity gradient (two different levels of bad, not a repeat),")
     print("and 05 vs 06 for polished-outfit diversity (not a jacket every time).")
     print("If these 6 look right, move on to smoke_test.py --per-tier and variation_test.py.")

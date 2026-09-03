@@ -217,7 +217,9 @@ tmux new -s qwengen
 export HF_HOME="/data/huggingface_cache"
 export HF_XET_HIGH_PERFORMANCE=1
 export LOOKMAX_DATA_DIR=/data
-python3 quick_prompt_test.py --output-dir /data/quick_prompt_test_output
+python3 quick_prompt_test.py --dry-run                                      # dry run sanity check
+python3 quick_prompt_test.py --output-dir /data/quick_prompt_test_output    # single image at a time
+python3 quick_prompt_test.py --batch-size 3                                # batched generation (3 grooming, 3 outfit)
 ```
 These 6 prompts are hardcoded, not built from `taxonomy.py` — deliberately
 standalone, so a taxonomy/prompt-builder bug can never mask (or be masked
@@ -248,8 +250,12 @@ alone — use the manual review checklist this command also prints.
 
 ### 7. Sixty-four real images — the deepest diversity/quality gate
 ```bash
-python3 variation_test.py --dry-run    # read the prompts first, no GPU
-python3 variation_test.py               # 64 real images (4 categories x 4 tiers x 4 samples/cell)
+python3 variation_test.py --dry-run                                # read prompts + batch plan first, no GPU
+python3 variation_test.py --compare-modes                           # compare sequential vs batched vs concurrent multi-worker
+python3 variation_test.py                                          # 64 real images (sequential)
+python3 variation_test.py --batch-size 2                           # 64 images with in-pipeline batching
+python3 variation_test.py --num-workers 2                          # 2 independent concurrent worker processes on the GPU
+python3 variation_test.py --num-workers 2 --batch-size 2           # 2 workers, batching 2 images each (4 images concurrently)
 ```
 This is `smoke_test.py --per-tier` generalized: instead of ONE image per
 category x tier, it generates several, so you can see diversity WITHIN a
@@ -264,12 +270,13 @@ images, this is where it's cheapest to catch it.
 
 ### 8. Benchmark on THIS hardware
 ```bash
-python3 full_run.py --benchmark
+python3 full_run.py --compare-modes            # compare sequential vs batch=2 vs 2 concurrent workers
+python3 full_run.py --benchmark                # single-mode benchmark with projected GPU-hours
 ```
-Times 5 images (discards the first as warm-up), projects total GPU-hours
+Times test images across configurations, projects total GPU-hours
 for all 28,000 images, and — if you pass `--num-shards N` — prints a
-per-shard time table. Don't skip this: the "no benefit from batching"
-finding above was measured on ONE specific GPU, not guaranteed on yours.
+per-shard time table. Don't skip this: test whether your specific GPU
+runs faster with single images, in-pipeline batching, or 2 concurrent workers.
 
 ### 9. The full run
 Single machine, unattended until done:
@@ -277,9 +284,12 @@ Single machine, unattended until done:
 tmux new -s qwengen
 export HF_HOME="/data/huggingface_cache"
 export LOOKMAX_DATA_DIR=/data
-python3 full_run.py
+python3 full_run.py                                                # default sequential run
+python3 full_run.py --batch-size 2                                 # in-pipeline batching
+python3 full_run.py --num-workers 2                                # 2 concurrent workers on the GPU (auto-merges shards on exit)
+python3 full_run.py --num-workers 2 --batch-size 2                 # 2 concurrent workers, batching 2 images each
 ```
-Split across N machines/processes (each takes disjoint task indices,
+Split across N machines/tmux panes (each takes disjoint task indices,
 `index % num_shards == shard`):
 ```bash
 python3 full_run.py --shard 0 --num-shards 4   # on worker 0

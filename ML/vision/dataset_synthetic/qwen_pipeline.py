@@ -41,9 +41,10 @@ FULL_RESIDENT_MIN_VRAM_GB = 80  # threshold with real headroom above the ~58GB p
 MODEL_ID = "Qwen/Qwen-Image-2512"
 
 
-def load_pipeline():
+def load_pipeline(device=None):
     """Returns (pipe, can_batch). can_batch is True only when the full
-    pipeline is resident on GPU (offload mode forces batch size 1)."""
+    pipeline is resident on GPU (offload mode forces batch size 1).
+    `device` can be None, 'cuda', or a specific device e.g. 'cuda:0', 'cuda:1'."""
     import torch
     from diffusers import QwenImagePipeline
 
@@ -55,20 +56,28 @@ def load_pipeline():
               "and is only sensible for a tiny sanity check, not a real generation run.")
         return pipe, False
 
-    props = torch.cuda.get_device_properties(0)
+    target_device = device or "cuda"
+    device_idx = 0
+    if ":" in str(target_device):
+        try:
+            device_idx = int(str(target_device).split(":")[1])
+        except (ValueError, IndexError):
+            device_idx = 0
+
+    props = torch.cuda.get_device_properties(device_idx)
     total_vram_gb = props.total_memory / (1024 ** 3)
-    print(f"Detected GPU: {props.name}, {total_vram_gb:.1f}GB total VRAM")
+    print(f"Detected GPU ({target_device}): {props.name}, {total_vram_gb:.1f}GB total VRAM")
 
     if total_vram_gb >= FULL_RESIDENT_MIN_VRAM_GB:
         print(f"VRAM >= {FULL_RESIDENT_MIN_VRAM_GB}GB -- loading the full pipeline resident on "
-              f"GPU (.to('cuda'), no offload). Parallel batched generation is available (but see "
+              f"GPU (.to('{target_device}'), no offload). Parallel batched generation is available (but see "
               f"full_run.py's DEFAULT_GEN_BATCH_SIZE comment before assuming it helps).")
-        pipe.to("cuda")
+        pipe.to(target_device)
         can_batch = True
     else:
         print(f"VRAM < {FULL_RESIDENT_MIN_VRAM_GB}GB -- using enable_model_cpu_offload(). "
               f"Parallel batching is disabled in this mode; generation is one image at a time.")
-        pipe.enable_model_cpu_offload()
+        pipe.enable_model_cpu_offload(device=target_device)
         can_batch = False
 
     return pipe, can_batch
