@@ -142,3 +142,6 @@ htmlcov/
 *.log
 
 
+# Graphify intermediate cache, machine-specific paths, and temp state
+graphify-out/cache/
+graphify-out/.*

@@ -1,0 +1,638 @@
+{
+  "/Users/sayyed/development/repos/LookMax/.claude/settings.json": {
+    "mtime": 1788467788.1609278,
+    "seen": 1788468299.981548,
+    "ast_hash": "87f0d903477984d0587a02f8fe185263",
+    "semantic_hash": "87f0d903477984d0587a02f8fe185263"
+  },
+  "/Users/sayyed/development/repos/LookMax/.vscode/settings.json": {
+    "mtime": 1787869284.8347185,
+    "seen": 1788468299.9815512,
+    "ast_hash": "1e0f3c3bda5643db0ebd1751345f1ed3",
+    "semantic_hash": "1e0f3c3bda5643db0ebd1751345f1ed3"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/generate_flux_dataset.py": {
+    "mtime": 1788275033.6777797,
+    "seen": 1788468299.9815521,
+    "ast_hash": "d47cded4b55c8af8312227a3b3793191",
+    "semantic_hash": "d47cded4b55c8af8312227a3b3793191"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/generate_qwen_dataset.py": {
+    "mtime": 1788307812.1202426,
+    "seen": 1788468299.9815838,
+    "ast_hash": "63e582ed0afe5b92faa5516d6715f19c",
+    "semantic_hash": "63e582ed0afe5b92faa5516d6715f19c"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/install_qwen.sh": {
+    "mtime": 1788294144.2172115,
+    "seen": 1788468299.981588,
+    "ast_hash": "aa945492791c65b989d9ccaba664a8b8",
+    "semantic_hash": "aa945492791c65b989d9ccaba664a8b8"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/qwen_pipeline_utils.py": {
+    "mtime": 1788306758.1057568,
+    "seen": 1788468299.981589,
+    "ast_hash": "041a70bb3debda36a1af58ecec548524",
+    "semantic_hash": "041a70bb3debda36a1af58ecec548524"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/qwen_taxonomy_v7.py": {
+    "mtime": 1788303076.439371,
+    "seen": 1788468299.98159,
+    "ast_hash": "e93e0d98bccaffaadb7828f1235a76ac",
+    "semantic_hash": "e93e0d98bccaffaadb7828f1235a76ac"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/test_flux_prompts.py": {
+    "mtime": 1788268988.5381293,
+    "seen": 1788468299.981591,
+    "ast_hash": "cbe82bc640f1489fdb61b2c342cbf08a",
+    "semantic_hash": "cbe82bc640f1489fdb61b2c342cbf08a"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/test_flux_variations.py": {
+    "mtime": 1788274836.329072,
+    "seen": 1788468299.9815922,
+    "ast_hash": "c857b73df3a27bba6e9c9b76ec45ad29",
+    "semantic_hash": "c857b73df3a27bba6e9c9b76ec45ad29"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/test_model_comparison.py": {
+    "mtime": 1788277405.8289914,
+    "seen": 1788468299.9815922,
+    "ast_hash": "a5df82ab584be52f7a595bbccc5f6c88",
+    "semantic_hash": "a5df82ab584be52f7a595bbccc5f6c88"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/test_qwen_prompts_v7.py": {
+    "mtime": 1788307049.4795723,
+    "seen": 1788468299.9815931,
+    "ast_hash": "063dcc9be04a85bb8daa582d896ca443",
+    "semantic_hash": "063dcc9be04a85bb8daa582d896ca443"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/test_qwen_variations.py": {
+    "mtime": 1788294110.0730004,
+    "seen": 1788468299.981594,
+    "ast_hash": "4ee0f5b41831c44eedd20a3d72cb98f4",
+    "semantic_hash": "4ee0f5b41831c44eedd20a3d72cb98f4"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/test_qwen_variations_v7.py": {
+    "mtime": 1788307823.9416687,
+    "seen": 1788468299.9815948,
+    "ast_hash": "3f75e6764b9d6031b702dad9cb490c7b",
+    "semantic_hash": "3f75e6764b9d6031b702dad9cb490c7b"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/__init__.py": {
+    "mtime": 1788465284.4675982,
+    "seen": 1788468299.9815948,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/config.py": {
+    "mtime": 1788465578.1628318,
+    "seen": 1788468299.981596,
+    "ast_hash": "82d0aec1b515b78e23852c06bb80586d",
+    "semantic_hash": "82d0aec1b515b78e23852c06bb80586d"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/export_coreml.py": {
+    "mtime": 1788462846.3263538,
+    "seen": 1788468299.981597,
+    "ast_hash": "b48105c2f6cf680db2489aec4dddaf20",
+    "semantic_hash": "b48105c2f6cf680db2489aec4dddaf20"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/finetune.py": {
+    "mtime": 1788462833.7820532,
+    "seen": 1788468299.981597,
+    "ast_hash": "0756be5778f11bdebbf565f48e3ce3f8",
+    "semantic_hash": "0756be5778f11bdebbf565f48e3ce3f8"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/generate_synthetic_dataset.py": {
+    "mtime": 1788465588.8617532,
+    "seen": 1788468299.981598,
+    "ast_hash": "a279274bd598a3c189848e11320d2a58",
+    "semantic_hash": "a279274bd598a3c189848e11320d2a58"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/install.sh": {
+    "mtime": 1788465594.5457215,
+    "seen": 1788468299.981599,
+    "ast_hash": "6a13113aeca829fec9eb072c3a663813",
+    "semantic_hash": "6a13113aeca829fec9eb072c3a663813"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/prune_vocabulary.py": {
+    "mtime": 1788462674.271509,
+    "seen": 1788468299.981599,
+    "ast_hash": "4745e460e8dce960d81fbbaf28343b62",
+    "semantic_hash": "4745e460e8dce960d81fbbaf28343b62"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/qa_review.py": {
+    "mtime": 1788462146.4047658,
+    "seen": 1788468299.9816,
+    "ast_hash": "f347e4a604860b1de36a8364b8f55ee5",
+    "semantic_hash": "f347e4a604860b1de36a8364b8f55ee5"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/remap_tokenizer.py": {
+    "mtime": 1788462225.622316,
+    "seen": 1788468299.981601,
+    "ast_hash": "60c7e9a6d09f4b396e40d3a40cf49180",
+    "semantic_hash": "60c7e9a6d09f4b396e40d3a40cf49180"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/smoke_test.py": {
+    "mtime": 1788465386.2693472,
+    "seen": 1788468299.981602,
+    "ast_hash": "8d7e28c1b6819592c59297fd03bcb1d3",
+    "semantic_hash": "8d7e28c1b6819592c59297fd03bcb1d3"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/tag_vocabulary.py": {
+    "mtime": 1788465584.6922746,
+    "seen": 1788468299.9816031,
+    "ast_hash": "489187192cb9b8a6ed7caca90363ffff",
+    "semantic_hash": "489187192cb9b8a6ed7caca90363ffff"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/__init__.py": {
+    "mtime": 1788005230.998326,
+    "seen": 1788468299.9816031,
+    "ast_hash": "48107e6342ecaf042a80e73080c3ba89",
+    "semantic_hash": "48107e6342ecaf042a80e73080c3ba89"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/config.py": {
+    "mtime": 1788465420.6000633,
+    "seen": 1788468299.981604,
+    "ast_hash": "6c21cb32b7ecce76fc454832f8d5c6ad",
+    "semantic_hash": "6c21cb32b7ecce76fc454832f8d5c6ad"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/01_setup_environment.py": {
+    "mtime": 1788465683.3310306,
+    "seen": 1788468299.981604,
+    "ast_hash": "3ecc4036e6750195f282a446b6700be3",
+    "semantic_hash": "3ecc4036e6750195f282a446b6700be3"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/02_scrape_images.py": {
+    "mtime": 1788465473.499316,
+    "seen": 1788468299.981605,
+    "ast_hash": "31773aacedbcb25c9385681f017c7edc",
+    "semantic_hash": "31773aacedbcb25c9385681f017c7edc"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/03_classify_and_sort.py": {
+    "mtime": 1788465493.064434,
+    "seen": 1788468299.981606,
+    "ast_hash": "79ce23094b39f781dc8b8aaeffc3d2f5",
+    "semantic_hash": "79ce23094b39f781dc8b8aaeffc3d2f5"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/__init__.py": {
+    "mtime": 1788465284.4674158,
+    "seen": 1788468299.981606,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/generate_bad_face_queries.py": {
+    "mtime": 1788465400.2690167,
+    "seen": 1788468299.981607,
+    "ast_hash": "0281b687c96eb263fc722afa62eff854",
+    "semantic_hash": "0281b687c96eb263fc722afa62eff854"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/generate_face_queries.py": {
+    "mtime": 1788465409.908732,
+    "seen": 1788468299.981607,
+    "ast_hash": "3897bd64244f698a1875d3c547c4cfd4",
+    "semantic_hash": "3897bd64244f698a1875d3c547c4cfd4"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/load_celeba_dataset.py": {
+    "mtime": 1788465562.391521,
+    "seen": 1788468299.981608,
+    "ast_hash": "d8fc3ba7b2e9c6a5370295440c620bfe",
+    "semantic_hash": "d8fc3ba7b2e9c6a5370295440c620bfe"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/load_fairface_dataset.py": {
+    "mtime": 1788465555.0329392,
+    "seen": 1788468299.981608,
+    "ast_hash": "03aa58b10c34f7449e8955223c07cbe5",
+    "semantic_hash": "03aa58b10c34f7449e8955223c07cbe5"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/load_unsplash_dataset.py": {
+    "mtime": 1788465546.8368778,
+    "seen": 1788468299.9816089,
+    "ast_hash": "aa38b38e2e8995b221aa6831031e6d46",
+    "semantic_hash": "aa38b38e2e8995b221aa6831031e6d46"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/reddit_bad_faces.json": {
+    "mtime": 1788142598.2751977,
+    "seen": 1788468299.98161,
+    "ast_hash": "23c7351219ab5da9d33082d6fc9e5d61",
+    "semantic_hash": "23c7351219ab5da9d33082d6fc9e5d61"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/reddit_face_queries.json": {
+    "mtime": 1788126464.0962834,
+    "seen": 1788468299.98161,
+    "ast_hash": "f7cc272140f7203bda46efdf5c910dec",
+    "semantic_hash": "f7cc272140f7203bda46efdf5c910dec"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/reddit_outfit_queries.json": {
+    "mtime": 1788126422.38712,
+    "seen": 1788468299.981611,
+    "ast_hash": "c6481780f3505f9c068fd94976e9cf61",
+    "semantic_hash": "c6481780f3505f9c068fd94976e9cf61"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/reddit_queries.json": {
+    "mtime": 1788122704.978785,
+    "seen": 1788468299.981611,
+    "ast_hash": "856dbf438239afe2bec3cc2e7fdb3e16",
+    "semantic_hash": "856dbf438239afe2bec3cc2e7fdb3e16"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/reddit_scraper.py": {
+    "mtime": 1788465521.930448,
+    "seen": 1788468299.981612,
+    "ast_hash": "74cd95d717492899269172bb42da9743",
+    "semantic_hash": "74cd95d717492899269172bb42da9743"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_real/test_reddit_scraper.py": {
+    "mtime": 1788095594.517291,
+    "seen": 1788468299.981612,
+    "ast_hash": "683dd4f62bb0948723bd7e271536b7ff",
+    "semantic_hash": "683dd4f62bb0948723bd7e271536b7ff"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/__init__.py": {
+    "mtime": 1788465284.4675007,
+    "seen": 1788468299.9816132,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/extract_measured_labels.py": {
+    "mtime": 1788465568.4057276,
+    "seen": 1788468299.981614,
+    "ast_hash": "552492d3be586ef7ad882f4e51f41126",
+    "semantic_hash": "552492d3be586ef7ad882f4e51f41126"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/full_run.py": {
+    "mtime": 1788404851.9363236,
+    "seen": 1788468299.981615,
+    "ast_hash": "38ca0ac9745bdc1dd4514adffcbc9494",
+    "semantic_hash": "38ca0ac9745bdc1dd4514adffcbc9494"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/install.sh": {
+    "mtime": 1788404862.873018,
+    "seen": 1788468299.981615,
+    "ast_hash": "800a59c0cdbc8dc86c1a7d4fef4378fe",
+    "semantic_hash": "800a59c0cdbc8dc86c1a7d4fef4378fe"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/merge_shards.py": {
+    "mtime": 1788404791.8657784,
+    "seen": 1788468299.981616,
+    "ast_hash": "fec17d9ae0031a9c8eb59d4828935fa4",
+    "semantic_hash": "fec17d9ae0031a9c8eb59d4828935fa4"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/prompt_builder.py": {
+    "mtime": 1788404441.6161253,
+    "seen": 1788468299.981616,
+    "ast_hash": "eea3c6fe0ba6f67a45891df29790e303",
+    "semantic_hash": "eea3c6fe0ba6f67a45891df29790e303"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/quick_prompt_test.py": {
+    "mtime": 1788431746.019902,
+    "seen": 1788468299.981617,
+    "ast_hash": "eb0f039aea2b556280d1ed5b96f16b1d",
+    "semantic_hash": "eb0f039aea2b556280d1ed5b96f16b1d"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/qwen_pipeline.py": {
+    "mtime": 1788404479.957964,
+    "seen": 1788468299.981618,
+    "ast_hash": "d626fbab7c5a3fc05835071126aa4bd8",
+    "semantic_hash": "d626fbab7c5a3fc05835071126aa4bd8"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/smoke_test.py": {
+    "mtime": 1788404885.2642539,
+    "seen": 1788468299.981618,
+    "ast_hash": "69338690997f75323ad49ec55f46e253",
+    "semantic_hash": "69338690997f75323ad49ec55f46e253"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/taxonomy.py": {
+    "mtime": 1788391061.5547545,
+    "seen": 1788468299.981619,
+    "ast_hash": "70383226e444feb48b65725ef5f3f3e9",
+    "semantic_hash": "70383226e444feb48b65725ef5f3f3e9"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/validation_sweep.py": {
+    "mtime": 1788404774.2695706,
+    "seen": 1788468299.981619,
+    "ast_hash": "73027a2b01fb7524c1141a7e1852b695",
+    "semantic_hash": "73027a2b01fb7524c1141a7e1852b695"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/variation_test.py": {
+    "mtime": 1788431771.7840674,
+    "seen": 1788468299.98162,
+    "ast_hash": "59123147b3f43601f8fd6e7a6d774acd",
+    "semantic_hash": "59123147b3f43601f8fd6e7a6d774acd"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/training/__init__.py": {
+    "mtime": 1788465284.4675515,
+    "seen": 1788468299.98162,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/training/finetune_real_world.py": {
+    "mtime": 1788465367.7260706,
+    "seen": 1788468299.981621,
+    "ast_hash": "ec8dfe494f8bd82d6fcbfebdf3485d69",
+    "semantic_hash": "ec8dfe494f8bd82d6fcbfebdf3485d69"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/training/multihead_common.py": {
+    "mtime": 1788465320.3425758,
+    "seen": 1788468299.981621,
+    "ast_hash": "09b71b2762faaa13c9d2b9db54042bd8",
+    "semantic_hash": "09b71b2762faaa13c9d2b9db54042bd8"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/training/pretrain_synthetic.py": {
+    "mtime": 1788465359.3608859,
+    "seen": 1788468299.981622,
+    "ast_hash": "7f9d5c3c37c87c4ab105623bc4fb7eeb",
+    "semantic_hash": "7f9d5c3c37c87c4ab105623bc4fb7eeb"
+  },
+  "/Users/sayyed/development/repos/LookMax/buildServer.json": {
+    "mtime": 1787855227.1546414,
+    "seen": 1788468299.981622,
+    "ast_hash": "b89760e7862fa1d295180c69979ae24f",
+    "semantic_hash": "b89760e7862fa1d295180c69979ae24f"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1787838819.2041726,
+    "seen": 1788468299.981623,
+    "ast_hash": "55019f7265dde0a78318b0807f98e847",
+    "semantic_hash": "55019f7265dde0a78318b0807f98e847"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1787838820.314193,
+    "seen": 1788468299.981623,
+    "ast_hash": "cbe75704b2680422c4156009a528e292",
+    "semantic_hash": "cbe75704b2680422c4156009a528e292"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Assets.xcassets/Contents.json": {
+    "mtime": 1787838819.2047775,
+    "seen": 1788468299.9816241,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/ContentView.swift": {
+    "mtime": 1787925516.7693815,
+    "seen": 1788468299.9816241,
+    "ast_hash": "27b33026df95a2eb12597fd32a5aaada",
+    "semantic_hash": "27b33026df95a2eb12597fd32a5aaada"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift": {
+    "mtime": 1787868191.088552,
+    "seen": 1788468299.981625,
+    "ast_hash": "8e41bb13d9339a01b72b31ad45b3c5dd",
+    "semantic_hash": "8e41bb13d9339a01b72b31ad45b3c5dd"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Extensions/Color+Hex.swift": {
+    "mtime": 1787868183.7713158,
+    "seen": 1788468299.981625,
+    "ast_hash": "6f70492659e7a11acaadb1c7745ed3ae",
+    "semantic_hash": "6f70492659e7a11acaadb1c7745ed3ae"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Extensions/Theme.swift": {
+    "mtime": 1787878556.4357696,
+    "seen": 1788468299.981626,
+    "ast_hash": "0a505b499c50ddbae4075c7f2c92c4dc",
+    "semantic_hash": "0a505b499c50ddbae4075c7f2c92c4dc"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/LookMaxApp.swift": {
+    "mtime": 1787868861.0814738,
+    "seen": 1788468299.981627,
+    "ast_hash": "3d6b34ee99c90fc1667ddaf036abbe39",
+    "semantic_hash": "3d6b34ee99c90fc1667ddaf036abbe39"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Managers/CameraController.swift": {
+    "mtime": 1787878628.7404277,
+    "seen": 1788468299.981627,
+    "ast_hash": "7ff07fdba539c8f443936c718d623f86",
+    "semantic_hash": "7ff07fdba539c8f443936c718d623f86"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Managers/LookAnalysisEngine.swift": {
+    "mtime": 1787926216.9139504,
+    "seen": 1788468299.981628,
+    "ast_hash": "f858bc28d56691fb386d6cbc09095d5d",
+    "semantic_hash": "f858bc28d56691fb386d6cbc09095d5d"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Managers/SessionStorageManager.swift": {
+    "mtime": 1787868264.341844,
+    "seen": 1788468299.981628,
+    "ast_hash": "222653523df7840efe4dd68c1ef9a485",
+    "semantic_hash": "222653523df7840efe4dd68c1ef9a485"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/FaceBiometricSignature.swift": {
+    "mtime": 1787868243.8332555,
+    "seen": 1788468299.981629,
+    "ast_hash": "6044ce78141824ba26122e0f466a2147",
+    "semantic_hash": "6044ce78141824ba26122e0f466a2147"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/LookAnalysisResult.swift": {
+    "mtime": 1787878572.007557,
+    "seen": 1788468299.981629,
+    "ast_hash": "c2799129474354270c929a91d105610a",
+    "semantic_hash": "c2799129474354270c929a91d105610a"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/LookItem.swift": {
+    "mtime": 1787878572.0074236,
+    "seen": 1788468299.9816298,
+    "ast_hash": "315a164f06c21b65ec6ca817d4bdb9ad",
+    "semantic_hash": "315a164f06c21b65ec6ca817d4bdb9ad"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/LookSession.swift": {
+    "mtime": 1787878572.007862,
+    "seen": 1788468299.9816298,
+    "ast_hash": "0846ffde0671bdf868fdf80d8ace86ea",
+    "semantic_hash": "0846ffde0671bdf868fdf80d8ace86ea"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/OccasionCategory.swift": {
+    "mtime": 1787868199.9265864,
+    "seen": 1788468299.981631,
+    "ast_hash": "a9a95a405676ba1c02db32bb1e0be506",
+    "semantic_hash": "a9a95a405676ba1c02db32bb1e0be506"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/StyleSuggestion.swift": {
+    "mtime": 1787868208.2094083,
+    "seen": 1788468299.981631,
+    "ast_hash": "9462308ed60e55d201e56cacd7997dbb",
+    "semantic_hash": "9462308ed60e55d201e56cacd7997dbb"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Models/UserProfile.swift": {
+    "mtime": 1787868861.0813115,
+    "seen": 1788468299.981632,
+    "ast_hash": "1d5dcf3a574423405cccedae0224358b",
+    "semantic_hash": "1d5dcf3a574423405cccedae0224358b"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Services/GeminiVisionService.swift": {
+    "mtime": 1787926195.76475,
+    "seen": 1788468299.981632,
+    "ast_hash": "d39ff7c368e1e5edd61ab8baf3b08e78",
+    "semantic_hash": "d39ff7c368e1e5edd61ab8baf3b08e78"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Camera/ARBiometricOverlayView.swift": {
+    "mtime": 1787878639.7149472,
+    "seen": 1788468299.981633,
+    "ast_hash": "5696ff8f8bcdb37b1ab8441b56bf02f7",
+    "semantic_hash": "5696ff8f8bcdb37b1ab8441b56bf02f7"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Camera/CameraPreviewView.swift": {
+    "mtime": 1787868443.4409528,
+    "seen": 1788468299.981633,
+    "ast_hash": "9f74754a2534c3d6b88914d4b697ad2d",
+    "semantic_hash": "9f74754a2534c3d6b88914d4b697ad2d"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Camera/CustomCameraView.swift": {
+    "mtime": 1787879499.4862368,
+    "seen": 1788468299.9816341,
+    "ast_hash": "fdf3f7723a72342542bbc3ce2cd25d79",
+    "semantic_hash": "fdf3f7723a72342542bbc3ce2cd25d79"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Comparison/BeforeAfterComparisonView.swift": {
+    "mtime": 1787879455.483062,
+    "seen": 1788468299.981635,
+    "ast_hash": "e0dd576b9cc58da98191d2e470d34ddb",
+    "semantic_hash": "e0dd576b9cc58da98191d2e470d34ddb"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Components/DashboardComponents.swift": {
+    "mtime": 1787879372.3280997,
+    "seen": 1788468299.981635,
+    "ast_hash": "0d2365cc25fc057fdb6e03c0d77b224e",
+    "semantic_hash": "0d2365cc25fc057fdb6e03c0d77b224e"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Components/ImagePicker.swift": {
+    "mtime": 1787868367.0568564,
+    "seen": 1788468299.981636,
+    "ast_hash": "cb3d8073f5efb20ae4c0c6363c79f816",
+    "semantic_hash": "cb3d8073f5efb20ae4c0c6363c79f816"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Components/LookCarouselView.swift": {
+    "mtime": 1787924898.1329207,
+    "seen": 1788468299.981636,
+    "ast_hash": "389d42b2d7ba2bb8f215aa4ca1561103",
+    "semantic_hash": "389d42b2d7ba2bb8f215aa4ca1561103"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Components/LookDetailCard.swift": {
+    "mtime": 1787879410.0837283,
+    "seen": 1788468299.981637,
+    "ast_hash": "12977e3bd9c95abcf76d3c72ee96882f",
+    "semantic_hash": "12977e3bd9c95abcf76d3c72ee96882f"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Components/ScoreComparisonBar.swift": {
+    "mtime": 1787879390.8800519,
+    "seen": 1788468299.981637,
+    "ast_hash": "a7b4b09d0f7ab9dbe2655ba54263f03d",
+    "semantic_hash": "a7b4b09d0f7ab9dbe2655ba54263f03d"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Onboarding/ProfileOnboardingView.swift": {
+    "mtime": 1787878696.6621435,
+    "seen": 1788468299.981639,
+    "ast_hash": "174803b0100fa170c6d78b0fe72206c6",
+    "semantic_hash": "174803b0100fa170c6d78b0fe72206c6"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Sessions/CreateSessionSheet.swift": {
+    "mtime": 1787878687.5446773,
+    "seen": 1788468299.9816399,
+    "ast_hash": "e203bbcb24a243d31569d297a5831075",
+    "semantic_hash": "e203bbcb24a243d31569d297a5831075"
+  },
+  "/Users/sayyed/development/repos/LookMax/iOS/LookMax/Views/Sessions/SessionDetailView.swift": {
+    "mtime": 1787926251.880004,
+    "seen": 1788468299.9816399,
+    "ast_hash": "b9893a69318274641e59d79f364cdfe9",
+    "semantic_hash": "b9893a69318274641e59d79f364cdfe9"
+  },
+  "/Users/sayyed/development/repos/LookMax/.agents/rules/build_and_deploy.md": {
+    "mtime": 1788465642.4076982,
+    "seen": 1788468299.981641,
+    "ast_hash": "191e88512d99886b16e1248d53ede5fc",
+    "semantic_hash": "191e88512d99886b16e1248d53ede5fc"
+  },
+  "/Users/sayyed/development/repos/LookMax/.agents/skills/graphify/SKILL.md": {
+    "mtime": 1788467806.329129,
+    "seen": 1788468299.981641,
+    "ast_hash": "5ae00786ea53e4d944ab70abe11eedd1",
+    "semantic_hash": "5ae00786ea53e4d944ab70abe11eedd1"
+  },
+  "/Users/sayyed/development/repos/LookMax/.claude/CLAUDE.md": {
+    "mtime": 1788467788.1606681,
+    "seen": 1788468299.981642,
+    "ast_hash": "db73b0edd7ffbc61ceac177130730865",
+    "semantic_hash": "db73b0edd7ffbc61ceac177130730865"
+  },
+  "/Users/sayyed/development/repos/LookMax/.claude/skills/graphify/SKILL.md": {
+    "mtime": 1788467788.160397,
+    "seen": 1788468299.981642,
+    "ast_hash": "5ae00786ea53e4d944ab70abe11eedd1",
+    "semantic_hash": "5ae00786ea53e4d944ab70abe11eedd1"
+  },
+  "/Users/sayyed/development/repos/LookMax/AGENTS.md": {
+    "mtime": 1788465650.9329166,
+    "seen": 1788468299.981643,
+    "ast_hash": "0118b445b3a8b626dcf547b9b28e965a",
+    "semantic_hash": "0118b445b3a8b626dcf547b9b28e965a"
+  },
+  "/Users/sayyed/development/repos/LookMax/Android/README.md": {
+    "mtime": 1787869132.7608955,
+    "seen": 1788468299.981644,
+    "ast_hash": "660d099ed95185a648c872bc987d801e",
+    "semantic_hash": "660d099ed95185a648c872bc987d801e"
+  },
+  "/Users/sayyed/development/repos/LookMax/Backend/README.md": {
+    "mtime": 1787868574.6555822,
+    "seen": 1788468299.981644,
+    "ast_hash": "6c2046a687fea8b7d9f6e78d0aa53c8c",
+    "semantic_hash": "6c2046a687fea8b7d9f6e78d0aa53c8c"
+  },
+  "/Users/sayyed/development/repos/LookMax/CLAUDE.md": {
+    "mtime": 1788467788.160795,
+    "seen": 1788468299.981645,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/README.md": {
+    "mtime": 1788465623.78985,
+    "seen": 1788468299.981645,
+    "ast_hash": "f0416bfa8d77c89d44f7151f235c9d36",
+    "semantic_hash": "f0416bfa8d77c89d44f7151f235c9d36"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/PLAN.md": {
+    "mtime": 1788304273.2756805,
+    "seen": 1788468299.981646,
+    "ast_hash": "8caba3e814e19bfee5649af953d85e1f",
+    "semantic_hash": "8caba3e814e19bfee5649af953d85e1f"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/qwen_48_prompts.txt": {
+    "mtime": 1788297497.7116296,
+    "seen": 1788468299.981646,
+    "ast_hash": "8549340392db8275663768f1157deb20",
+    "semantic_hash": "8549340392db8275663768f1157deb20"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/archive/dataset_generator_v7/requirements.txt": {
+    "mtime": 1788218057.371119,
+    "seen": 1788468299.981647,
+    "ast_hash": "19d836db83a06265cc8c3e40be4a6cb1",
+    "semantic_hash": "19d836db83a06265cc8c3e40be4a6cb1"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/PLAN.md": {
+    "mtime": 1788465632.2549012,
+    "seen": 1788468299.981648,
+    "ast_hash": "9b616054416c9a4457fceda7b665d739",
+    "semantic_hash": "9b616054416c9a4457fceda7b665d739"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/stylist_llm/requirements.txt": {
+    "mtime": 1788465598.1933863,
+    "seen": 1788468299.981648,
+    "ast_hash": "ba448351d6de36afc3528c3c96231e87",
+    "semantic_hash": "ba448351d6de36afc3528c3c96231e87"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/PLAN.md": {
+    "mtime": 1788465637.9476602,
+    "seen": 1788468299.981649,
+    "ast_hash": "df14313fef79ba73012e679c59b16ee0",
+    "semantic_hash": "df14313fef79ba73012e679c59b16ee0"
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/vision/requirements.txt": {
+    "mtime": 1788465422.6393263,
+    "seen": 1788468299.981649,
+    "ast_hash": "f7d83c53e7254b7b4381ef046ee71a3c",
+    "semantic_hash": "f7d83c53e7254b7b4381ef046ee71a3c"
+  },
+  "/Users/sayyed/development/repos/LookMax/README.md": {
+    "mtime": 1788465658.0205734,
+    "seen": 1788468299.9816499,
+    "ast_hash": "633b17abac7bd5df82444f6f29eee941",
+    "semantic_hash": "633b17abac7bd5df82444f6f29eee941"
+  }
+}
