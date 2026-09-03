@@ -24,16 +24,16 @@ Key Capabilities:
 
 Usage Examples:
   # 1. First-time setup: interactive login
-  python3 ML/pipeline/reddit_scraper.py --login
+  python3 ML/vision/dataset_real/reddit_scraper.py --login
 
   # 2. Verify stored session
-  python3 ML/pipeline/reddit_scraper.py --check-session
+  python3 ML/vision/dataset_real/reddit_scraper.py --check-session
 
   # 3. Scrape and stream-download 110+ diverse queries catalog (10,000 images)
-  python3 ML/pipeline/reddit_scraper.py --queries-file ML/pipeline/reddit_queries.json --download --limit 100 --target-total 10000
+  python3 ML/vision/dataset_real/reddit_scraper.py --queries-file ML/vision/dataset_real/reddit_queries.json --download --limit 100 --target-total 10000
 
   # 4. Search a specific term on a subreddit with streaming download
-  python3 ML/pipeline/reddit_scraper.py --subreddit malefashionadvice --query "tailored suit" --download --limit 75
+  python3 ML/vision/dataset_real/reddit_scraper.py --subreddit malefashionadvice --query "tailored suit" --download --limit 75
 """
 
 from __future__ import annotations
@@ -192,7 +192,7 @@ def print_available_chrome_profiles() -> None:
     print("═" * 78)
     print("  Usage Note:")
     print("    1. Completely quit Google Chrome (Cmd + Q) before running with --chrome-profile.")
-    print('    2. Example: python ML/pipeline/reddit_scraper.py --chrome-profile "Profile 1"')
+    print('    2. Example: python3 ML/vision/dataset_real/reddit_scraper.py --chrome-profile "Profile 1"')
     print("═" * 78 + "\n")
 
 

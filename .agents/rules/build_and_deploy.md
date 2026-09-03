@@ -5,7 +5,7 @@ Whenever you make any code modifications or additions in this project:
 - Always run `xcodebuild` (or `swiftc -typecheck`) to verify that the project builds cleanly with 0 errors before reporting completion.
 - Command:
   ```bash
-  xcodebuild build -project FaceReportDemo.xcodeproj -scheme FaceReportDemo -destination 'generic/platform=iOS Simulator'
+  xcodebuild build -project iOS/LookMax.xcodeproj -scheme LookMax -destination 'generic/platform=iOS Simulator'
   ```
 
 ## 2. Automatic Build & Deployment

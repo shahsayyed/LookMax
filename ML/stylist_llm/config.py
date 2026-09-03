@@ -1,7 +1,7 @@
 """
 config.py -- self-contained configuration for the on-device stylist LLM
-pipeline. Deliberately NOT part of ML/pipeline/config.py (the vision
-pipeline's shared config) -- the two pipelines are meant to be fully
+pipeline. Deliberately NOT part of ML/vision/config.py (the vision
+pipeline's config) -- the two pipelines are meant to be fully
 isolated (separate data folders, separate training code, separate
 checkpoints), and sharing one config module would be a silent coupling
 point neither pipeline actually needs. The one deliberate, one-directional
@@ -16,7 +16,7 @@ from pathlib import Path
 
 try:
     from dotenv import load_dotenv
-    env_path = Path(__file__).resolve().parent.parent.parent.parent / ".env"
+    env_path = Path(__file__).resolve().parent.parent.parent / ".env"
     if env_path.exists():
         load_dotenv(dotenv_path=env_path)
     else:
@@ -25,7 +25,7 @@ except ImportError:
     pass
 
 # ─── Paths ────────────────────────────────────────────────────────────────
-REPO_ROOT   = Path(__file__).resolve().parent.parent.parent.parent   # LookMax/
+REPO_ROOT   = Path(__file__).resolve().parent.parent.parent   # LookMax/
 ML_ROOT     = REPO_ROOT / "ML"
 STYLIST_DIR = Path(__file__).resolve().parent                        # this pipeline's own code dir
 MODELS_DIR  = ML_ROOT / "models"                                     # shared final .mlpackage destination
@@ -34,9 +34,8 @@ MODELS_DIR  = ML_ROOT / "models"                                     # shared fi
                                                                        # this pipeline shares with the vision
                                                                        # one, and only as an export TARGET)
 
-# Data lives at ML/data/5_Stylist_LLM/ -- a numbered sibling of the vision
-# pipeline's 1-4 folders (see ML/README.md), never reused or merged with them.
-STYLIST_DATA_DIR = ML_ROOT / "data" / "5_Stylist_LLM"
+# Data lives at ML/data/stylist_llm/
+STYLIST_DATA_DIR = ML_ROOT / "data" / "stylist_llm"
 RAW_GENERATED_DIR = STYLIST_DATA_DIR / "raw_generated"    # Gemini output, JSONL, unfiltered
 QA_REVIEWED_DIR    = STYLIST_DATA_DIR / "qa_reviewed"      # after qa_review.py -- has qa_pass column-equivalent
 VOCAB_DIR          = STYLIST_DATA_DIR / "pruned_vocab"     # token id mapping + pruned tokenizer artifacts
@@ -50,7 +49,7 @@ CHECKPOINTS_DIR = STYLIST_DIR / "checkpoints"
 BASE_MODEL_ID = "HuggingFaceTB/SmolLM2-135M-Instruct"
 
 # ─── Synthetic data generation (Gemini) ────────────────────────────────────
-# A SEPARATE API config from ML/pipeline/config.py's GEMINI_MODEL -- that one
+# A SEPARATE API config from ML/vision/config.py's GEMINI_MODEL -- that one
 # is the VLM used for classifying scraped photos (a vision task); this is a
 # plain text-generation call for writing styling-advice training examples.
 # Deliberately not sharing the constant so the two can be tuned/rotated

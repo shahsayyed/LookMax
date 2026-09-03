@@ -24,16 +24,18 @@ except ImportError:
 # Resolve dynamically from this file's location so the pipeline is portable
 REPO_ROOT  = Path(__file__).resolve().parent.parent.parent   # LookMax/
 ML_ROOT    = REPO_ROOT / "ML"
-PIPELINE   = ML_ROOT / "pipeline"
+VISION_DIR = ML_ROOT / "vision"
+PIPELINE   = VISION_DIR                                       # backward-compatibility alias
 DATA_ROOT  = ML_ROOT / "data"
 MODELS_DIR = ML_ROOT / "models"
 
 # ─── Stage Directories ───────────────────────────────────────────────────────
-RAW_SCRAPES_DIR       = DATA_ROOT / "1_Raw_Scrapes"
-VLM_PROCESSING_DIR    = DATA_ROOT / "2_VLM_Processing"
+REAL_DATA_DIR         = DATA_ROOT / "vision_real"
+RAW_SCRAPES_DIR       = REAL_DATA_DIR / "1_Raw_Scrapes"
+VLM_PROCESSING_DIR    = REAL_DATA_DIR / "2_VLM_Processing"
 REJECTED_DIR          = VLM_PROCESSING_DIR / "filtered_rejected"
 METADATA_LOGS_DIR     = VLM_PROCESSING_DIR / "metadata_logs"
-TRAINING_DATA_DIR     = DATA_ROOT / "3_CoreML_Training_Data"
+TRAINING_DATA_DIR     = REAL_DATA_DIR / "3_CoreML_Training_Data"
 ANNOTATIONS_FILE      = METADATA_LOGS_DIR / "dataset_annotations.jsonl"
 
 # ─── Reddit Scraping Sources ─────────────────────────────────────────────────
@@ -52,8 +54,8 @@ REDDIT_LISTINGS = ["hot", "top"]
 REDDIT_TOP_PERIODS = ["all", "year"]    # For "top" listing only
 
 # ─── Reddit Playwright Scraper Settings ─────────────────────────────────────
-REDDIT_PROFILE_DIR = PIPELINE / "reddit_profile"
-REDDIT_QUERIES_FILE = PIPELINE / "reddit_queries.json"
+REDDIT_PROFILE_DIR = ML_ROOT / ".cache" / "reddit_profile"
+REDDIT_QUERIES_FILE = VISION_DIR / "dataset_real" / "reddit_queries.json"
 REDDIT_SCRAPE_OUTPUT_JSON = METADATA_LOGS_DIR / "reddit_images.json"
 REDDIT_DELAY_MIN_SEC = 5.0          # Human-like randomized minimum delay per request (seconds)
 REDDIT_DELAY_MAX_SEC = 10.0         # Human-like randomized maximum delay per request (seconds)
@@ -114,9 +116,9 @@ NUM_CLASSES = len(AESTHETIC_TIERS)  # 3 classes
 EARLY_STOPPING_PATIENCE = 5
 
 # ─── Synthetic Qwen Dataset (Phase 1b output → Phase 4 input) ───────────────
-# See ML/pipeline/dataset_generator/ (Phase 1b, untouched by the trainer) and
-# ML/pipeline/dataset_generator/taxonomy.py for the label schema this feeds.
-SYNTHETIC_DIR     = DATA_ROOT / "4_Synthetic_Qwen"
+# See ML/vision/dataset_synthetic/ (Phase 1b) and
+# ML/vision/dataset_synthetic/taxonomy.py for the label schema this feeds.
+SYNTHETIC_DIR     = DATA_ROOT / "vision_synthetic"
 SYNTHETIC_RAW_DIR = SYNTHETIC_DIR / "raw_generated"     # rsync'd from the GPU box, unfiltered
 SYNTHETIC_QA_DIR  = SYNTHETIC_DIR / "qa_processed"      # after extract_measured_labels.py — has qa_pass
 

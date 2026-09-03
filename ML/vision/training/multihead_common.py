@@ -35,10 +35,10 @@ import torchvision.transforms as T
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
-# taxonomy.py lives in the sibling dataset_generator/ package — imported
+# taxonomy.py lives in the sibling dataset_synthetic/ package — imported
 # (read-only) for SCORE_BANDS so Phase B's real-data score anchors can be
 # DERIVED from it rather than hand-duplicated (see RealWorldScoreDataset).
-sys.path.insert(0, str(Path(__file__).resolve().parent / "dataset_generator"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "dataset_synthetic"))
 import taxonomy as tx  # noqa: E402
 
 try:

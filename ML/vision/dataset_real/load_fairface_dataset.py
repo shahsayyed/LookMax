@@ -20,16 +20,16 @@ Why FairFace?
 
 Usage Examples:
     # 1. Inspect dataset matching statistics (Dry Run)
-    python3 ML/pipeline/load_fairface_dataset.py --dry-run
+    python3 ML/vision/dataset_real/load_fairface_dataset.py --dry-run
 
     # 2. Ingest 5,000 balanced candid images across all 6 demographic categories
-    python3 ML/pipeline/load_fairface_dataset.py --limit 5000
+    python3 ML/vision/dataset_real/load_fairface_dataset.py --limit 5000
 
     # 3. Ingest with custom category quotas (e.g. 6,000 total, max 1,000 per demographic)
-    python3 ML/pipeline/load_fairface_dataset.py --limit 6000 --limit-per-category 1000
+    python3 ML/vision/dataset_real/load_fairface_dataset.py --limit 6000 --limit-per-category 1000
 
     # 4. Ingest only specific demographic group (e.g. men_u35, men_35_50, men_o50)
-    python3 ML/pipeline/load_fairface_dataset.py --category men_u35 --limit 1500
+    python3 ML/vision/dataset_real/load_fairface_dataset.py --category men_u35 --limit 1500
 """
 
 from __future__ import annotations
@@ -413,7 +413,7 @@ def run_pipeline(
     print("=" * 70)
     print("\nNext Step:")
     print("  Run Phase 3 VLM Auto-Sorter on newly aggregated raw scrapes:")
-    print("    python3 ML/pipeline/03_classify_and_sort.py --engine ollama")
+    print("    python3 ML/vision/dataset_real/03_classify_and_sort.py --engine ollama")
 
 
 def main() -> None:

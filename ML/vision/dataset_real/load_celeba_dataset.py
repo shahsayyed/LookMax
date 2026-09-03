@@ -29,16 +29,16 @@ Key Features:
 
 Usage:
     # 1. Preview qualification and balance across categories (Dry Run)
-    python3 ML/pipeline/load_celeba_dataset.py --dry-run
+    python3 ML/vision/dataset_real/load_celeba_dataset.py --dry-run
 
-    # 2. Ingest 5,500 balanced $1024\\times1024$ images (~300-400 per category)
-    python3 ML/pipeline/load_celeba_dataset.py --limit 5500
+    # 2. Ingest 5,500 balanced $1024\times1024$ images (~300-400 per category)
+    python3 ML/vision/dataset_real/load_celeba_dataset.py --limit 5500
 
     # 3. Ingest custom number of images (e.g. 6,000 total or 300 per category)
-    python3 ML/pipeline/load_celeba_dataset.py --limit 6000 --limit-per-category 300
+    python3 ML/vision/dataset_real/load_celeba_dataset.py --limit 6000 --limit-per-category 300
 
     # 4. Filter by specific demographic/category
-    python3 ML/pipeline/load_celeba_dataset.py --category men_u35 --limit 1500
+    python3 ML/vision/dataset_real/load_celeba_dataset.py --category men_u35 --limit 1500
 """
 
 from __future__ import annotations
@@ -457,7 +457,7 @@ def run_pipeline(
     print("=" * 70)
     print("\nNext Step:")
     print("  Run Phase 3 VLM Auto-Sorter on high-res raw scrapes:")
-    print("    python3 ML/pipeline/03_classify_and_sort.py --engine ollama")
+    print("    python3 ML/vision/dataset_real/03_classify_and_sort.py --engine ollama")
 
 
 def main() -> None:

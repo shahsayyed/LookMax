@@ -26,17 +26,17 @@ Two-stage image qualification, AI classification, and auto-sorting engine:
     • Resumable: automatically skips previously processed images
 
 Usage Examples:
-    # 1. Quick dry-run test (25 images)
-    python3 ML/pipeline/03_classify_and_sort.py --sample 25 --dry-run
+    # 1. Test sorting 25 images with local heuristics and dry-run VLM
+    python3 ML/vision/dataset_real/03_classify_and_sort.py --sample 25 --dry-run
 
     # 2. Process batch using local Ollama model with 4 parallel workers
-    python3 ML/pipeline/03_classify_and_sort.py --engine ollama --model llava:7b --workers 4
+    python3 ML/vision/dataset_real/03_classify_and_sort.py --engine ollama --model llava:7b --workers 4
 
     # 3. Process with native Apple Silicon MLX-VLM engine
-    python3 ML/pipeline/03_classify_and_sort.py --engine mlx_vlm
+    python3 ML/vision/dataset_real/03_classify_and_sort.py --engine mlx_vlm
 
     # 4. View dataset balance and distribution without processing
-    python3 ML/pipeline/03_classify_and_sort.py --stats-only
+    python3 ML/vision/dataset_real/03_classify_and_sort.py --stats-only
 """
 
 from __future__ import annotations

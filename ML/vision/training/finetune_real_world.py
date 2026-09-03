@@ -12,7 +12,7 @@ supervise the `score` head but nothing else. See multihead_common.py for
 the shared model/dataset/loss code this depends on.
 
 REAL DATA -> SCORE ANCHOR: tier is mapped to a score sampled uniformly
-within a band that matches ML/pipeline/dataset_generator/taxonomy.py's
+within a band that matches ML/vision/dataset_synthetic/taxonomy.py's
 SCORE_BANDS *exactly* (see RealWorldScoreDataset in multihead_common.py) —
 Phase A's synthetic score scale and Phase B's real-tier score scale are
 the same continuous 1-10 scale, not two that merely happen to overlap.
@@ -34,10 +34,10 @@ Output: a final checkpoint per category, then a CoreML .mlpackage export
 JSON, matching the LookMax_<Category>.mlpackage naming convention.
 
 Usage:
-    python3 ML/pipeline/05_finetune_real_world.py --dry-run --checkpoint /path/to/phaseA.pt
-    python3 ML/pipeline/05_finetune_real_world.py --category Men_Grooming \\
+    python3 ML/vision/training/finetune_real_world.py --dry-run --checkpoint /path/to/phaseA.pt
+    python3 ML/vision/training/finetune_real_world.py --category Men_Grooming \
         --checkpoint ML/models/LookMax_Men_Grooming_phaseA.pt
-    python3 ML/pipeline/05_finetune_real_world.py --category all \\
+    python3 ML/vision/training/finetune_real_world.py --category all \
         --checkpoint ML/models   # directory containing LookMax_<Category>_phaseA.pt per category
 """
 
@@ -49,6 +49,7 @@ import warnings
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import (
     SYNTHETIC_QA_DIR, SYNTHETIC_RAW_DIR, TRAINING_DATA_DIR, MODELS_DIR,
     CATEGORIES, CATEGORY_TO_STREAM, DEMOGRAPHICS, AESTHETIC_TIERS,
@@ -388,7 +389,7 @@ def main():
     args = parser.parse_args()
 
     if not HAS_TORCH:
-        print("ERROR: PyTorch not installed. Run: pip install -r ML/pipeline/requirements.txt")
+        print("ERROR: PyTorch not installed. Run: pip install -r ML/vision/requirements.txt")
         sys.exit(1)
 
     if not args.dry_run and not args.checkpoint:

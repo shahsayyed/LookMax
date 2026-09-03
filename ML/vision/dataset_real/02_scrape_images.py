@@ -25,9 +25,9 @@ Setup (one-time):
     export PIXABAY_KEY=your_key
 
 Usage:
-    python3 ML/pipeline/02_scrape_images.py
-    python3 ML/pipeline/02_scrape_images.py --sources unsplash pexels --limit 200
-    python3 ML/pipeline/02_scrape_images.py --dry-run
+    python3 ML/vision/dataset_real/02_scrape_images.py
+    python3 ML/vision/dataset_real/02_scrape_images.py --sources unsplash pexels --limit 200
+    python3 ML/vision/dataset_real/02_scrape_images.py --dry-run
 """
 
 import argparse
@@ -43,7 +43,7 @@ from urllib.parse import urlencode
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # config.py now lives one level up
 from config import (
-    RAW_SCRAPES_DIR, IMAGE_EXTENSIONS, USER_AGENT,
+    RAW_SCRAPES_DIR, METADATA_LOGS_DIR, IMAGE_EXTENSIONS, USER_AGENT,
     RATE_LIMIT_MIN_SEC, RATE_LIMIT_MAX_SEC, DOWNLOAD_WORKERS,
 )
 
@@ -51,14 +51,11 @@ try:
     import requests
     from tqdm import tqdm
 except ImportError:
-    print("ERROR: Run: pip install -r ML/pipeline/requirements.txt")
+    print("ERROR: Run: pip install -r ML/vision/requirements.txt")
     sys.exit(1)
 
 # ─── Scraped URLs log ─────────────────────────────────────────────────────────
-SCRAPED_LOG = (
-    RAW_SCRAPES_DIR.parent.parent
-    / "2_VLM_Processing" / "metadata_logs" / "scraped_urls.txt"
-)
+SCRAPED_LOG = METADATA_LOGS_DIR / "scraped_urls.txt"
 
 HEADERS = {"User-Agent": USER_AGENT}
 
@@ -405,7 +402,7 @@ def main():
         print(f"    export UNSPLASH_KEY=your_key")
         print(f"    export PEXELS_KEY=your_key")
         print(f"    export PIXABAY_KEY=your_key")
-        print(f"\n  Re-run: python3 ML/pipeline/02_scrape_images.py --type {args.type}")
+        print(f"\n  Re-run: python3 ML/vision/dataset_real/02_scrape_images.py --type {args.type}")
         sys.exit(0)
 
     seen_urls:   set = load_seen(SCRAPED_LOG)
@@ -433,7 +430,7 @@ def main():
     print(f"\n{'═'*62}")
     print(f"  ✅ Session complete  — {total} new images downloaded")
     print(f"  📁 Total in 1_Raw_Scrapes/ : {all_imgs} images")
-    print(f"\n  Next: python3 ML/pipeline/03_classify_and_sort.py")
+    print(f"\n  Next: python3 ML/vision/dataset_real/03_classify_and_sort.py")
     print(f"{'═'*62}\n")
 
 

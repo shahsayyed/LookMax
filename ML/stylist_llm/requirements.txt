@@ -1,8 +1,6 @@
 # ─── LookMax Stylist LLM Pipeline Dependencies ──────────────────────────
 # Deliberately its own requirements.txt, separate from
-# ML/pipeline/dataset_generator/requirements.txt and
-# ML/pipeline/real_data_pipeline/requirements.txt -- see PLAN.md's
-# isolation note.
+# ML/vision/requirements.txt -- see PLAN.md's isolation note.
 
 # Synthetic data generation
 google-genai>=1.0.0

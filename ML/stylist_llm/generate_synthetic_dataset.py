@@ -6,7 +6,7 @@ input contexts sampled from the REAL vision taxonomy.
 SAMPLING REUSES THE VISION PIPELINE'S OWN CODE, not a hand-invented
 combinatorial list: each training context (category + tier + garment/
 grooming state) is drawn via
-`ML/pipeline/dataset_generator/prompt_builder.build_task()['row']` --
+`ML/vision/dataset_synthetic/prompt_builder.build_task()['row']` --
 literally the same function that labels the Qwen image dataset. This
 guarantees the tag combinations this LLM trains on are exactly as coherent
 and realistic as the ones the vision model itself was trained to recognize
@@ -48,7 +48,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "dataset_generator"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "vision" / "dataset_synthetic"))
 import config as cfg
 import tag_vocabulary as tv
 import taxonomy as vision_tx

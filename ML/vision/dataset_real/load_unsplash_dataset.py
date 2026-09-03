@@ -23,18 +23,18 @@ Key Features:
 
 Usage:
     # 1. Inspect dataset matching statistics (Dry run)
-    python3 ML/pipeline/load_unsplash_dataset.py --dry-run
+    python3 ML/vision/dataset_real/load_unsplash_dataset.py --dry-run
 
     # 2. Download all qualified relevant images
-    python3 ML/pipeline/load_unsplash_dataset.py
+    python3 ML/vision/dataset_real/load_unsplash_dataset.py
 
     # 3. Download with limit (e.g. 500 images total or 100 per category)
-    python3 ML/pipeline/load_unsplash_dataset.py --limit 500
-    python3 ML/pipeline/load_unsplash_dataset.py --limit-per-category 100
+    python3 ML/vision/dataset_real/load_unsplash_dataset.py --limit 500
+    python3 ML/vision/dataset_real/load_unsplash_dataset.py --limit-per-category 100
 
     # 4. Download only specific categories
-    python3 ML/pipeline/load_unsplash_dataset.py --category men_fashion --limit 200
-    python3 ML/pipeline/load_unsplash_dataset.py --category face_grooming --limit 200
+    python3 ML/vision/dataset_real/load_unsplash_dataset.py --category men_fashion --limit 200
+    python3 ML/vision/dataset_real/load_unsplash_dataset.py --category face_grooming --limit 200
 """
 
 from __future__ import annotations
@@ -611,7 +611,7 @@ def run_pipeline(
     print("=" * 70)
     print("\nNext Step:")
     print("  Run Phase 3 VLM Auto-Sorter on downloaded raw scrapes:")
-    print("    python3 ML/pipeline/03_classify_and_sort.py --engine ollama")
+    print("    python3 ML/vision/dataset_real/03_classify_and_sort.py --engine ollama")
 
 
 def main() -> None:

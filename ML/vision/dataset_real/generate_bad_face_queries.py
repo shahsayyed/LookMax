@@ -39,7 +39,8 @@ add_q("both_asymmetrical_face", "amiugly", "asymmetrical ugly", "Both - Highly a
 add_q("both_ugly_features", "truerateme", "below average 3", "Both - Below average facial ratings")
 add_q("both_lookyourbest_desperate", "lookyourbest", "desperate ugly", "Both - Desperate for facial improvement")
 
-with open('ML/pipeline/reddit_bad_faces.json', 'w') as f:
+out_file = Path(__file__).resolve().parent / 'reddit_bad_faces.json'
+with open(out_file, 'w') as f:
     json.dump(queries, f, indent=2)
 
 print(f"Generated {len(queries)} specific Tier-1 'Needs Improvement' face categories.")

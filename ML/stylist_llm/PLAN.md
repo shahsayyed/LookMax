@@ -1,8 +1,8 @@
 # On-Device Stylist LLM Pipeline
 
 A dedicated, ultra-compact text generator, fully isolated from
-`ML/pipeline/dataset_generator/` (the vision image pipeline) and
-`ML/pipeline/real_data_pipeline/` (the real-photo scraper). It ingests the
+`ML/vision/dataset_synthetic/` (the vision image pipeline) and
+`ML/vision/dataset_real/` (the real-photo scraper). It ingests the
 vision model's detected tags + an occasion the user picked in-app, and
 produces a single-shot, <50-word "5-minute fix" -- no cloud call, no
 multi-turn chat.
@@ -25,14 +25,14 @@ brief" for the full list with evidence.
 
 | | Vision pipeline | Stylist LLM pipeline |
 |---|---|---|
-| Code | `ML/pipeline/dataset_generator/` | `ML/pipeline/stylist_llm/` |
-| Config | `ML/pipeline/config.py` (shared with real_data_pipeline + trainer) | `ML/pipeline/stylist_llm/config.py` (own, self-contained) |
-| Data | `ML/data/1-4_*` | `ML/data/5_Stylist_LLM/` |
-| Checkpoints | `ML/pipeline/dataset_generator/output/` | `ML/pipeline/stylist_llm/checkpoints/` (gitignored) |
+| Code | `ML/vision/dataset_synthetic/` | `ML/stylist_llm/` |
+| Config | `ML/vision/config.py` (shared with real_data_pipeline + trainer) | `ML/stylist_llm/config.py` (own, self-contained) |
+| Data | `ML/data/vision_*` | `ML/data/stylist_llm/` |
+| Checkpoints | `ML/vision/dataset_synthetic/output/` | `ML/stylist_llm/checkpoints/` (gitignored) |
 | Export target | `ML/models/*.mlpackage` | `ML/models/StylistEngine.mlpackage` (same folder -- both ship in the same iOS app) |
 
 **One deliberate, one-directional exception**: `tag_vocabulary.py` imports
-`ML/pipeline/dataset_generator/taxonomy.py` (read-only) to build the input
+`ML/vision/dataset_synthetic/taxonomy.py` (read-only) to build the input
 tag format from the vision model's REAL label schema, instead of a
 hand-invented vocabulary that could drift from what the real vision model
 emits. Nothing in `dataset_generator/` imports anything from
@@ -150,7 +150,7 @@ this one translation layer. See `tag_vocabulary.py`'s module docstring.
 
 ### 1. Setup
 ```bash
-cd ML/pipeline/stylist_llm
+cd ML/stylist_llm
 bash install.sh
 ```
 
@@ -169,18 +169,18 @@ export GEMINI_API_KEY="your-key-here"
 python3 generate_synthetic_dataset.py --count 5000
 ```
 Resumable (Ctrl+C and re-run picks up where it left off -- see the script's
-module docstring). Writes to `ML/data/5_Stylist_LLM/raw_generated/stylist_advice.jsonl`.
+module docstring). Writes to `ML/data/stylist_llm/raw_generated/stylist_advice.jsonl`.
 
 ### 4. QA review
 ```bash
-python3 qa_review.py ../../data/5_Stylist_LLM/raw_generated/stylist_advice.jsonl
+python3 qa_review.py ../data/stylist_llm/raw_generated/stylist_advice.jsonl
 ```
 Every row is kept with a `qa.pass`/`qa.reasons` field -- nothing is deleted.
 Inspect the failure reasons if the fail rate is above ~10%.
 
 ### 5. Prune the vocabulary
 ```bash
-python3 prune_vocabulary.py ../../data/5_Stylist_LLM/qa_reviewed/stylist_advice.jsonl
+python3 prune_vocabulary.py ../data/stylist_llm/qa_reviewed/stylist_advice.jsonl
 ```
 Saves the pruned base model + token id map to `checkpoints/pruned_base/`
 (gitignored). Check the printed retained-token count against
@@ -188,8 +188,8 @@ Saves the pruned base model + token id map to `checkpoints/pruned_base/`
 
 ### 6. Fine-tune
 ```bash
-python3 finetune.py --dry-run ../../data/5_Stylist_LLM/qa_reviewed/stylist_advice.jsonl   # inspect first
-python3 finetune.py ../../data/5_Stylist_LLM/qa_reviewed/stylist_advice.jsonl
+python3 finetune.py --dry-run ../data/stylist_llm/qa_reviewed/stylist_advice.jsonl   # inspect first
+python3 finetune.py ../data/stylist_llm/qa_reviewed/stylist_advice.jsonl
 ```
 ~12 min on a T4/RTX GPU, ~20 min on Apple Silicon via MPS (brief's own
 estimate -- not independently re-measured here since no full dataset has
@@ -227,11 +227,11 @@ against the 80ms target on a real iOS 18 device, and confirm the Swift
 ## Output layout
 
 ```
-ML/data/5_Stylist_LLM/
+ML/data/stylist_llm/
 ├── raw_generated/       <- generate_synthetic_dataset.py's JSONL output
 ├── qa_reviewed/         <- qa_review.py's output (every row kept, qa.pass/qa.reasons added)
 └── pruned_vocab/         <- (unused; prune_vocabulary.py writes to checkpoints/ by default, see config.py)
 
-ML/pipeline/stylist_llm/checkpoints/    <- gitignored: pruned_base/, finetune_run/
+ML/stylist_llm/checkpoints/    <- gitignored: pruned_base/, finetune_run/
 ML/models/StylistEngine.mlpackage       <- final export, same folder as the vision model's .mlpackage files
 ```

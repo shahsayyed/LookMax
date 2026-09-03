@@ -26,9 +26,9 @@ qa_processed/ is empty or missing. Both are legitimately empty right now
 real run must both report that cleanly, not crash.
 
 Usage:
-    python3 ML/pipeline/04_train_coreml_models.py --dry-run
-    python3 ML/pipeline/04_train_coreml_models.py --category Men_Grooming
-    python3 ML/pipeline/04_train_coreml_models.py --epochs 5 --backbone mobilenet_v3_large
+    python3 ML/vision/training/pretrain_synthetic.py --dry-run
+    python3 ML/vision/training/pretrain_synthetic.py --category Men_Grooming
+    python3 ML/vision/training/pretrain_synthetic.py --epochs 5 --backbone mobilenet_v3_large
 """
 
 import argparse
@@ -39,6 +39,7 @@ import warnings
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import (
     SYNTHETIC_QA_DIR, SYNTHETIC_RAW_DIR, MODELS_DIR, CATEGORIES,
     BACKBONE, IMAGE_SIZE, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE,
@@ -253,7 +254,7 @@ def main():
     args = parser.parse_args()
 
     if not HAS_TORCH:
-        print("ERROR: PyTorch not installed. Run: pip install -r ML/pipeline/requirements.txt")
+        print("ERROR: PyTorch not installed. Run: pip install -r ML/vision/requirements.txt")
         sys.exit(1)
 
     print(f"\n{'═'*58}")
@@ -290,12 +291,12 @@ def main():
             any_trained = True
 
     print(f"\n  Checkpoints (.pt) → {MODELS_DIR}")
-    print(f"  Next: 05_finetune_real_world.py --checkpoint <path> --category <category>")
+    print(f"  Next: finetune_real_world.py --checkpoint <path> --category <category>")
     print(f"{'═'*58}\n")
 
     if not args.dry_run and not any_trained:
         print(f"{RED}ERROR: no category had usable synthetic data — nothing was trained. "
-              f"Run ML/pipeline/dataset_generator/full_run.py (see PLAN.md) first.{RESET}")
+              f"Run ML/vision/dataset_synthetic/full_run.py (see PLAN.md) first.{RESET}")
         sys.exit(1)
 
 

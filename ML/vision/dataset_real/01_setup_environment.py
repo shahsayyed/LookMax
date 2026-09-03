@@ -8,7 +8,11 @@ Apple Silicon environment, sets up a Python virtual environment, and writes
 .gitignore rules so the large image datasets are never accidentally committed.
 
 Usage:
-    python3 ML/pipeline/01_setup_environment.py
+    python3 ML/vision/dataset_real/01_setup_environment.py
+
+Options:
+    --skip-download   Check tools without downloading models
+    --verify-only     Quick verification pass on existing setup
 """
 
 import os
@@ -18,9 +22,7 @@ import subprocess
 import shutil
 from pathlib import Path
 
-# config.py lives one level up at ML/pipeline/ (shared by real_data_pipeline/
-# and 04_train_coreml_models.py) -- this script now lives in
-# ML/pipeline/real_data_pipeline/, so its own directory isn't enough.
+# config.py lives one level up at ML/vision/
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import (
     ML_ROOT, DATA_ROOT, MODELS_DIR, RAW_SCRAPES_DIR,
@@ -139,10 +141,14 @@ def setup_gitignore():
     gitignore_path = ML_ROOT / ".gitignore"
     rules = [
         "# ─── LookMax ML Data — DO NOT commit large image datasets or temporary scrape logs ───",
-        "data/1_Raw_Scrapes/**/*",
-        "data/2_VLM_Processing/filtered_rejected/**/*",
-        "data/3_CoreML_Training_Data/**/*",
-        "data/3_Training_Data/**/*",
+        "data/vision_real/1_Raw_Scrapes/",
+        "data/vision_real/2_VLM_Processing/filtered_rejected/",
+        "data/vision_real/3_CoreML_Training_Data/",
+        "data/vision_synthetic/",
+        "data/stylist_llm/",
+        "vision/dataset_synthetic/output/",
+        "stylist_llm/checkpoints/",
+        ".cache/",
         "2_VLM_Processing/",
         "**/metadata_logs/*.txt",
         "**/metadata_logs/*.json",
@@ -267,7 +273,7 @@ def check_dependencies():
             __import__(module)
             ok(desc)
         except ImportError:
-            warn(f"{desc} — NOT INSTALLED (run: pip install -r ML/pipeline/requirements.txt)")
+            warn(f"{desc} — NOT INSTALLED (run: pip install -r ML/vision/requirements.txt)")
             missing.append(module)
 
     # Check gallery-dl (CLI tool)
@@ -295,7 +301,7 @@ def check_dependencies():
 
     if missing:
         print(f"\n  {YELLOW}Install all dependencies with:{RESET}")
-        print(f"  {BOLD}  pip install -r ML/pipeline/requirements.txt{RESET}")
+        print(f"  {BOLD}  pip install -r ML/vision/requirements.txt{RESET}")
         if "gallery-dl" in missing:
             print(f"  {BOLD}  pip install gallery-dl{RESET}")
 
@@ -319,7 +325,7 @@ def print_summary():
     except Exception:
         print(f"  Directory root: {ML_ROOT}")
 
-    print(f"\n  {GREEN}{BOLD}Next Step:{RESET} python3 ML/pipeline/02_scrape_images.py --limit 50\n")
+    print(f"\n  {GREEN}{BOLD}Next Step:{RESET} python3 ML/vision/dataset_real/02_scrape_images.py --limit 50\n")
 
 
 # ─── Main ────────────────────────────────────────────────────────────────────

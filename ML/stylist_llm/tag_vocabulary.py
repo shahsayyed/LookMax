@@ -1,6 +1,6 @@
 """
 tag_vocabulary.py -- the ONE place that translates the real vision model's
-label schema (ML/pipeline/dataset_generator/taxonomy.py) into the tag-string
+label schema (ML/vision/dataset_synthetic/taxonomy.py) into the tag-string
 prompt format the stylist LLM consumes at both training and inference time.
 
 WHY THIS FILE EXISTS: the original brief for this model invented its own
@@ -17,10 +17,10 @@ fix: every tag string below is built FROM taxonomy.py's real field names
 and real class lists, never hand-duplicated.
 
 ISOLATION: this is a deliberate, ONE-DIRECTIONAL exception to the
-stylist_llm/ <-> dataset_generator/ isolation described in
-ML/pipeline/stylist_llm/PLAN.md. This file imports FROM taxonomy.py
+stylist_llm/ <-> dataset_synthetic/ isolation described in
+ML/stylist_llm/PLAN.md. This file imports FROM taxonomy.py
 (read-only -- it is the upstream interface contract, not a training
-dependency). Nothing in dataset_generator/ imports anything from
+dependency). Nothing in dataset_synthetic/ imports anything from
 stylist_llm/, and no data/checkpoints/config are shared beyond this one
 translation layer.
 
@@ -39,7 +39,7 @@ to advise on a grooming photo, not just an outfit one.
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "dataset_generator"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "vision" / "dataset_synthetic"))
 import taxonomy as vision_tx  # noqa: E402  (see module docstring -- deliberate, read-only)
 
 

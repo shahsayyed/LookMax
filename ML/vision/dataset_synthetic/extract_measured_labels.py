@@ -24,7 +24,7 @@ removes -- see the warning printed below):
 Usage:
     python3 extract_measured_labels.py <labels_csv> <images_dir> [--output out.csv]
 
-Dependencies (already in ML/pipeline/requirements.txt): opencv-python-headless,
+Dependencies (already in ML/vision/requirements.txt): opencv-python-headless,
 numpy, scikit-learn.
 """
 import argparse

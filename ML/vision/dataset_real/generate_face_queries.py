@@ -113,7 +113,8 @@ add_q("women_o50_hair_elegant", "femalehairadvice", "elegant mature haircut", "W
 add_q("women_o50_skin_radiant", "30PlusSkinCare", "radiant skin 60s", "Women Over 50 - Radiant healthy mature skin (Polished)")
 add_q("women_o50_glowup", "GlowUps", "F50 glow up", "Women Over 50 - Beautiful senior glow up (Polished)")
 
-with open('ML/pipeline/reddit_face_queries.json', 'w') as f:
+out_file = Path(__file__).resolve().parent / 'reddit_face_queries.json'
+with open(out_file, 'w') as f:
     json.dump(face_queries, f, indent=2)
 
 print(f"Generated {len(face_queries)} comprehensive face grooming categories.")

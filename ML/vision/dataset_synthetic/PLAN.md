@@ -114,7 +114,7 @@ To head off a predictable confusion: generating 28,000 images (vs. the
 archived pipeline's 24,000) has **zero** effect on how fast the trained
 CoreML model runs on a user's iPhone. On-device inference speed is a
 function of the exported model's backbone architecture and quantization
-(`ML/pipeline/04_train_coreml_models.py`'s `BACKBONE`/`compute_precision`
+(`ML/vision/training/pretrain_synthetic.py`'s `BACKBONE`/`compute_precision`
 settings), entirely unrelated to how many training images went into it.
 More training data can change accuracy, never runtime latency.
 
@@ -189,7 +189,7 @@ end of the score range.
 ```bash
 mkdir -p /data && cd /data
 git clone <repo-url> /data/LookMax
-cd /data/LookMax/ML/pipeline/dataset_generator
+cd /data/LookMax/ML/vision/dataset_synthetic
 bash install.sh
 ```
 
@@ -331,18 +331,18 @@ the two are never confused:
 # from your local machine
 rsync -avz -e "ssh -p <port>" \
     root@<instance-host>:/data/qwen_dataset_output/ \
-    ML/data/4_Synthetic_Qwen/raw_generated/
+    ML/data/vision_synthetic/raw_generated/
 
 # after running extract_measured_labels.py (step 11), the *_measured.csv
 # files and any QA-flagged-but-kept images go here instead:
 rsync -avz -e "ssh -p <port>" \
     root@<instance-host>:/data/qwen_dataset_output/*_measured.csv \
-    ML/data/4_Synthetic_Qwen/qa_processed/
+    ML/data/vision_synthetic/qa_processed/
 ```
 
 `ML/data/1_Raw_Scrapes/`, `2_VLM_Processing/`, and `3_CoreML_Training_Data/`
 are real photos from the separate scraping pipeline (see
-`ML/pipeline/real_data_pipeline/`) — `4_Synthetic_Qwen/` is deliberately a
+`ML/vision/dataset_real/`) — `vision_synthetic/` is deliberately a
 new, distinctly-numbered sibling rather than reusing 1-3, so synthetic and
 real data can never be silently merged or mistaken for each other.
 Combining the two into one training-ready set (if that's ever wanted) is
