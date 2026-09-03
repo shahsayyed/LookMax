@@ -4,7 +4,9 @@ data/2_VLM_Processing/filtered_rejected/**/*
 data/3_CoreML_Training_Data/**/*
 data/3_Training_Data/**/*
 data/4_Synthetic_Qwen/**/*
+data/5_Stylist_LLM/**/*
 pipeline/dataset_generator/output/**/*
+pipeline/stylist_llm/checkpoints/**/*
 2_VLM_Processing/
 unsplash-research-dataset-lite-latest/
 **/unsplash-research-dataset*

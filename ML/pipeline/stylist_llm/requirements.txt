@@ -1,0 +1,19 @@
+# ─── LookMax Stylist LLM Pipeline Dependencies ──────────────────────────
+# Deliberately its own requirements.txt, separate from
+# ML/pipeline/dataset_generator/requirements.txt and
+# ML/pipeline/real_data_pipeline/requirements.txt -- see PLAN.md's
+# isolation note.
+
+# Synthetic data generation
+google-genai>=1.0.0
+
+# Training
+torch>=2.3.0
+transformers>=4.46.0    # needs cache_utils.StaticCache (verified present in 5.16.1 during this pipeline's build)
+accelerate>=0.34.0      # used internally by transformers.Trainer
+
+# CoreML export
+coremltools>=8.0        # needs coremltools.optimize.coreml + ct.StateType/ct.RangeDim (verified present in 9.0)
+
+# Utilities
+numpy>=1.26.0
