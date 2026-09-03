@@ -8,136 +8,104 @@ Machine learning pipeline for LookMax — an iOS app that rates a user's styling
 
 > **We rate effort and execution, not beauty.**
 
-A plus-size user with an asymmetrical face who has perfectly styled hair, crisp fitting clothes, and polished grooming should score **10/10**. A conventionally attractive person in a wrinkled, stained baggy t-shirt scores **2/10**. The models are trained on purely effort-based signals.
+A plus-size user with an asymmetrical face who has perfectly styled hair, crisp fitting clothes, and polished grooming should score **10/10**. A conventionally attractive person in a wrinkled, stained baggy t-shirt scores **2/10**.
 
-**Concretely, the score and checklist may only reflect things a user can change within minutes to hours** — hairstyle, product use, outfit choice, fit, color coordination, makeup. They must never reflect things a user cannot change on that timescale: body weight/size, face shape, skin conditions like acne, age. If a synthetic training image or a generated checklist item implies "lose weight" or "clear up your skin" as the path to a higher score, that's a bug in the dataset or the prompt, not a valid signal — see the taxonomy v4 note below for a concrete instance of this (body-shape drift) that was caught and fixed in the synthetic data pipeline.
+**Concretely, the score and checklist may only reflect things a user can change within minutes to hours** — hairstyle, product use, outfit choice, fit, color coordination, makeup. They must never reflect things a user cannot change on that timescale: body weight/size, face shape, skin conditions like acne, age. If a synthetic training image or a generated checklist item implies "lose weight" or "clear up your skin" as the path to a higher score, that's a bug in the dataset or the prompt, not a valid signal. This has been a real, caught-and-fixed bug more than once — see `ML/pipeline/dataset_generator/taxonomy.py`'s module docstring and `PLAN.md` for the specific instances (body-shape drift under "polished" styling language; a `skin_acne` label that was hardcoded to always-zero in an earlier taxonomy, i.e. present as a column but never actually meaningful — dropped entirely in the current one rather than carried forward as dead weight).
 
 ---
 
-## Model Architecture
+## Two data sources, kept deliberately separate
 
-We train **4 separate models** (split by gender and stream) to keep each model narrowly focused:
+This pipeline gets labeled training images two independent ways. They live in separate code folders and separate data folders so they can never be silently mixed or mistaken for each other:
 
-| Model Name | Input | Outputs |
+| | Real photos | Synthetic (AI-generated) photos |
 |---|---|---|
-| `Men_Grooming` | Head-and-shoulders portrait | Score (1–10) + attribute checklist |
-| `Women_Grooming` | Head-and-shoulders portrait | Score (1–10) + attribute checklist |
-| `Men_Outfit` | Full-body portrait | Score (1–10) + attribute checklist |
-| `Women_Outfit` | Full-body portrait | Score (1–10) + attribute checklist |
+| Code | `ML/pipeline/real_data_pipeline/` | `ML/pipeline/dataset_generator/` |
+| Data | `ML/data/1_Raw_Scrapes/` → `2_VLM_Processing/` → `3_CoreML_Training_Data/` | `ML/data/4_Synthetic_Qwen/raw_generated/` → `qa_processed/` |
+| Source | Reddit scraping + VLM classification | Qwen-Image-2512, procedurally prompted |
+| Status | Populated — 14,079 classified images | Pipeline built; dataset generation not yet run |
 
-Each model uses a **Two-Headed multi-task architecture**:
-- **Head 1:** Regression output → single float `score` (1.0–10.0)
-- **Head 2:** Multi-label binary classification → binary attribute checklist (e.g., `hair_messy=1`, `clothes_wrinkled=0`)
-
-Models are trained in PyTorch and exported to both:
-- `.mlpackage` (CoreML) for iPhone inference
-- `.tflite` for future Android support
-
----
-
-## Pipeline Phases
+## Pipeline layout
 
 ```
 ML/
 ├── pipeline/
-│   ├── dataset_generator/           ← Phase 1: Synthetic data via FLUX.1 [dev]
-│   │   ├── generate_flux_dataset.py ← Master 24,000-image generation script
-│   │   ├── test_flux_prompts.py     ← Quick 4-image sanity check
-│   │   ├── test_flux_variations.py  ← Full 48-image demographic/level validation
-│   │   ├── requirements.txt         ← Server dependencies (no torch pinning)
-│   │   └── PLAN.md                  ← Full server setup & execution guide
-│   ├── 04_train_coreml_models.py    ← Phase 2: PyTorch training + CoreML export
-│   └── 05_finetune_real_world.py    ← Phase 3 (TODO): Fine-tune on real-world images
-├── models/                          ← Exported .mlpackage artifacts for Xcode
+│   ├── real_data_pipeline/           ← real photos: scrape + classify
+│   │   ├── 01_setup_environment.py
+│   │   ├── 02_scrape_images.py       ← Reddit scraper (Playwright)
+│   │   ├── 03_classify_and_sort.py   ← VLM classification into aesthetic tiers
+│   │   ├── reddit_scraper.py, load_celeba_dataset.py, load_fairface_dataset.py,
+│   │   │   load_unsplash_dataset.py, generate_face_queries.py,
+│   │   │   generate_bad_face_queries.py, reddit_*.json, reddit_profile/
+│   │   └── test_reddit_scraper.py
+│   ├── dataset_generator/            ← synthetic photos: Qwen-Image-2512 pipeline
+│   │   ├── taxonomy.py               ← single source of truth for every variation matrix
+│   │   ├── prompt_builder.py         ← composes prompt + label row from taxonomy.py
+│   │   ├── qwen_pipeline.py          ← GPU-aware model loading + generate()
+│   │   ├── smoke_test.py             ← --dry-run / --per-tier quick check, no GPU needed for --dry-run
+│   │   ├── validation_sweep.py       ← --coverage-only (no GPU) / --check-binding gate
+│   │   ├── full_run.py               ← the 28,000-image production run, resumable, shardable
+│   │   ├── merge_shards.py
+│   │   ├── extract_measured_labels.py← Bucket-C: pixel-measured colour, QA gates
+│   │   ├── install.sh
+│   │   └── PLAN.md                   ← full setup & execution guide — read this before running anything
+│   ├── config.py                     ← shared paths/constants (both pipelines + the trainer)
+│   ├── 04_train_coreml_models.py     ← Phase 2: PyTorch training + CoreML export
+│   └── 05_finetune_real_world.py     ← Phase 3 (TODO)
+├── models/                           ← exported .mlpackage artifacts for Xcode
 └── data/
-    ├── Remote AI Image Generations/ ← Test outputs from FLUX.1 [dev]
-    ├── Remote AI Image Generations New/ ← Test outputs using taxonomy v2
-    └── 3_CoreML_Training_Data/      ← Final curated training data
+    ├── 1_Raw_Scrapes/                ← real, Phase 1 output
+    ├── 2_VLM_Processing/             ← real, Phase 1 output
+    ├── 3_CoreML_Training_Data/       ← real, the trainer's actual current input (see below)
+    └── 4_Synthetic_Qwen/             ← synthetic, Qwen pipeline output
+        ├── raw_generated/            ← copied back from the remote GPU box after a run
+        └── qa_processed/             ← after extract_measured_labels.py
 ```
+
+`4_Synthetic_Qwen` is deliberately numbered `4`, not folded into `1`-`3` — those are real photos, this is generated. Keeping them as visibly distinct siblings means a training run can never accidentally blend the two without that being an explicit, visible decision.
 
 ---
 
-## Phase 1: Synthetic Dataset Generation (FLUX.1 [dev])
+## Phase 1a: Real-world data (`real_data_pipeline/`)
 
-Because labeling 24,000 real-world photos by hand is impractical, we use **FLUX.1 [dev]** — a state-of-the-art open-source text-to-image model by Black Forest Labs — to procedurally generate a precisely labeled synthetic dataset.
+Scrapes candidate photos from Reddit (subreddits and settings in `config.py`'s `REDDIT_SOURCES`) into `1_Raw_Scrapes/`, classifies them with a VLM (`config.py`'s `VLM_ENGINE`: `mlx_vlm` on Apple Silicon, `ollama`, or `gemini`) into `2_VLM_Processing/`, then sorts the kept ones into `3_CoreML_Training_Data/{Outfit,Face_Grooming}/{demographic}/{1_Needs_Improvement,2_Average,3_Polished}/` — a plain folder-per-class layout. `config.py`'s `DEMOGRAPHICS` (six age/gender buckets) and `AESTHETIC_TIERS` (the three folder names) define this contract exactly; the trainer (below) expects this structure precisely, not anything derived from it.
 
-### Why FLUX.1 [dev] and not [schnell]?
+## Phase 1b: Synthetic data (`dataset_generator/`) — Qwen-Image-2512
 
-We tested both. **FLUX.1 [schnell]** (4-step distilled) runs at ~2 seconds/image but suffers from "prompt collapse" — it ignores complex negative flaw descriptors and gravitates toward making everyone look attractive regardless of the prompt. **FLUX.1 [dev]** (28 steps, 12B parameters) is significantly better at following flaw descriptors than [schnell], but is not immune to the same collapse — see the note below.
+Because labeling tens of thousands of real photos by hand doesn't scale, the second path procedurally generates a precisely-labeled synthetic dataset with Qwen-Image-2512.
 
-> **Update (taxonomy v3 → v4):** Visual review of `test_variations_comprehensive/` (taxonomy v2, `guidance_scale=3.5`) showed [dev] still softens abstract flaw adjectives ("severely overgrown greasy unwashed hair," "heavily stained baggy t-shirt") into merely-slightly-messy versions of an otherwise conventionally attractive render — Flaw-tier images were often hard to distinguish from Average or even Polished. Taxonomy v3 rewrote flaw descriptions with concrete sensory detail (grease sheen, flaking, stains, fold lines) instead of intensity adjectives, raised `guidance_scale` to 5.0, and fixed one random seed per identity across its Flaw/Average/Polished triplet.
->
-> Reviewing the resulting v3 batch (`test_variations_comprehensive_v3/`) surfaced two further problems that go directly against the "effort, not genetics" philosophy above:
-> 1. **Body-shape drift:** "Polished" outfit language ("flawlessly tailored proportions that flatter the body") was visibly slimming heavy-set/plus-size/curvy identities relative to their own Flaw-tier render — the fixed seed pins pose/composition but not body proportions, which are still reshaped through cross-attention on the styling text. This would have silently taught the model that losing weight is part of "improvement," which is exactly what the app must never do.
-> 2. **Focus drift:** "Average"-tier images were visibly blurrier than Flaw/Polished for the same identity — traced to self-referential closers like "an unremarkable average appearance" in the v3 Average descriptions, which appears to read as a cue for soft/amateur-snapshot rendering rather than just low grooming/styling effort.
->
-> Taxonomy v4 fixed both broadly (confirmed across a full 48-image batch), but two things didn't fully hold: grooming flaw visibility was identity-dependent — clear for Caucasian/East Asian test identities, nearly invisible for Black, South Asian, and Hispanic ones — and one outfit triplet with a moderate ("athletic") build still drifted heavier in Flaw than Polished despite the body clause. Taxonomy v5 reinforced every Flaw description with a second restatement of its defect plus a blunt evaluative closer, and moved the body-preservation clause to the front of the prompt.
->
-> **While v5 was generating on the remote server, its own console output revealed the actual root cause**: `"CLIP can only handle sequences up to 77 tokens"`, truncating on every image. FLUX.1 uses two text encoders — CLIP (hard 77-token cap, contributes a global conditioning vector) and T5-XXL (`max_sequence_length=512`, drives most fine-grained detail). Every taxonomy round since v3 kept adding reinforcement text, pushing prompts to 180-220+ tokens; T5 saw all of it, but CLIP was silently losing most or all of the flaw description. Verified with the real tokenizer: a v5 Outfit prompt's CLIP view cut off *before the outfit description even started*. This is a better explanation for the identity-dependent weakness than an aesthetic-prior theory — each round of "make the flaw language stronger" was fighting a token-budget problem underneath it, and made that problem worse, not better.
->
-> Taxonomy v6 fixes this directly: every prompt now leads with a short opener (core flaw/effort keywords, plus body preservation for outfits) verified with the real CLIP tokenizer to fit completely inside the 77-token window, even for the longest identity combinations. **Validate v6 on the remote server before running `generate_flux_dataset.py`** — the master script has already been updated to match, but its `guidance_scale` is intentionally left at 3.5 pending visual confirmation. If grooming flaw visibility is still weak after v6 — with the CLIP truncation actually fixed — that's real evidence to stop iterating on wording and add a post-generation VLM QA pass instead (score each image against its intended label, discard/flag mismatches) — see the recommendation further down.
+**Why Qwen and not FLUX.1 [dev]** (the original choice, now archived at `ML/archive/dataset_generator_v7/`): both were tested head-to-head across a full 48-prompt comparison (also against Google's Nano Banana Pro). FLUX reliably collapsed "flaw" and "average" tier prompts toward its own aesthetic prior — it would render a person asked to look "greasy and unwashed" as merely a little tousled — which meant a meaningful share of any FLUX-generated flaw-tier data likely didn't visually match its own label. Qwen held up across all severity tiers with no collapse; Nano Banana Pro matched it on descriptor quality but had a ~19% identity-collapse rate (reusing one identity's face/age/ethnicity for a completely different requested one), which is disqualifying for automated label generation specifically.
 
-| Model | Steps | Speed on RTX 5090 | Flaw Adherence |
-|---|---|---|---|
-| FLUX.1 [schnell] | 4 | ~2 sec/image | ❌ Fails on complex flaws |
-| FLUX.1 [dev] | 28 | ~19 sec/image | ✅ Accurate |
+The current taxonomy (v8, in `taxonomy.py`) fixes two further problems found by reviewing FLUX/Qwen output directly: flaw severity used to be one maximally-bad description (making "needs improvement" read as costume-level distress rather than a realistic bad day), and "polished" outfits were a visual jacket monoculture (only one archetype, always involving outerwear, contradicting the effort principle above — fit, crispness, and colour harmony matter, not formality). See `taxonomy.py`'s module docstring and `PLAN.md` for the full design: independent sampling axes (effort condition vs. garment identity vs. colour vs. environment — background/lighting/framing are sampled *independently of effort tier*, specifically so the model can't learn "polished = studio-lit" as a shortcut), coherent (not uniform-random) outfit-formality sampling, ordinal 0/1/2 effort flags, and a generated `label_schema_<Category>.json` per category as the CSV's contract.
 
-### Prompt Taxonomy (v2)
+Image budget: 28,000 total (Men/Women_Grooming 6,000 each, Men/Women_Outfit 8,000 each — outfit needs more so all 12 upper-garment types clear 250+ examples across all three tiers). **Full setup and run instructions are in `ML/pipeline/dataset_generator/PLAN.md`** — don't skip `smoke_test.py --dry-run` and `validation_sweep.py --coverage-only` before spending any GPU time.
 
-All prompts follow this structure:
-```
-A {alignment_guide} of a {identity}, {variation_description}. Photorealistic, ultra detailed, 85mm lens.
-```
-
-**Alignment guides** lock the camera framing per model type:
-- **Grooming:** `"front-facing head-and-shoulders portrait, perfectly centered face, straight-on eye-level camera angle, looking directly at the camera, bright even studio lighting"`
-- **Outfit:** `"front-facing full-body portrait, perfectly centered, standing straight, straight-on eye-level camera angle, looking directly at the camera, head to toe visible, bright even studio lighting"`
-
-**Identities** combine age + ethnicity + body type + face shape to ensure diversity and prevent genetic bias. Example:
-- `"28-year-old Caucasian man, heavy set, round face, double chin"`
-- `"26-year-old East Asian woman, athletic, heart-shaped face"`
-
-**Variation Descriptions (Taxonomy v2 — Effort-Based Only):**
-
-> **Critical design decision:** Flaws are **purely effort-based**. We never penalise biological traits. Acne, face shape, and body type do NOT appear in flaw descriptions. If a prompt contains "acne" it will teach the model to penalise users who cannot control their skin condition.
-
-| Level | Score | Men Grooming Example (v3) |
-|---|---|---|
-| Flaw | 2–3 | `"visibly oily greasy hair matted flat with individual strands clumped together and a visible grease sheen catching the light, unwashed for over a week, thin patchy neckbeard growing in uneven blotchy patches with bare skin gaps, dry flaking dead skin visibly peeling on the forehead"` |
-| Average | 4–6 | `"plain unstyled short hair with no product lying flat with no defined shape, ordinary trimmed facial hair with no sharp lineup, plain skin with no visible skincare routine"` |
-| Polished | 9–10 | `"meticulously styled textured voluminous hair with a visible pomade sheen and sharp defined part, razor-sharp lined-up short beard with crisp clean edges, flawless clear glowing hydrated skin"` |
-
-v3's flaw descriptions favor concrete, sensory detail (grease sheen, flaking, blotchy patches) over abstract intensity words ("severely," "unkempt") — the abstract phrasing in v2 was being softened by FLUX's aesthetic prior. See the taxonomy note above.
-
-> **Note on Polished Outfits:** "Polished" does NOT mean suits or formal wear. A perfectly fitted streetwear outfit (crisp t-shirt + sleek jacket) scores 10/10. The model rates **fit, fabric crispness, and color harmony**, not formality level.
-
-### Dataset Scale
-- **Total images:** 24,000
-- **Split:** 6,000 per model (Men_Grooming, Women_Grooming, Men_Outfit, Women_Outfit)
-- **Image size:** 1024×1024 PNG
-- **Estimated disk space:** ~65 GB
-- **Output:** `dataset_output/images/` + `dataset_output/labels.csv`
-
-> **Recommended next step — automated label-adherence QA:** Because prompt collapse can silently mislabel images (a Flaw-tier prompt rendering as a Polished-looking photo), manually spot-checking 24,000 images isn't feasible. Before or shortly after the full run, consider reusing the VLM filtering pattern already built for `2_VLM_Processing/` (see `filtered_rejected/`) to score each generated image against its intended level/attributes and flag or regenerate mismatches, rather than trusting the prompt's label unconditionally.
+**Before the full 28,000-image run, three escalating checks confirm the output is what's expected**, each cheaper to fix a problem in than the next: `quick_prompt_test.py` (6 hardcoded prompts, not built from the taxonomy — the fastest possible "does the model even load and generate on this box" check, and a stable reference for manually comparing Qwen against another model), `smoke_test.py --per-tier` (16 images, one per category x tier, checking the severity gradient reads as distinct), and `variation_test.py` (64 images, several samples per category x tier — checks diversity *within* a tier: different identities, garments, colours, environments, not just the gradient across tiers). All three write a manifest/images to a local, gitignored output folder for side-by-side review. See `PLAN.md`'s numbered run order for exactly when to run each one.
 
 ---
 
-## Phase 2: Training (PyTorch → CoreML)
+## ⚠ Current gap: the trainer does not read the synthetic pipeline's output yet
+
+`04_train_coreml_models.py` is a plain `torchvision.datasets.ImageFolder` classifier — it reads training labels **from subfolder names only** (`1_Needs_Improvement`/`2_Average`/`3_Polished`), one 3-class softmax head per `(stream, demographic)`. It does not open any CSV. This means:
+
+- `label_schema_<Category>.json` and the per-category CSVs that `dataset_generator/` produces are **the intended interface for a future trainer rewrite** — a continuous score-regression head plus multi-label attribute heads, one per schema entry, `SmoothL1` on score at weight 1.0 and cross-entropy on the rest at 0.3–0.5 (score must stay dominant, or the auxiliary heads drown the regression, which is the actual product). That rewrite has not been done.
+- Generating the full 28,000-image synthetic dataset today would **not**, by itself, feed the current trainer. Either the trainer needs rewriting to consume the schema/CSV contract, or a bridging step needs to convert synthetic output + its tier label into the same `ImageFolder`-per-class layout `3_CoreML_Training_Data/` already uses (lossy — it would throw away the richer attribute/formality/colour labels down to just the 3-class tier).
+
+This is a known, deliberate gap, not an oversight — decide which path (trainer rewrite vs. bridging script) before running the full 28,000-image generation, since the answer changes what's worth generating.
+
+---
+
+## Phase 2: Training (current state)
 
 Script: `pipeline/04_train_coreml_models.py`
 
-- Base model: EfficientNet-B3 (pretrained ImageNet)
-- Fine-tuned with two output heads (score regression + attribute multi-label)
-- Exported via `coremltools` to `.mlpackage`
-- Compatible with iOS 17+ CoreML runtime
-
----
+- `torchvision.datasets.ImageFolder` input, one model per `(stream, demographic)` — 2 streams (`Outfit`, `Face_Grooming`) × 6 age/gender demographics = 12 models, not 4
+- Single-head 3-class softmax (`1_Needs_Improvement`/`2_Average`/`3_Polished`), `CrossEntropyLoss` — not the two-headed score-regression + multi-label design the synthetic pipeline's schema is built for (see the gap noted above)
+- Exported via `coremltools` to `.mlpackage`, compatible with iOS 17+
 
 ## Phase 3: Real-World Fine-Tuning (TODO)
 
-Script: `pipeline/05_finetune_real_world.py` (to be created)
-
-After Phase 1 pre-training, we will fine-tune on the existing classified real-world image datasets to adapt the model from synthetic to real photography conditions.
+Script: `pipeline/05_finetune_real_world.py` (to be created). Fine-tune on real-world images to adapt from synthetic/scraped training conditions to real phone-camera photos.
 
 ---
 
@@ -146,4 +114,4 @@ After Phase 1 pre-training, we will fine-tune on the existing classified real-wo
 - Models run fully **on-device** (no internet dependency)
 - Camera framing enforced by AVFoundation overlay (oval for grooming, rectangle for outfit)
 - Lighting check via `CMSampleBuffer` EXIF `brightnessValue` before inference
-- Contextual improvement advice is generated by a **native Swift rules engine** (not an LLM), mapping binary attribute outputs like `hair_messy=1` to human-readable suggestions
+- Contextual improvement advice is generated by a **native Swift rules engine** (not an LLM), mapping model outputs to human-readable suggestions

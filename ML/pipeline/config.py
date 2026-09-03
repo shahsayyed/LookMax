@@ -113,6 +113,32 @@ NUM_CLASSES = len(AESTHETIC_TIERS)  # 3 classes
 # Early stopping — stop training if val_loss doesn't improve for N epochs
 EARLY_STOPPING_PATIENCE = 5
 
+# ─── Synthetic Qwen Dataset (Phase 1b output → Phase 4 input) ───────────────
+# See ML/pipeline/dataset_generator/ (Phase 1b, untouched by the trainer) and
+# ML/pipeline/dataset_generator/taxonomy.py for the label schema this feeds.
+SYNTHETIC_DIR     = DATA_ROOT / "4_Synthetic_Qwen"
+SYNTHETIC_RAW_DIR = SYNTHETIC_DIR / "raw_generated"     # rsync'd from the GPU box, unfiltered
+SYNTHETIC_QA_DIR  = SYNTHETIC_DIR / "qa_processed"      # after extract_measured_labels.py — has qa_pass
+
+# ─── Category Consolidation (Phase 4/5) ──────────────────────────────────────
+# The synthetic pipeline's 4 categories (no age split) replace the old
+# 2-stream x 6-demographic (12 model) layout. Real-data's 3 age-bucket
+# folders per gender+stream get pooled into one dataset per category.
+CATEGORIES = ["Men_Grooming", "Women_Grooming", "Men_Outfit", "Women_Outfit"]
+
+# category -> real-data stream folder name (TRAINING_DATA_DIR/<stream>/<demographic>/<tier>)
+CATEGORY_TO_STREAM = {
+    "Men_Grooming":   "Face_Grooming",
+    "Women_Grooming": "Face_Grooming",
+    "Men_Outfit":     "Outfit",
+    "Women_Outfit":   "Outfit",
+}
+
+# ─── Phase 5 Fine-Tune Defaults ──────────────────────────────────────────────
+FINETUNE_LEARNING_RATE = LEARNING_RATE / 10   # lower LR than Phase A pretrain
+FINETUNE_NUM_EPOCHS    = 10                   # fewer epochs than Phase A pretrain
+REPLAY_RATIO_DEFAULT   = 0.3                  # fraction of each batch drawn from synthetic replay
+
 # ─── Scraping Rate Limiting ───────────────────────────────────────────────────
 RATE_LIMIT_MIN_SEC = 1.0
 RATE_LIMIT_MAX_SEC = 2.0

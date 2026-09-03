@@ -1,0 +1,162 @@
+[
+  {
+    "category": "face_tier1_bad_men_botched_haircut",
+    "subreddit": "malehairadvice",
+    "query": "botched haircut",
+    "sort": "top",
+    "time": "all",
+    "description": "Men - Botched/terrible haircut"
+  },
+  {
+    "category": "face_tier1_bad_men_receding_balding",
+    "subreddit": "malehairadvice",
+    "query": "receding hairline balding",
+    "sort": "top",
+    "time": "all",
+    "description": "Men - Severe balding/receding"
+  },
+  {
+    "category": "face_tier1_bad_men_patchy_neckbeard",
+    "subreddit": "malegrooming",
+    "query": "neckbeard patchy",
+    "sort": "top",
+    "time": "all",
+    "description": "Men - Terrible patchy neckbeard"
+  },
+  {
+    "category": "face_tier1_bad_men_greasy_messy_hair",
+    "subreddit": "malehairadvice",
+    "query": "greasy messy hair",
+    "sort": "top",
+    "time": "all",
+    "description": "Men - Unwashed/messy hair"
+  },
+  {
+    "category": "face_tier1_bad_men_shave_it_off",
+    "subreddit": "malegrooming",
+    "query": "should i shave it off",
+    "sort": "top",
+    "time": "all",
+    "description": "Men - Desperate hair/beard advice"
+  },
+  {
+    "category": "face_tier1_bad_men_older_balding_bad",
+    "subreddit": "malehairadvice",
+    "query": "older balding mess",
+    "sort": "top",
+    "time": "all",
+    "description": "Men O50 - Bad balding"
+  },
+  {
+    "category": "face_tier1_bad_women_fried_damaged_hair",
+    "subreddit": "femalehairadvice",
+    "query": "fried damaged hair",
+    "sort": "top",
+    "time": "all",
+    "description": "Women - Severely damaged/fried hair"
+  },
+  {
+    "category": "face_tier1_bad_women_botched_haircut",
+    "subreddit": "femalehairadvice",
+    "query": "crying botched haircut",
+    "sort": "top",
+    "time": "all",
+    "description": "Women - Terrible haircut disaster"
+  },
+  {
+    "category": "face_tier1_bad_women_frizzy_mess",
+    "subreddit": "femalehairadvice",
+    "query": "frizzy mess",
+    "sort": "top",
+    "time": "all",
+    "description": "Women - Unmanageable frizzy hair"
+  },
+  {
+    "category": "face_tier1_bad_women_cakey_bad_makeup",
+    "subreddit": "MakeupAddiction",
+    "query": "cakey makeup help",
+    "sort": "top",
+    "time": "all",
+    "description": "Women - Bad/cakey makeup execution"
+  },
+  {
+    "category": "face_tier1_bad_women_awful_eyebrows",
+    "subreddit": "awfuleyebrows",
+    "query": "",
+    "sort": "top",
+    "time": "all",
+    "description": "Women - Terribly shaped/drawn eyebrows"
+  },
+  {
+    "category": "face_tier1_bad_women_overplucked_brows",
+    "subreddit": "Eyebrows",
+    "query": "overplucked ruined",
+    "sort": "top",
+    "time": "all",
+    "description": "Women - Overplucked/ruined eyebrows"
+  },
+  {
+    "category": "face_tier1_bad_women_older_damaged_hair",
+    "subreddit": "femalehairadvice",
+    "query": "older thinning damaged",
+    "sort": "top",
+    "time": "all",
+    "description": "Women O50 - Thinning damaged hair"
+  },
+  {
+    "category": "face_tier1_bad_both_severe_cystic_acne",
+    "subreddit": "acne",
+    "query": "severe cystic acne",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Severe acne breakouts"
+  },
+  {
+    "category": "face_tier1_bad_both_bad_breakout",
+    "subreddit": "SkincareAddiction",
+    "query": "worst breakout",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Terrible skin breakouts"
+  },
+  {
+    "category": "face_tier1_bad_both_acne_scars",
+    "subreddit": "acne",
+    "query": "acne scars texture",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Bad skin texture and scarring"
+  },
+  {
+    "category": "face_tier1_bad_both_amiugly_brutal",
+    "subreddit": "amiuglybrutallyhonest",
+    "query": "",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Brutally honest ugly feedback"
+  },
+  {
+    "category": "face_tier1_bad_both_asymmetrical_face",
+    "subreddit": "amiugly",
+    "query": "asymmetrical ugly",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Highly asymmetrical features"
+  },
+  {
+    "category": "face_tier1_bad_both_ugly_features",
+    "subreddit": "truerateme",
+    "query": "below average 3",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Below average facial ratings"
+  },
+  {
+    "category": "face_tier1_bad_both_lookyourbest_desperate",
+    "subreddit": "lookyourbest",
+    "query": "desperate ugly",
+    "sort": "top",
+    "time": "all",
+    "description": "Both - Desperate for facial improvement"
+  }
+]

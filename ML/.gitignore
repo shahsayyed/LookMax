@@ -3,6 +3,8 @@ data/1_Raw_Scrapes/**/*
 data/2_VLM_Processing/filtered_rejected/**/*
 data/3_CoreML_Training_Data/**/*
 data/3_Training_Data/**/*
+data/4_Synthetic_Qwen/**/*
+pipeline/dataset_generator/output/**/*
 2_VLM_Processing/
 unsplash-research-dataset-lite-latest/
 **/unsplash-research-dataset*
@@ -29,6 +31,9 @@ data/fairface/
 *test_variations*/
 **/*test_variations*/**
 **/*test_variations*/
+**/smoke_test_output/**
+**/quick_prompt_test_output/**
+**/variation_test_output/**
 !*.py
 !*.sh
 **/metadata_logs/*.txt

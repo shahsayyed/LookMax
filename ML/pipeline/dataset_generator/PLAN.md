@@ -1,6 +1,19 @@
-# Dataset Generator: FLUX.1 [dev] Synthetic Image Pipeline
+# Dataset Generator: Qwen-Image-2512 Synthetic Image Pipeline
 
-This folder contains all scripts for generating the **24,000-image synthetic training dataset** for LookMax using FLUX.1 [dev].
+This is the **v8** synthetic dataset generator for LookMax, producing the
+**28,000-image** training set (Men_Grooming 6,000 / Women_Grooming 6,000 /
+Men_Outfit 8,000 / Women_Outfit 8,000) using **Qwen-Image-2512**
+(`diffusers` `QwenImagePipeline`) instead of FLUX.1 [dev]. Qwen won
+decisively against Flux and Google Nano Banana Pro on prompt adherence for
+"flaw"-tier images in prior head-to-head testing (see
+`ML/archive/dataset_generator_v7/`) — it holds up on negative/flaw
+descriptors that Flux and Lightning-distilled models soften away.
+
+The previous pipeline (taxonomy v2-v7, FLUX.1 [dev] and an early Qwen
+attempt) is archived in full at `ML/archive/dataset_generator_v7/` — read
+it before changing anything here. It contains real, hard-won operational
+fixes this pipeline depends on (see "Lessons carried forward" below), not
+just historical clutter.
 
 ---
 
@@ -8,252 +21,380 @@ This folder contains all scripts for generating the **24,000-image synthetic tra
 
 | Script | Purpose |
 |---|---|
-| `generate_flux_dataset.py` | Master generation script — generates all 24,000 images and writes `labels.csv` |
-| `test_flux_prompts.py` | Quick 4-image sanity check (one per model category) |
-| `test_flux_variations.py` | Full 48-image demographic + level validation test |
-| `requirements.txt` | Python dependencies for the remote GPU server |
+| `taxonomy.py` | Single source of truth for every sampling axis — tiers/score bands, identity matrix, environment (background/lighting/framing), colour palette, garment slots + coherent outfit sampling, grooming condition axes, negative prompt, image budget, and the label schema generator. Nothing else hand-duplicates a list from here. |
+| `prompt_builder.py` | Composes one (prompt, resolution, label row) per image from `taxonomy.py`'s axes. Clause-structured prompts (see "Prompt style" below). |
+| `qwen_pipeline.py` | GPU-aware model loading (VRAM auto-detect: full-resident vs CPU-offload) + the one `generate()` every GPU-touching script shares. |
+| `smoke_test.py` | `--dry-run` (prompts + labels, no GPU) and `--per-tier` (16 real images, one per category x tier, with a manifest). Run both before anything else. |
+| `quick_prompt_test.py` | The FIRST real-GPU check on a new box: 6 hardcoded prompts (not built from the taxonomy), one at a time. Fastest possible "does the model even load and generate here" confirmation, and a stable reference set for manually comparing against another model. |
+| `variation_test.py` | `--dry-run` (no GPU) and the real run (64 images by default: 4 categories x 4 tiers x 4 samples/cell, real taxonomy sampling). Deeper diversity/quality gate than `smoke_test.py --per-tier` — checks variation WITHIN a tier, not just the gradient across tiers. Run right before `full_run.py --benchmark`. |
+| `validation_sweep.py` | `--coverage-only` (simulate the full 28,000-image plan, no GPU, flag any class under 250 examples) and `--check-binding` (measure colour adherence on already-generated images). The gate before `full_run.py`. |
+| `full_run.py` | The production run. Sharding, resume, atomic writes, `--benchmark`. |
+| `merge_shards.py` | Combines per-shard label CSVs into one CSV per category; warns (doesn't silently double-count) on duplicate filenames. |
+| `extract_measured_labels.py` | Bucket C: post-generation pixel-measured colour/QA columns, added without deleting rows. |
+| `install.sh` | Remote GPU box setup — disk-safety check, torch-presence check, dependency install. |
 
 ---
 
-## Remote Server Setup (Vast.ai)
+## Lessons carried forward from `ML/archive/dataset_generator_v7/`
 
-We run generation on a **rented GPU server** via [Vast.ai](https://vast.ai) because FLUX.1 [dev] requires ~24 GB VRAM and takes ~19 seconds per image at 1024×1024 resolution.
+These are real incidents from running the previous pipeline, not
+precautions taken "just in case" — read them before assuming a shortcut
+is safe.
 
-### Hardware Used
-- **GPU:** RTX 5090 (32 GB VRAM)
-- **VRAM Note:** The full FLUX.1 [dev] pipeline requires ~33 GB when the T5 text encoder is included. We use `pipe.enable_model_cpu_offload()` to keep the image generator on GPU (24 GB) and offload the text encoder to system RAM. This is the maximum safe configuration for a 32 GB card.
-- **Disk:** 150 GB allocated (IMPORTANT: see disk quirk below)
-- **OS/Image:** `vastai/pytorch:cuda-12.8.1-auto` (Jupyter interface)
+### 1. Vast.ai disk quirk: `/workspace` is tiny, the large disk is elsewhere
+On Vast.ai images, `/workspace` is commonly mapped to a small (~10GB) loop
+device, while the disk you actually paid for is mounted at `/` or `/data`
+depending on the template. `/workspace` is also the default directory you
+land in over SSH — an easy trap. `install.sh` and `full_run.py` both
+check the ACTUAL directory in play (`$LOOKMAX_DATA_DIR` / `--data-dir`),
+never the cwd, and abort with a clear message before downloading or
+generating anything if there isn't enough room.
 
-### Critical Disk Quirk on Vast.ai
-The host mounts the large disk to `/` (root), but maps `/workspace` to a tiny 10 GB loop device. **Do NOT use `/workspace` for model weights or outputs.** Use `/data` instead:
-
+**`full_run.py`'s own default output directory is a LOCAL folder next to
+the script**, not a hardcoded `/data` — this is a deliberate deviation
+from the archived script, made so `full_run.py --dry-run` (and this
+project's acceptance check) works out of the box on a laptop with no
+`/data` mount. **On an actual remote GPU box, you must set this
+explicitly**, every session:
 ```bash
-# Create the working directory on the large drive
-mkdir /data
-cp -r /workspace/dataset_generator /data/
-cd /data/dataset_generator
+export LOOKMAX_DATA_DIR=/data
 ```
+or pass `--data-dir /data` on every `full_run.py` / `merge_shards.py`
+invocation. `install.sh` prints this reminder at the end of setup.
 
-### Required Environment Variables
+### 2. tmux + shell env: don't trust either across a reattach
+Three separate incidents on these boxes proved you cannot trust:
+- **The shell environment** — some auto-tmux setups spawn fresh login
+  shells that don't reliably inherit a `.bashrc` export, and at least one
+  container image sets its own default (`HF_HOME=/workspace/.hf_home`,
+  pointing straight at the tiny disk).
+- **The script's own location** — if the repo is ever cloned into
+  `/workspace` instead of `/data` (easy, since `/workspace` is the SSH
+  landing directory), "cache next to wherever this script lives" would
+  silently reproduce the same bug.
+
+So: **set `HF_HOME` and `LOOKMAX_DATA_DIR` explicitly, in the SAME shell
+you run the Python scripts from, every time you attach or reattach** —
+don't assume a previous session's exports survived:
 ```bash
-export HF_TOKEN="hf_your_token_here"         # HuggingFace access token (FLUX.1 [dev] is gated)
-export HF_HOME="/data/huggingface_cache"      # Redirect 33GB model download to large drive
-export HF_XET_HIGH_PERFORMANCE=1              # Enable Xet high-speed multi-threaded download
-```
-
-> **Note on HF_TRANSFER:** The older `HF_HUB_ENABLE_HF_TRANSFER=1` env var is deprecated. Use `HF_XET_HIGH_PERFORMANCE=1` which uses the newer Xet downloader achieving 40–80 MB/s vs the default ~2 MB/s single-stream.
-
-### Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-> `requirements.txt` intentionally does NOT pin a PyTorch version. The Vast.ai image ships with an optimized CUDA build of PyTorch — overwriting it breaks the GPU drivers. We install only the missing HuggingFace libraries on top.
-
----
-
-## Running the Generation
-
-### Step 1: Test First (Required)
-Always validate prompts before committing to the full 24,000-image run:
-
-```bash
-# Quick 4-image test (one per model category)
-python3 test_flux_prompts.py
-
-# Full 48-image demographic + level validation (taxonomy v3)
-python3 test_flux_variations.py
-```
-
-> **v6 taxonomy check:** `test_flux_variations.py` now writes to `test_variations_comprehensive_v6/`. While v5 was generating, its own console logs exposed the real root cause of the persistent flaw-adherence weakness: `"The following part of your input was truncated because CLIP can only handle sequences up to 77 tokens"` — on every single image. v3 through v5 each added more reinforcement text and pushed prompts to 180-220+ CLIP tokens; T5 (512-token budget) saw everything, but CLIP (hard 77-token cap) was silently losing most or all of the flaw/effort description. Confirmed with the real `CLIPTokenizer`: a v5 Outfit prompt's CLIP view cut off *before the outfit description even started*.
->
-> v6 fixes this by leading every prompt with a short "opener" (core flaw/effort keywords, plus body preservation for outfits) verified to fit completely inside CLIP's 77-token window, even for the longest identity combinations. This should be the most impactful single fix of the whole taxonomy-iteration process — v4/v5's targeted fixes (body-shape reinforcement, evaluative closers) were reasonable ideas but were fighting a token-budget problem underneath them the whole time.
->
-> For each identity's triplet in the v6 batch, check:
-> - **Is the flaw obviously visible now for every identity**, including the ones that were weakest before (Black man, South Asian man, Hispanic woman)? This is the main thing v6 targets.
-> - **Is body shape/size still consistent across all three tiers?**
-> - **Is Average still as sharp as Flaw and Polished?**
->
-> If grooming flaw visibility is *still* weak for the same identities after v6 — with the CLIP truncation actually fixed this time — that's real evidence prompt engineering has hit its ceiling for this model/setup, and the next step should be a post-generation VLM QA pass (see the recommendation below) rather than further wording changes. `generate_flux_dataset.py`'s variation text and prompt construction have already been updated to match v6; its `guidance_scale` is deliberately left at 3.5 pending this final visual check.
-
-### Step 2: Run inside tmux (Critical)
-The full generation takes ~130 hours. Run inside `tmux` so the process survives browser disconnections:
-
-```bash
-tmux new -s fluxgen
-
-# Inside tmux:
-export HF_TOKEN="hf_your_token_here"
+tmux new -s qwengen        # or: tmux attach -t qwengen
 export HF_HOME="/data/huggingface_cache"
 export HF_XET_HIGH_PERFORMANCE=1
-python3 generate_flux_dataset.py
-
-# Detach safely (leaves process running):
-# Press Ctrl+B, then D
-
-# Reattach later:
-tmux attach -t fluxgen
+export LOOKMAX_DATA_DIR=/data
 ```
+The full generation run takes on the order of days (see the benchmark
+step below for this run's actual GPU-hour projection) — always inside
+tmux, never a bare foreground shell that dies on disconnect.
 
-### Step 3: Monitor Progress
-The script prints `[idx/24000] Generating: filename...` for every image. Check the `dataset_output/` folder size periodically.
+### 3. GPU VRAM auto-detection, not a hardcoded assumption
+`qwen_pipeline.py` checks the ACTUAL GPU on the current machine at
+runtime (`torch.cuda.get_device_properties`), not whichever card was used
+when the script was last edited:
+- **≥ 80GB VRAM** (e.g. RTX PRO 6000 Blackwell 96GB): full pipeline
+  resident (`.to("cuda")`, no offload) — faster, and technically able to
+  batch.
+- **< 80GB VRAM** (e.g. RTX 6000 Ada 48GB — confirmed OOM on `.to("cuda")`
+  in earlier testing): `enable_model_cpu_offload()`, which forces batch
+  size 1 (only the actively-running component is ever resident).
+
+### 4. Measured: batching gave NO throughput benefit on this model
+On an RTX PRO 6000 Blackwell (96GB, full-resident mode): batch=1 ran
+~0.64s/step/image; batch=4 ran ~0.73-0.75s/step/image. **Batching was
+slightly WORSE, not better** — a 20B-parameter transformer at 1024x1024
+already saturates that GPU's compute at batch=1, so there's no idle
+capacity for batching to exploit (unlike lighter models). This is why
+`full_run.py`'s default `gen_batch_size` is **1**, based on a real
+measurement, not caution for its own sake. If you're on different
+hardware, re-check with `python3 full_run.py --benchmark` before assuming
+a higher batch size helps — it might, on a card with a bigger gap between
+compute throughput and this model's per-image compute need.
+
+### 5. Dataset size does not affect on-device inference speed
+To head off a predictable confusion: generating 28,000 images (vs. the
+archived pipeline's 24,000) has **zero** effect on how fast the trained
+CoreML model runs on a user's iPhone. On-device inference speed is a
+function of the exported model's backbone architecture and quantization
+(`ML/pipeline/04_train_coreml_models.py`'s `BACKBONE`/`compute_precision`
+settings), entirely unrelated to how many training images went into it.
+More training data can change accuracy, never runtime latency.
+
+### 6. Why prompts don't need FLUX's CLIP-77-token workaround
+The archived pipeline's biggest single bug (see its `PLAN.md`'s "Known
+Issues" table) was CLIP's hard 77-token limit silently truncating flaw
+descriptions before they even started, because FLUX.1 uses CLIP for part
+of its conditioning. **Qwen-Image-2512 uses Qwen2.5-VL-7B as its text
+encoder** — a real instruction-following LLM, not a 77-token bag-of-words
+encoder — so `prompt_builder.py`'s clause-structured, multi-line prompts
+(one labelled body-region/attribute per line) are the right shape here
+and don't need FLUX's "short opener that fits in 77 tokens" workaround.
+Still keep each clause's tier phrasing SHORT rather than repeating the
+same idea across clauses — that's about not wasting the encoder's
+attention on restating one idea, not a hard token budget.
 
 ---
 
-## Qwen-Image-2512 Comparison Test
+## Prompt style
 
-`test_qwen_variations.py` is the Qwen counterpart to `test_flux_variations.py` — same 48-prompt taxonomy v6 identities/prompts/seeds, so the two output folders (`test_variations_comprehensive_v6/` vs `test_variations_qwen_v6/`) compare image-for-image on prompt adherence. This exists because Flux collapsed toward "attractive" on flaw/average-tier prompts in manual testing (see chat history), while Qwen-Image-2.0 held up on the same prompts.
+Clause-structured, one labelled body-region/attribute per line:
+```
+A full-body photograph of a 35-year-old Caucasian man, athletic, oval face,
+high cheekbones, body proportions unchanged from their natural athletic
+figure, not slimmer or heavier than that, with short black hair, standing
+facing the camera with the whole body from head to shoes visible.
+Upper body: wearing a solid navy chambray button-up shirt, crisp and
+freshly pressed, with no visible wrinkles, the fit tailored to the body
+with clean, flattering proportions.
+Outer layer: wearing a grey tailored blazer, crisp and well-kept.
+Lower body: wearing solid black tailored trousers, crisp and freshly
+pressed, with no visible wrinkles, the fit tailored to the body with
+clean, flattering proportions.
+Footwear: black oxford shoes, clean and freshly polished.
+Overall styling: the whole outfit looking sharp and intentionally put
+together.
+Setting: standing against a plain neutral-colored wall, bright even studio
+lighting, centered in frame, straight-on eye-level angle.
+Photorealistic candid photograph, natural skin texture, sharp focus, 85mm
+lens, full body in frame.
+```
 
-Setup on a fresh Vast.ai box:
+The **body-proportions clause** right after the identity is a deliberate
+addition beyond a bare template, ported forward from a real, documented
+bug: `ML/README.md`'s "taxonomy v4" note describes "polished" styling
+language visibly slimming heavy-set/plus-size/curvy identities relative
+to their own flaw-tier render, because styling text reshapes body
+proportions through cross-attention even with an otherwise-fixed identity
+description. Restating the build early (not trailing) is the fix that
+worked before; there's no dedicated taxonomy axis for it, so
+`prompt_builder.py` adds it directly.
 
+`taxonomy.NEGATIVE_PROMPT` deliberately contains **no flaw words**
+("wrinkled", "greasy", "patchy", etc.) — negating those globally would
+destroy the entire flaw tier. It targets deformed hands/extra limbs,
+multiple people, cropped head/feet, text/watermark, cartoon/3D render,
+and plastic/airbrushed skin instead.
+
+**No LoRA, no Qwen-Image-Lightning distillation anywhere in this
+pipeline** (verified absent — grep for "lightning\|lora" across `ML/`
+turns up nothing but this very sentence and an unrelated "Flora" match).
+Few-step distilled models lose prompt adherence worst on negative/flaw
+attributes first, since distillation pulls generation toward the model's
+aesthetic mode — exactly the failure this dataset can't afford at the low
+end of the score range.
+
+---
+
+## Running the full pipeline, in order
+
+### 1. Setup (remote GPU box)
 ```bash
 mkdir -p /data && cd /data
-git clone <your-repo-url> /data/LookMax
+git clone <repo-url> /data/LookMax
 cd /data/LookMax/ML/pipeline/dataset_generator
-
-bash install_qwen.sh   # checks /data has room, checks torch is present, installs diffusers-from-source + transformers>=4.51.3 -- does not touch torch or /workspace
-
-tmux new -s qwengen
-python3 test_qwen_variations.py
-# Ctrl+B, D to detach; tmux attach -t qwengen to reattach
+bash install.sh
 ```
 
-No `export HF_HOME=...` step needed — `test_qwen_variations.py` pins its own cache to `/data/huggingface_cache` unconditionally at the top of the file (see the comment there for why: three separate incidents proved relying on the shell's env or the script's own checkout location for this both fail across sessions on these boxes). `install_qwen.sh` checks free space against `/data` the same way, independent of your current directory.
-
-Qwen-Image-2512 is Apache 2.0 and not a gated repo, so `HF_TOKEN` is optional (Flux.1 [dev] requires it; Qwen doesn't). First run downloads ~58GB of weights (the 20B transformer plus the large Qwen2.5-VL text encoder) to `/data/huggingface_cache`.
-
-**If you already have a completed download under a different path** (e.g. `/data/dataset_generator/huggingface_cache` from before this fixed-path change), move it once rather than re-downloading:
+### 2. Cheap sanity checks first — no GPU
 ```bash
-mv /data/dataset_generator/huggingface_cache /data/huggingface_cache
+python3 -m py_compile *.py
+python3 smoke_test.py --dry-run
 ```
+Read every one of the 16 printed prompts. This is the cheapest point to
+catch an implausible garment/colour pairing or an off-tone effort phrase
+— fixing it here costs nothing; catching it after a GPU run costs real
+money and time.
 
----
-
-## Taxonomy v7 + Full Dataset Generation (Qwen-Image-2512)
-
-v6 (above) was a prompt-adherence comparison test. v7 is the taxonomy actually used to generate the real dataset, fixing two problems the v6 comparison surfaced on review: flaw-tier severity was flat (one maximally-bad description instead of a gradient), and "Polished" outfits were a jacket monoculture (only one archetype, always involving outerwear). See `qwen_taxonomy_v7.py`'s module docstring for the full rationale.
-
-| Script | Purpose |
-|---|---|
-| `qwen_taxonomy_v7.py` | Shared taxonomy module — independent attribute axes (hair/facial hair/skin/eyebrows; top/fit/fabric/color/bottom/footwear), each with its own severity gradient. Imported by all three scripts below. |
-| `qwen_pipeline_utils.py` | GPU-aware model loader — auto-detects VRAM and picks full-GPU-resident (`.to("cuda")`, needed for parallel batching) vs `enable_model_cpu_offload()` (smaller cards, forces batch size 1). |
-| `test_qwen_prompts_v7.py` | 6 hardcoded prompts demonstrating the two fixes directly. Run first. |
-| `test_qwen_variations_v7.py` | 64-image systematic test (4 identities × 4 tiers × grooming/outfit × men/women). Run second. |
-| `generate_qwen_dataset.py` | The full 24,000-image run. Run last, after reviewing the two test scripts' output. |
-
-### Running the full generation
-
+### 3. Coverage sweep — no GPU, before ANY GPU time is spent
 ```bash
-python3 generate_qwen_dataset.py [target_count] [gen_batch_size]
+python3 validation_sweep.py --coverage-only
 ```
+Simulates the exact same deterministic 28,000-task list `full_run.py`
+will use and flags any class under 250 examples. Must show
+"no class under 250 examples" before proceeding.
 
-- No args: runs until all 24,000 images exist.
-- `target_count` (e.g. `500`): generate up to that many NEW images this invocation, then exit. Safe to stop and restart anytime — resume is based on which output files already exist, and the task list is seeded deterministically (`random.Random(42)`) so index N always means the same task on every run.
-- `gen_batch_size` (e.g. `4`): how many images to generate in ONE parallel GPU forward pass — real throughput, not just multiple processes. Only takes effect if the detected GPU has enough VRAM to hold the full ~58GB pipeline resident (currently ≥80GB — see `qwen_pipeline_utils.py`); otherwise it's forced to 1 automatically. Start conservative (2-4) and watch `nvidia-smi` before raising it — there's no pre-measured safe ceiling for this model's per-image activation memory yet.
-
-To run unattended in tmux until fully done:
+### 4. Six hardcoded prompts — the FIRST real GPU touch on a new box
 ```bash
 tmux new -s qwengen
-while python3 generate_qwen_dataset.py 500 4; do :; done
+export HF_HOME="/data/huggingface_cache"
+export HF_XET_HIGH_PERFORMANCE=1
+export LOOKMAX_DATA_DIR=/data
+python3 quick_prompt_test.py --output-dir /data/quick_prompt_test_output
+```
+These 6 prompts are hardcoded, not built from `taxonomy.py` — deliberately
+standalone, so a taxonomy/prompt-builder bug can never mask (or be masked
+by) a base-model or environment problem. This is the cheapest, fastest
+place to discover "the model doesn't load" or "generation errors out on
+this box" — a few minutes, not partway through a 64-image or 28,000-image
+run. Check `01` vs `02` for the flaw severity gradient, and `05` vs `06`
+for polished-outfit diversity (not a jacket every time).
+
+### 5. Sixteen real images — one per category x tier
+```bash
+python3 smoke_test.py --per-tier
+```
+Review `smoke_test_output/images/` side by side. flaw_severe / flaw_mild /
+average / polished must read as **three visually distinct groups**, not a
+blur of near-identical images — Qwen-2512's improved realism (relative to
+FLUX) can silently soften grease/wrinkles/bad fit toward its aesthetic
+prior. That failure is silent (the label still says `flaw_severe`) and
+would poison exactly the end of the scale this product depends on most.
+
+### 6. Colour-binding check on those 16 images
+```bash
+python3 validation_sweep.py --check-binding smoke_test_output/manifest.csv smoke_test_output/images
+```
+Gate: combined colour match ≥ 70%. Garment-type (≥80% target) and pattern
+(≥65% target) adherence are **not** automatically measurable from pixels
+alone — use the manual review checklist this command also prints.
+
+### 7. Sixty-four real images — the deepest diversity/quality gate
+```bash
+python3 variation_test.py --dry-run    # read the prompts first, no GPU
+python3 variation_test.py               # 64 real images (4 categories x 4 tiers x 4 samples/cell)
+```
+This is `smoke_test.py --per-tier` generalized: instead of ONE image per
+category x tier, it generates several, so you can see diversity WITHIN a
+tier (different identities, garments, colours, environments), not just the
+gradient across tiers. Review `variation_test_output/images/` and
+`manifest.csv` against the checklist the script prints at the end
+(severity gradient across several samples, no jacket monoculture in
+polished, backgrounds/lighting varying independently of tier). This is the
+last visual gate before spending real GPU time on the full run — if
+something is going to be systematically wrong across the full 28,000
+images, this is where it's cheapest to catch it.
+
+### 8. Benchmark on THIS hardware
+```bash
+python3 full_run.py --benchmark
+```
+Times 5 images (discards the first as warm-up), projects total GPU-hours
+for all 28,000 images, and — if you pass `--num-shards N` — prints a
+per-shard time table. Don't skip this: the "no benefit from batching"
+finding above was measured on ONE specific GPU, not guaranteed on yours.
+
+### 9. The full run
+Single machine, unattended until done:
+```bash
+tmux new -s qwengen
+export HF_HOME="/data/huggingface_cache"
+export LOOKMAX_DATA_DIR=/data
+python3 full_run.py
+```
+Split across N machines/processes (each takes disjoint task indices,
+`index % num_shards == shard`):
+```bash
+python3 full_run.py --shard 0 --num-shards 4   # on worker 0
+python3 full_run.py --shard 1 --num-shards 4   # on worker 1
+# ...
+```
+Safe to stop (Ctrl+C) and restart anytime — resume is based on which
+`.png` files already exist under `images/`; the task list itself is
+deterministic (seeded), so index N always means the same prompt/labels on
+every run. Each image is written to a `.tmp` name and only renamed after
+its CSV row is flushed, so a killed process can never leave a
+half-written file that looks done and gets silently skipped forever.
+
+Pass a `target_count` to generate a bounded number of new images per
+invocation (useful for looping in short sessions):
+```bash
+while python3 full_run.py 500; do :; done
 ```
 
-Two output files land in `/data/qwen_dataset_output/`:
-- `labels.csv` — training-ready (filename, category, tier, score, binary attribute columns).
-- `generation_log.jsonl` — full provenance, one JSON line per image: exact prompt text, negative prompt, seed, steps, cfg scale, batch size used, timestamp. Use this to trace exactly what produced any specific image.
+### 10. Merge shards (if you sharded)
+```bash
+python3 merge_shards.py --data-dir /data
+```
+Warns loudly (rather than silently double-counting) if two workers were
+accidentally given the same `--shard` value.
 
-Each image is written to a `.tmp` name and only renamed to its final filename after its CSV row and log line are both flushed — a run killed mid-image can't leave a half-written file that looks complete and gets silently skipped forever.
+### 11. Measure pixel-level labels (Bucket C)
+```bash
+python3 extract_measured_labels.py \
+    /data/qwen_dataset_output/labels_Men_Outfit.csv \
+    /data/qwen_dataset_output/images \
+    --output /data/qwen_dataset_output/labels_Men_Outfit_measured.csv
+```
+Repeat per category. Adds measured colour, colour-match, colour-harmony,
+and QA-gate columns without deleting any row — an over-strict QA gate
+could silently skew the trained score distribution more than the bad
+images it flags. If the QA pass rate is below ~85%, the script prints a
+warning; inspect `qa_reasons` before discarding anything downstream.
+
+### 12. Bring the finished dataset back to this machine
+
+Everything above runs on the remote GPU box under `$LOOKMAX_DATA_DIR`
+(e.g. `/data/qwen_dataset_output/`). Once a run (or a shard) is complete
+and measured, copy it back to this repo's local convention — a sibling of
+the real-data-pipeline's numbered stages, kept clearly separate by name so
+the two are never confused:
+
+```bash
+# from your local machine
+rsync -avz -e "ssh -p <port>" \
+    root@<instance-host>:/data/qwen_dataset_output/ \
+    ML/data/4_Synthetic_Qwen/raw_generated/
+
+# after running extract_measured_labels.py (step 11), the *_measured.csv
+# files and any QA-flagged-but-kept images go here instead:
+rsync -avz -e "ssh -p <port>" \
+    root@<instance-host>:/data/qwen_dataset_output/*_measured.csv \
+    ML/data/4_Synthetic_Qwen/qa_processed/
+```
+
+`ML/data/1_Raw_Scrapes/`, `2_VLM_Processing/`, and `3_CoreML_Training_Data/`
+are real photos from the separate scraping pipeline (see
+`ML/pipeline/real_data_pipeline/`) — `4_Synthetic_Qwen/` is deliberately a
+new, distinctly-numbered sibling rather than reusing 1-3, so synthetic and
+real data can never be silently merged or mistaken for each other.
+Combining the two into one training-ready set (if that's ever wanted) is
+a deliberate future step, not something either pipeline does implicitly.
 
 ---
 
-## Prompt Taxonomy (v2 — Effort-Based)
-
-### Design Principles
-1. **Effort only, no biology:** Flaws never include biological traits (acne, face shape, body type). We only penalise choices the user can control: greasy/unstyled hair, sloppy clothing, unblended makeup.
-2. **Polished ≠ Formal:** A polished score does NOT require a suit. A perfectly fitted streetwear outfit with pristine fabrics scores 10/10. The model rates **fit, crispness, and color harmony**.
-3. **Average = no effort:** Average is defined as "clean but zero styling" — no product, flat hair, standard jeans. This creates a clear visual gap between Average and Polished.
-
-### Identity Matrix
-Identities combine **age × ethnicity × body type × face shape** to cover diverse real-world users:
+## Output layout
 
 ```
-Ages:        22, 28, 35, 45, 55
-Ethnicities: Caucasian, Black, East Asian, South Asian, Hispanic, Middle Eastern
-Body types:  slim, athletic, average build, heavy set, muscular (men)
-             slim, curvy, athletic, average build, plus size (women)
-Face shapes: explicitly included to prevent model from learning genetic bias
-```
-
-### Score Scale
-| Score | Label | Description |
-|---|---|---|
-| 1–3 | Flaw | Zero grooming effort, sloppy clothing, obvious neglect |
-| 4–6 | Average | Clean but completely unstyled, no products, basic clothes |
-| 7–10 | Polished | High-effort styling, product use, excellent fit and color coordination |
-
----
-
-## Output Structure
-
-```
-dataset_output/
-├── images/
-│   ├── 00001_Men_Grooming.png
-│   ├── 00002_Women_Outfit.png
+$LOOKMAX_DATA_DIR/qwen_dataset_output/
+├── images/                              <- all categories, one shared dir
+│   ├── 00000_Men_Grooming_polished.png
+│   ├── 00001_Women_Outfit_flaw_mild.png
 │   └── ...
-└── labels.csv      ← Auto-written during generation; safe to resume after interruption
+├── label_schema_Men_Grooming.json       <- generated FROM taxonomy.py
+├── label_schema_Women_Grooming.json
+├── label_schema_Men_Outfit.json
+├── label_schema_Women_Outfit.json
+├── labels_Men_Grooming.csv              <- one CSV per category (different
+├── labels_Women_Grooming.csv               head sets -- see below)
+├── labels_Men_Outfit.csv
+├── labels_Women_Outfit.csv
+└── generation_log.jsonl                 <- full provenance: exact prompt,
+                                             seed, steps, cfg scale, timestamp
 ```
+(Sharded runs additionally produce `labels_<Category>_shard<k>.csv` per
+worker until `merge_shards.py` combines them.)
 
-`labels.csv` columns: `filename, category, score, [binary attribute flags]`
+**Why one CSV per category, not one combined CSV**: each category has a
+different head set (grooming has hair/skin/eyebrows/facial-hair-or-makeup;
+outfit has garment-slot/pattern/fit/formality columns). A single wide CSV
+would be mostly empty cells and would obscure which columns a given
+category's model head actually trains on.
+
+**Label schema contract**: `label_schema_<Category>.json` — a list of
+`{"name", "type", ..., "loss_weight"}` objects. Types: `regression`
+(score, weight 1.0), `ordinal` (3 levels 0/1/2, weight 0.3), `categorical`
+(weight 0.3; `formality` 0.5), `meta` (not trained — provenance/
+pixel-snapping only, e.g. `requested_upper_color`). Generated by
+`taxonomy.get_label_schema()`, never hand-duplicated.
 
 ---
 
-## Timeline & Cost
-
-| Metric | Value |
-|---|---|
-| Time per image (RTX 5090) | ~19 seconds |
-| Total images | 24,000 |
-| **Total time** | **~130 hours** |
-| Server cost (Vast.ai RTX 5090) | ~\$0.41/hr |
-| **Estimated total cost** | **~\$53** |
-
----
-
-## Known Issues & Fixes
+## Known issues & fixes
 
 | Issue | Cause | Fix |
 |---|---|---|
-| `CUDA out of memory` | Tried `pipe.to("cuda")` — model exceeds 32GB VRAM | Use `pipe.enable_model_cpu_offload()` |
-| `No space left on device` | HuggingFace cache defaulted to `/root/.cache` on 10GB loop drive | Set `HF_HOME="/data/huggingface_cache"` |
-| Slow download (~2 MB/s) | Single-stream TCP throttling by HuggingFace CDN | Set `HF_XET_HIGH_PERFORMANCE=1` |
-| `HF_HUB_ENABLE_HF_TRANSFER deprecated` | Old env var replaced by Xet system | Use `HF_XET_HIGH_PERFORMANCE=1` instead |
-| `File reconstruction error: IO Error` | Corrupted partial download from force-killed process | `rm -rf /data/huggingface_cache/hub/models--black-forest-labs--FLUX.1-dev` and re-run |
-| Schnell ignoring flaw prompts | "Prompt collapse" in 4-step distilled models | Must use FLUX.1 [dev] (28 steps) |
-| Flaw-tier images look attractive/Polished-ish | [dev] softens abstract intensity adjectives ("severely", "unkempt") back toward its aesthetic prior even at 28 steps | Taxonomy v3: concrete sensory flaw detail (grease sheen, flaking, stains) + `guidance_scale=5.0`; validate with `test_flux_variations.py` before running the master script |
-| Master script's grooming labels included `skin_acne`/`skin_dark_circles` | Pre-v2 variation entries were never deleted when the "effort-only, no biology" taxonomy v2 was introduced — silently violated the design principle for ~half of grooming-flaw prompts | Fixed: `MEN_GROOMING_VARS`/`WOMEN_GROOMING_VARS` in `generate_flux_dataset.py` now contain only effort-based v3 entries |
-| "Polished" outfit renders visibly slimmer than "Flaw"/"Average" for the same identity+seed | Outfit-tier language ("flawlessly tailored proportions that flatter the body", "highly stylish") pulls FLUX toward its slim-fashion-model prior, partially overriding the identity's stated build — even with a fixed seed the text still reshapes body proportions through cross-attention. The app must never train the model to treat body size/weight as something "improvement" changes. | Taxonomy v4: identities are structured (age/ethnicity/build/face) so the build word is re-injected directly into the outfit description at every tier ("body shape and size unchanged -- still their natural {build} figure, not slimmer or heavier"), not just stated once in the identity clause |
-| "Average"-tier images visibly blurrier/softer-focus than Flaw/Polished for the same identity+seed | v3's Average descriptions ended with self-referential closers like "an unremarkable average appearance" — describing the *photo* as unremarkable, not just the outfit/grooming effort; FLUX appears to read that as a cue for soft/amateur-snapshot rendering | Taxonomy v4: dropped those closers, and moved a sharp-focus/high-resolution anchor to the FRONT of every prompt (all tiers) instead of only trailing at the very end |
-| v4 full-batch review: grooming Flaw vs Polished still nearly indistinguishable for some identities (Black man, South Asian man, Hispanic woman), clear for others (Caucasian, East Asian) | Same prompt-collapse pattern, only partially addressed by v4's sensory detail — purely descriptive adjectives still get smoothed away for some identities. Risk: if flaw signal is systematically weaker for some ethnicities, the trained model could end up less sensitive to poor grooming in those groups — a fairness bug, not just a quality one. | Taxonomy v5: every Flaw description now restates its core defect a second time in different words and ends with a blunt evaluative closer ("...are the most obvious features... giving an unmistakably low-effort appearance at a glance") |
-| v4 full-batch review: one outfit triplet (45yo Black man, "athletic" build) rendered visibly heavier in Flaw than in Polished despite the same seed and the v4 body clause | v4's body-preservation clause was appended at the very END of the outfit description — not forceful enough to counter "fold lines across the chest and stomach" cueing a rounder torso for a moderate (non-extreme) build under "sloppy" framing | Taxonomy v5: body-preservation clause moved to its own sentence right after the identity, BEFORE the effort description (front-loaded, same principle as the blur fix); also dropped "the fabric hanging in a shapeless overly baggy way that swallows the body" from the Men's Flaw #1 outfit variation in the master script, which was never in the test script and likely contributed to the drift |
-| **ROOT CAUSE, found while v5 was mid-run: CLIP's hard 77-token limit** — the generation logs show `"CLIP can only handle sequences up to 77 tokens"` on every single image | FLUX.1 uses TWO text encoders: CLIP (hard 77-token cap, contributes a global conditioning vector) and T5-XXL (`max_sequence_length=512`, drives most fine-grained detail via cross-attention). Every taxonomy round from v3 onward kept ADDING reinforcement text, growing prompts to 180-220+ tokens. T5 saw all of it, but CLIP silently truncated at 77 — verified with the real `CLIPTokenizer`: for a typical v5 Outfit prompt (45yo Black man), CLIP's view cut off at *"...natural athletic figure throughout"* and **never reached the actual outfit description at all** (`"wearing a heavily wrinkled..."` was entirely invisible to CLIP). This is a better explanation for the identity-dependent flaw-adherence weakness than an "aesthetic prior" theory — each prompt-engineering round made the token-budget problem *worse*, not better, since longer reinforcement text pushes the real content further past the cutoff. | Taxonomy v6: every prompt now leads with a short (10-25 word) "opener" — the variation's core flaw/effort keywords, plus body preservation for outfits — verified with the real CLIP tokenizer to land completely inside the 77-token window even for the longest identity combinations (Middle Eastern ethnicity + "average build"). The full elaborate description (with v5's reinforcement) still follows for T5. The alignment guide is also modestly trimmed (redundant phrasing removed) to leave more budget for the opener + identity. |
-
----
-
-## Cleanup Commands
-
-```bash
-# Delete old model weights to free space
-rm -rf /data/huggingface_cache/hub/models--black-forest-labs--FLUX.1-dev
-rm -rf /data/huggingface_cache/hub/models--black-forest-labs--FLUX.1-schnell
-
-# Wipe test image folders for a clean re-run
-rm -rf /data/dataset_generator/test_images/*
-rm -rf /data/dataset_generator/test_variations_comprehensive/*
-
-# Wipe full dataset output for a fresh generation run
-rm -rf /data/dataset_generator/dataset_output/*
-
-# Remove old workspace files from the 10GB drive
-rm -rf /workspace/dataset_generator
-rm -rf ~/.cache/huggingface
-```
+| `CUDA out of memory` on `.to("cuda")` | Card has < ~80GB VRAM, can't hold the ~58GB pipeline resident | `qwen_pipeline.py` auto-detects this and uses `enable_model_cpu_offload()` instead |
+| `full_run.py --dry-run` tries to create `/data` and fails on a laptop | Default output dir isn't `/data` (deliberately, see "Lessons" #1) — but if you set `LOOKMAX_DATA_DIR=/data` on a machine without that mount, it'll still try | Only set `LOOKMAX_DATA_DIR=/data` on a box that actually has `/data`; leave it unset for local testing |
+| `No space left on device` mid-download | `HF_HOME` defaulted to a small disk | `export HF_HOME="$LOOKMAX_DATA_DIR/huggingface_cache"` explicitly, every session (see "Lessons" #2) |
+| A resumed run seems to skip images that were never actually generated | Task list wasn't built with the same seed, so "index N" meant something different between runs | Never call `build_full_task_list()` with a non-default seed; it exists precisely so index N is stable |
+| Two shard CSVs contain the same filename | Two workers were given the same `--shard` value | `merge_shards.py` warns and keeps only the first occurrence — check the printed list and re-run the affected shard with the correct index |
+| QA pass rate looks surprisingly low in `extract_measured_labels.py` | Could be a real generation problem, OR an over-strict gate (see its module docstring) | Read `qa_reasons` per failing row before concluding the images are bad — rows are never deleted, so this is always inspectable after the fact |
+| `face_detected`/`multiple_faces` QA never fires, cascade warning printed | Some OpenCV builds/environments ship without `cv2.CascadeClassifier` wired up (seen on at least one dev machine while building this pipeline) | Non-fatal by design — `extract_measured_labels.py` skips just that one check and still runs colour/blur/brightness/cropped-feet checks; reinstall `opencv-python-headless` cleanly (no conflicting `opencv-python` alongside it) if you need face QA specifically |

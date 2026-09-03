@@ -1,8 +1,0 @@
-transformers
-diffusers
-accelerate
-sentencepiece
-protobuf
-pandas
-tqdm
-hf_transfer
