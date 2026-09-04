@@ -61,7 +61,7 @@ ML/
 │   ├── prune_vocabulary.py           ← Prunes vocabulary to domain terms (~106M params)
 │   ├── remap_tokenizer.py            ← Tokenizer wrapper with pruned token IDs
 │   ├── finetune.py                   ← Full SFT fine-tuning with prompt loss masking
-│   ├── export_coreml.py              ← Stateful INT4 KV-cache CoreML export for iOS 18+ ANE
+│   ├── export_coreml.py              ← Stateless (no KV-cache) FP16 CoreML export for iOS 18+ ANE — see PLAN.md "Current Status"
 │   ├── smoke_test.py                 ← Checkpoint & .mlpackage verification
 │   ├── install.sh                    ← Setup script
 │   ├── requirements.txt              ← LLM dependencies
@@ -75,7 +75,7 @@ ML/
 │   │   ├── raw_generated/            ← Generated image shards & raw CSVs
 │   │   └── qa_processed/             ← Post-QA images with measured labels
 │   └── stylist_llm/                  ← Stylist LLM training data
-│       ├── raw_generated/            ← Raw Gemini instruction pairs
+│       ├── raw_generated/            ← Raw instruction pairs (local Ollama by default, or Gemini)
 │       ├── qa_reviewed/              ← Filtered dataset passing all QA gates
 │       └── pruned_vocab/             ← Tokenizer mapping artifacts
 ├── models/                           ← Exported CoreML .mlpackage artifacts for Xcode
@@ -110,13 +110,14 @@ Multi-head architecture dynamically constructed from `label_schema_<Category>.js
 
 ### 2. Stylist LLM Pipeline (`ML/stylist_llm/`)
 
-Produces `StylistEngine.mlpackage` — a compact, fast language model that takes detected vision tags and occasion, outputting a concise (<50 words), actionable "5-minute fix".
+Produces `StylistEngine.mlpackage` — a compact, fast language model that takes detected vision tags and occasion, outputting a concise (<50 words), actionable "5-minute fix". **Status: dataset generated, model fine-tuned, exported, and quality-verified once (see `ML/stylist_llm/PLAN.md`'s "Current Status" section for the full account, real numbers, and open issues — this summary is necessarily abbreviated).**
 
 * **Base Model**: `HuggingFaceTB/SmolLM2-135M-Instruct`.
-* **Vocabulary Pruning (`prune_vocabulary.py`)**: Embedding and LM head are pruned to retain only domain words (garments, colors, fit descriptors, occasions) plus ChatML special tokens, reducing model size from 134.5M to ~106M parameters (~50-55MB at INT4).
-* **Fine-Tuning (`finetune.py`)**: SFT training with supervised tokens masked so only the assistant advice is trained.
-* **CoreML Export (`export_coreml.py`)**: Stateful KV-cache (`StaticCache`) INT4 conversion targeting **iOS 18+** Apple Neural Engine (ANE).
-* **Interface Contract (`tag_vocabulary.py`)**: Reads the vision model's real `taxonomy.py` schema to format tags identically between pipelines.
+* **Training data**: generated locally via Ollama (`qwen2.5:14b-instruct`) by default — no cloud API needed; a Gemini backend is also available. 4,994 examples generated, 4,985 passed QA.
+* **Vocabulary Pruning (`prune_vocabulary.py`)**: Embedding and LM head are pruned to retain only domain words (garments, fit descriptors, occasions) plus ChatML special tokens. Measured: 134.5M → 107.83M parameters.
+* **Fine-Tuning (`finetune.py`)**: SFT training with supervised tokens masked so only the assistant advice is trained. Measured: 18m22s on Apple Silicon (MPS).
+* **CoreML Export (`export_coreml.py`)**: **Stateless** (no KV-cache — a stateful `StaticCache`/`ct.StateType` design was attempted and abandoned after hitting confirmed upstream PyTorch/coremltools bugs) conversion targeting **iOS 18+** Apple Neural Engine (ANE). Currently shipped at **FP16 (207MB)**, not INT4 — a real side-by-side quality test found INT4 quantization caused response truncation and repetition-loop failures that FP16 doesn't have. INT8 is a smaller, not-yet-quality-tested middle ground.
+* **Interface Contract (`tag_vocabulary.py`)**: Reads the vision model's real `taxonomy.py` schema to format tags identically between pipelines. Known gap: its outfit branch compresses multiple simultaneous defects into a single `priority_defect` field, losing real information that its grooming branch doesn't lose (see PLAN.md).
 
 ---
 

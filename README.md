@@ -31,7 +31,7 @@ LookMax/
 │   │   ├── dataset_synthetic/        ← Qwen-Image-2512 procedural synthetic dataset generator
 │   │   ├── dataset_real/             ← Web scrapers (Unsplash, Reddit) & VLM auto-classifier
 │   │   └── training/                 ← Multi-head PyTorch training (Phase A pretrain + Phase B fine-tune)
-│   ├── stylist_llm/                  ← On-Device Stylist LLM (SmolLM2-135M stateful CoreML INT4)
+│   ├── stylist_llm/                  ← On-Device Stylist LLM (SmolLM2-135M, stateless CoreML, FP16)
 │   ├── data/                         ← Separated datasets (vision_real/, vision_synthetic/, stylist_llm/)
 │   └── models/                       ← Final exported CoreML .mlpackage artifacts for Xcode
 ├── Backend/                          ← Placeholder for future cloud sync & API services
@@ -52,8 +52,8 @@ LookMax deploys two specialized, isolated AI models directly to Apple devices:
    * Pretrained on procedurally generated synthetic images, then fine-tuned on real-world photos with synthetic replay.
 
 2. **Stylist LLM (`StylistEngine.mlpackage`, iOS 18+ ANE)**:
-   * Vocabulary-pruned, fine-tuned `SmolLM2-135M-Instruct` running INT4 quantization on Apple Neural Engine.
-   * Consumes vision attribute tags and the user's selected occasion (e.g., Business Meeting, Date Night) to generate a single-shot, <50-word actionable fix in milliseconds without internet access.
+   * Vocabulary-pruned, fine-tuned `SmolLM2-135M-Instruct`, exported **stateless** (recomputes the sequence each call — a stateful KV-cache design was attempted and abandoned after hitting confirmed upstream PyTorch/coremltools bugs) at **FP16** (207MB). INT4 quantization was tried and reverted after a real side-by-side test found it caused response truncation and repetition-loop failures; FP16 matched the FP32 checkpoint's quality exactly on 17/20 test cases.
+   * Consumes vision attribute tags and the user's selected occasion (e.g., Business Meeting, Date Night) to generate a single-shot, <50-word actionable fix without internet access. Real on-device (iPhone) latency has not yet been measured — see `ML/stylist_llm/PLAN.md`.
 
 ---
 

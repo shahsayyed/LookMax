@@ -109,10 +109,43 @@ def _call_gemini(client, tag_block):
         config=genai_types.GenerateContentConfig(
             system_instruction=cfg.SYSTEM_PROMPT,
             temperature=cfg.GEMINI_TEMPERATURE,
-            max_output_tokens=cfg.MAX_NEW_TOKENS + 20,  # headroom over the 50-word cap before truncation
+            # NOT cfg.MAX_NEW_TOKENS + 20 (80) -- current Gemini/Gemma models spend hidden
+            # "thinking" tokens out of this same budget before writing anything visible;
+            # 80 was confirmed (during this pipeline's build) to truncate real responses
+            # to empty or a few-word fragment. This is generation headroom only -- the
+            # 30-50 word window is still enforced afterward by _validate_response().
+            max_output_tokens=cfg.GEMINI_GENERATION_MAX_OUTPUT_TOKENS,
         ),
     )
     return (response.text or "").strip()
+
+
+def _call_ollama(tag_block):
+    """Local backend via Ollama's /api/chat -- no API key, no rate limit needed
+    (confirmed during this pipeline's build: qwen2.5:14b-instruct matched
+    gemini-3.6-flash's QA-pass rate on real taxonomy-sampled prompts, running
+    entirely on-machine). `client` is unused (kept for call-site symmetry with
+    _call_gemini); connection is opened per call against cfg.OLLAMA_HOST."""
+    import json
+    import urllib.request
+
+    payload = {
+        "model": cfg.OLLAMA_MODEL,
+        "messages": [
+            {"role": "system", "content": cfg.SYSTEM_PROMPT},
+            {"role": "user", "content": tag_block},
+        ],
+        "stream": False,
+        "options": {"temperature": cfg.GEMINI_TEMPERATURE},
+    }
+    req = urllib.request.Request(
+        f"{cfg.OLLAMA_HOST}/api/chat",
+        data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=180) as resp:
+        data = json.loads(resp.read())
+    return (data["message"]["content"] or "").strip()
 
 
 class _PacedRateLimiter:
@@ -144,7 +177,8 @@ def run_dry_run(count):
           f"generation (needs GEMINI_API_KEY and costs real money).")
 
 
-def run_generation(target_count, output_path, api_key):
+def run_generation(target_count, output_path, api_key, backend=None):
+    backend = backend or cfg.GENERATOR_BACKEND
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -158,11 +192,16 @@ def run_generation(target_count, output_path, api_key):
 
     contexts = build_task_contexts(target_count)
     remaining = contexts[already_done:]
+    print(f"Backend: {backend}" + (f" ({cfg.OLLAMA_MODEL})" if backend == "ollama" else f" ({cfg.GEMINI_MODEL})"))
     print(f"Resuming at index {already_done} -- {len(remaining)} examples left to generate "
           f"(target {target_count}).")
 
-    client = _gemini_client(api_key)
-    limiter = _PacedRateLimiter(cfg.GEMINI_REQUESTS_PER_MINUTE)
+    if backend == "ollama":
+        client = None  # _call_ollama opens its own connection per call, see docstring
+        limiter = None  # local inference, no rate limit needed
+    else:
+        client = _gemini_client(api_key)
+        limiter = _PacedRateLimiter(cfg.GEMINI_REQUESTS_PER_MINUTE)
 
     written = 0
     failed = 0
@@ -171,9 +210,10 @@ def run_generation(target_count, output_path, api_key):
             prompt = tv.format_tag_prompt(ctx["category"], ctx["occasion"], ctx["row"])
             advice = None
             for attempt in range(1, MAX_RETRIES_PER_EXAMPLE + 1):
-                limiter.wait()
+                if limiter is not None:
+                    limiter.wait()
                 try:
-                    text = _call_gemini(client, prompt)
+                    text = _call_ollama(prompt) if backend == "ollama" else _call_gemini(client, prompt)
                 except Exception as e:
                     print(f"[{ctx['index']:04d}] attempt {attempt}: API error: {e}")
                     continue
@@ -211,25 +251,29 @@ def run_generation(target_count, output_path, api_key):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate the stylist LLM's synthetic training set via Gemini.")
-    parser.add_argument("--dry-run", action="store_true", help="Print contexts + prompts, no API call.")
+    parser = argparse.ArgumentParser(description="Generate the stylist LLM's synthetic training set (Ollama by default, or Gemini).")
+    parser.add_argument("--dry-run", action="store_true", help="Print contexts + prompts, no API/model call.")
     parser.add_argument("--count", type=int, default=cfg.SYNTHETIC_TARGET_COUNT,
                          help=f"Target number of examples (default {cfg.SYNTHETIC_TARGET_COUNT}).")
     parser.add_argument("--output", default=str(cfg.RAW_GENERATED_DIR / "stylist_advice.jsonl"),
                          help="Output JSONL path (default under raw_generated/).")
-    parser.add_argument("--api-key", default=None, help="Gemini API key (or set GEMINI_API_KEY env var).")
+    parser.add_argument("--backend", choices=["ollama", "gemini"], default=cfg.GENERATOR_BACKEND,
+                         help=f"Generation backend (default {cfg.GENERATOR_BACKEND}, see config.py).")
+    parser.add_argument("--api-key", default=None, help="Gemini API key (only used with --backend gemini; or set GEMINI_API_KEY env var).")
     args = parser.parse_args()
 
     if args.dry_run:
         run_dry_run(min(args.count, 20) if args.count > 20 else args.count)
         return
 
-    import os
-    api_key = args.api_key or os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        sys.exit("!! No Gemini API key found. Pass --api-key or set GEMINI_API_KEY.")
+    api_key = None
+    if args.backend == "gemini":
+        import os
+        api_key = args.api_key or os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            sys.exit("!! No Gemini API key found. Pass --api-key or set GEMINI_API_KEY.")
 
-    run_generation(args.count, args.output, api_key)
+    run_generation(args.count, args.output, api_key, backend=args.backend)
 
 
 if __name__ == "__main__":

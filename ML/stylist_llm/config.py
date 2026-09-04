@@ -48,13 +48,35 @@ CHECKPOINTS_DIR = STYLIST_DIR / "checkpoints"
 # ─── Base model ───────────────────────────────────────────────────────────
 BASE_MODEL_ID = "HuggingFaceTB/SmolLM2-135M-Instruct"
 
-# ─── Synthetic data generation (Gemini) ────────────────────────────────────
-# A SEPARATE API config from ML/vision/config.py's GEMINI_MODEL -- that one
-# is the VLM used for classifying scraped photos (a vision task); this is a
-# plain text-generation call for writing styling-advice training examples.
-# Deliberately not sharing the constant so the two can be tuned/rotated
-# independently without cross-pipeline surprise.
-GEMINI_MODEL = os.environ.get("LOOKMAX_STYLIST_GEMINI_MODEL", "gemini-2.5-flash")
+# ─── Synthetic data generation ─────────────────────────────────────────────
+# Two interchangeable backends for writing the ADVICE text -- generate_synthetic_dataset.py
+# dispatches on GENERATOR_BACKEND. Chosen after a real side-by-side test during this
+# pipeline's build (3 real taxonomy-sampled prompts, run through the actual qa_review.py
+# gate): "ollama" (qwen2.5:14b-instruct, local) matched gemini-3.6-flash's QA-pass rate
+# and word-count compliance with zero per-call cost and no rate limit, so it's the
+# default. Switch to "gemini" for a cloud comparison or if local quality regresses on
+# the full 5,000-example run.
+GENERATOR_BACKEND = os.environ.get("LOOKMAX_STYLIST_GENERATOR_BACKEND", "ollama")
+
+# Local backend (default) -- Ollama, no API key, no rate limit.
+OLLAMA_MODEL = os.environ.get("LOOKMAX_STYLIST_OLLAMA_MODEL", "qwen2.5:14b-instruct")
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+
+# Cloud backend -- a SEPARATE API config from ML/vision/config.py's GEMINI_MODEL --
+# that one is the VLM used for classifying scraped photos (a vision task); this is a
+# plain text-generation call for writing styling-advice training examples. Deliberately
+# not sharing the constant so the two can be tuned/rotated independently without
+# cross-pipeline surprise.
+# NOTE: "gemini-2.5-flash" (the original default) was retired ("no longer available to
+# new users") during this pipeline's build; "gemini-3.6-flash" is the confirmed-working
+# replacement as of the same test. ALL current Gemini/Gemma models now do hidden
+# "thinking" that counts against max_output_tokens (confirmed: a 3-prompt test at the
+# old 80-token budget truncated one response to a 7-word fragment before any visible
+# answer was written) -- GEMINI_GENERATION_MAX_OUTPUT_TOKENS below is the fix, kept
+# separate from MAX_NEW_TOKENS (which still correctly caps the final TRAINED answer
+# length and must stay small).
+GEMINI_MODEL = os.environ.get("LOOKMAX_STYLIST_GEMINI_MODEL", "gemini-3.6-flash")
+GEMINI_GENERATION_MAX_OUTPUT_TOKENS = 1000
 GEMINI_TEMPERATURE = 0.7
 SYNTHETIC_TARGET_COUNT = 5000
 GEMINI_REQUESTS_PER_MINUTE = 14.0  # matches the pacing already proven safe in real_data_pipeline/03_classify_and_sort.py
@@ -93,15 +115,26 @@ SYSTEM_PROMPT = (
 )
 
 # ─── CoreML export ──────────────────────────────────────────────────────────
-# iOS 18+ is a deliberate, explicit product decision (confirmed) -- it's what
-# makes the stateful/KV-cache export path (ct.StateType) and INT4 linear
-# quantization actually available; iOS 17 would mean a slower, larger export
-# with no KV cache (see export_coreml.py's module docstring for the risk this
-# was chosen to avoid). This bumps the WHOLE APP's minimum deployment target,
-# not just this model -- coordinate with the vision model's iOS17 target
-# before shipping (see ML/README.md).
+# iOS 18+ is a deliberate, explicit product decision (confirmed). This bumps the
+# WHOLE APP's minimum deployment target, not just this model -- coordinate with
+# the vision model's iOS17 target before shipping (see ML/README.md). NOTE: the
+# original reason for this (a stateful/KV-cache export needing ct.StateType) no
+# longer applies -- that approach was abandoned after hitting confirmed, narrow
+# upstream PyTorch/coremltools bugs (see export_coreml.py's module docstring);
+# the current export recomputes the sequence each call instead. iOS 18 is kept
+# as the target regardless (a separate, still-valid product decision), but iOS
+# 17 is now technically possible if that's ever worth revisiting.
 IOS_MIN_DEPLOYMENT = "iOS18"
-QUANT_DTYPE = "int4"
+# "none" (FP16, no separate weight quantization step), NOT "int4": confirmed via
+# a real side-by-side comparison (20 test prompts, checkpoint vs export, identical
+# greedy decoding) that INT4 quantization alone -- not the export architecture --
+# causes real quality regressions on this model (truncated/rambling responses,
+# and in the worst case a token-repetition loop), while FP16 matches the FP32
+# checkpoint exactly on 13/20 and is fully coherent on all 20. INT8 (104MB) and
+# INT4 (52MB) remain available via `export_coreml.py --quant int8`/`int4` for a
+# future size-optimization pass -- re-run the same comparison before shipping
+# either, don't assume quality carries over from this baseline.
+QUANT_DTYPE = "none"
 QUANT_MODE = "linear_symmetric"
 TARGET_LATENCY_MS = 80
 

@@ -7,15 +7,17 @@ before deciding the training run / export was worth the time. Two modes:
                         possible check, run this FIRST, right after
                         finetune.py, before spending time on CoreML export.
 
-  --mlpackage <path>   Loads the actual exported .mlpackage via coremltools
-                        and drives it token-by-token using its real
-                        stateful KV cache (mlmodel.make_state() +
-                        predict(..., state=...)) -- this runs the EXACT
+  --mlpackage <path>   Loads the actual exported .mlpackage via coremltools and
+                        drives it autoregressively -- this runs the EXACT
                         artifact export_coreml.py produced, on this Mac,
-                        without needing an iPhone. It validates output
-                        CORRECTNESS (does the stateful cache actually work
-                        across steps), not ANE latency -- still verify the
-                        <80ms/token target on a real device separately.
+                        without needing an iPhone. The export has no KV-cache
+                        (see export_coreml.py's module docstring for why), so
+                        each new token re-feeds the WHOLE sequence so far, not
+                        just the new token. It validates output CORRECTNESS,
+                        not ANE latency -- still verify the <80ms/token target
+                        on a real device separately, and note that latency
+                        here will grow with sequence length in a way a cached
+                        export wouldn't.
 
 Five fixed review contexts, sampled the same way generate_synthetic_dataset.py
 samples training contexts (reusing taxonomy.py/prompt_builder.py), covering
@@ -85,6 +87,8 @@ def run_mlpackage_mode(mlpackage_path):
     import coremltools as ct
     from remap_tokenizer import RemappedTokenizer
 
+    import numpy as np
+
     tokenizer = RemappedTokenizer.from_pruned_dir(cfg.VOCAB_DIR)
     print(f"Loading {mlpackage_path}...")
     mlmodel = ct.models.MLModel(mlpackage_path)
@@ -95,24 +99,21 @@ def run_mlpackage_mode(mlpackage_path):
             {"role": "system", "content": cfg.SYSTEM_PROMPT},
             {"role": "user", "content": ctx["prompt"]},
         ]
-        input_ids = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+        current_ids = list(tokenizer.apply_chat_template(messages, add_generation_prompt=True))
 
-        state = mlmodel.make_state()
-        # Prefill: feed the whole prompt in one call so the KV cache is
-        # populated for every prompt token before autoregressive decoding
-        # starts -- matches export_coreml.py's wrapper.forward() contract.
+        # No KV-cache in this export (see export_coreml.py's module docstring) --
+        # every call re-feeds the WHOLE sequence so far and reads the last position's
+        # logits, rather than carrying state across calls.
         generated = []
-        import numpy as np
-        current_ids = list(input_ids)
         for _ in range(cfg.MAX_NEW_TOKENS):
             arr = np.array([current_ids], dtype=np.int32)
-            result = mlmodel.predict({"input_ids": arr}, state=state)
+            result = mlmodel.predict({"input_ids": arr})
             logits = result[list(result.keys())[0]]
             next_id = int(logits[0, -1].argmax())
             if next_id in stop_ids:
                 break
             generated.append(next_id)
-            current_ids = [next_id]  # subsequent calls feed ONE new token; the state carries prior context
+            current_ids.append(next_id)
 
         advice = tokenizer.decode(generated)
         _print_result(ctx, advice)
