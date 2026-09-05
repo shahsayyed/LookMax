@@ -1,30 +1,16 @@
 """
-generate_synthetic_dataset.py -- generates the 6,000 instruction pairs
-this pipeline fine-tunes on, using Gemini (gemini-3.8-flash) or local Ollama
-to write the actionable CHECKLIST advice for input contexts sampled from the
-REAL vision taxonomy and enriched with Apple Vision native signals.
+generate_synthetic_dataset_vertex.py -- Standalone dataset generation script
+using Google Cloud Vertex AI / Agent Platform with Gemini 3.8 Flash (gemini-3.8-flash).
 
-SAMPLING REUSES THE VISION PIPELINE'S OWN CODE:
-Each training context (category + tier + garment/grooming state) is drawn via
-`ML/vision/dataset_synthetic/prompt_builder.build_task()['row']`.
-In addition, native Apple Vision framework signals (posture, lighting, color harmony)
-are sampled realistically according to the score tier to provide complete multimodal
-features for the on-device stylist.
-
-PARALLEL EXECUTION:
-Runs requests concurrently via `concurrent.futures.ThreadPoolExecutor` (default
---concurrency 10). File writes are protected by an atomic threading.Lock() so
-progress is saved incrementally and safely. On 429 rate limit or network error,
-requests retry with exponential backoff and jitter.
-
-QUALITY GATE AT GENERATION TIME:
-Validates that output follows the strict checklist format:
-- Every line starts with "- "
-- 2 to 3 polish tips for score >= 9.0; 3 to 5 corrections for score < 9.0
-- Each line <= 15 words
-- Total words within [cfg.MIN_RESPONSE_WORDS, cfg.MAX_RESPONSE_WORDS] (25 to 85)
-- Effort-vs-genetics guardrails: no weight, diet, acne, body shape, or unobservable
-  fragrance/cologne items.
+FEATURES:
+- Completely isolated from generate_synthetic_dataset.py and its output files.
+- Writes to ML/data/stylist_llm/raw_generated/stylist_advice_vertex.jsonl by default.
+- Uses google-genai SDK in Vertex AI enterprise mode authenticated via Service Account key.
+- Balanced stratified sampling across 4 categories and 4 tiers with Apple Vision native signals.
+- Thread-safe concurrent execution (ThreadPoolExecutor) with ThreadSafeRateLimiter.
+- Atomic file writes protected by thread locks with instant flush.
+- Resume capability: skips prompts already present in the output file.
+- LookMax Effort-vs-Genetics quality gate enforcement at generation time.
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -36,13 +22,18 @@ import random
 import sys
 import threading
 import time
-import urllib.request
+import warnings
+
+# Suppress google.genai AFC warning in headless generation
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", message=".*automatic function calling.*")
 
 # Ensure immediate unbuffered output in background tasks
 print = functools.partial(print, flush=True)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "vision" / "dataset_synthetic"))
+
 import config as cfg
 import tag_vocabulary as tv
 import taxonomy as vision_tx
@@ -69,7 +60,7 @@ class ThreadSafeRateLimiter:
         with self.lock:
             now = time.time()
             if now < self.next_allowed_time:
-                wait = self.next_allowed_time - now
+                wait = min(self.next_allowed_time - now, 15.0)
                 self.next_allowed_time += self.interval
             else:
                 wait = 0.0
@@ -81,7 +72,7 @@ class ThreadSafeRateLimiter:
         """When a rate limit is detected by any worker, pause all workers globally."""
         with self.lock:
             now = time.time()
-            self.next_allowed_time = max(self.next_allowed_time, now) + seconds
+            self.next_allowed_time = max(self.next_allowed_time, now) + min(seconds, 15.0)
 
 
 def build_task_contexts(count, seed=TASK_SEED):
@@ -90,7 +81,6 @@ def build_task_contexts(count, seed=TASK_SEED):
     Guarantees balanced representation with zero sampling bias."""
     rng = random.Random(seed)
 
-    # 16 combinations: 4 categories x 4 tiers (interleaved for perfect category balance)
     combos = []
     for tier in vision_tx.OUTFIT_TIERS:
         for cat in vision_tx.ALL_CATEGORIES:
@@ -102,7 +92,6 @@ def build_task_contexts(count, seed=TASK_SEED):
         occasion = rng.choice(tv.OCCASIONS)
         row = vision_pb.build_task(cat, tier, rng)["row"]
 
-        # Sample Apple Vision native signals correlated with tier
         if tier == "polished":
             posture = rng.choices(
                 ["upright_aligned", "slight_slouch"],
@@ -216,76 +205,13 @@ def _validate_response(text, score=None):
     return True, None
 
 
-def _call_gemini(prompt, api_key, model=None):
-    """Direct REST call to Gemini / Gemma with system instruction and thinking-token filtering."""
-    model_name = model or cfg.GEMINI_MODEL
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
-    payload = {
-        "systemInstruction": {
-            "parts": [{"text": cfg.SYSTEM_PROMPT}]
-        },
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": cfg.GEMINI_TEMPERATURE,
-            "maxOutputTokens": cfg.GEMINI_GENERATION_MAX_OUTPUT_TOKENS,
-        },
-    }
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            data = json.loads(resp.read())
-    except urllib.error.HTTPError as e:
-        err_body = ""
-        try:
-            err_body = e.read().decode()
-        except Exception:
-            pass
-        raise RuntimeError(f"HTTP {e.code}: {e.reason} - {err_body}") from e
-
-    candidates = data.get("candidates", [])
-    if not candidates:
-        raise RuntimeError(f"No candidates returned: {data}")
-    cand = candidates[0]
-    parts = cand.get("content", {}).get("parts", [])
-    # Strip thinking tokens if present
-    text_parts = [p.get("text", "") for p in parts if "text" in p and not p.get("thought", False)]
-    text = "".join(text_parts).strip()
-    return text
-
-
-def _call_ollama(prompt):
-    """Local backend via Ollama's /api/chat -- no API key, runs on-machine."""
-    payload = {
-        "model": cfg.OLLAMA_MODEL,
-        "messages": [
-            {"role": "system", "content": cfg.SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        "stream": False,
-        "options": {"temperature": cfg.GEMINI_TEMPERATURE},
-    }
-    req = urllib.request.Request(
-        f"{cfg.OLLAMA_HOST}/api/chat",
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req, timeout=180) as resp:
-        data = json.loads(resp.read())
-    return (data["message"]["content"] or "").strip()
-
-
 def run_dry_run(count, concurrency=5):
     """Validates contexts, prompt formatting, and parallel dispatch without making API calls."""
     contexts = build_task_contexts(count)
     print("=" * 88)
-    print(f"PARALLEL DRY RUN -- {len(contexts)} contexts across {concurrency} worker threads")
+    print(f"VERTEX AI DRY RUN -- {len(contexts)} contexts across {concurrency} worker threads")
     print("=" * 88)
 
-    # Verify balance
     cat_counts = {}
     tier_counts = {}
     for ctx in contexts:
@@ -326,12 +252,10 @@ def run_dry_run(count, concurrency=5):
     elapsed = time.time() - t0
 
     threads_used = len(set(r["thread_id"] for r in worker_results))
-    print(f"Parallel simulation completed in {elapsed*1000:.1f}ms using {threads_used} concurrent OS threads.")
+    print(f"Simulation completed in {elapsed*1000:.1f}ms using {threads_used} concurrent OS threads.")
 
-    print("\n" + "=" * 88)
-    print("SAMPLE PROMPTS WITH APPLE VISION SIGNALS:")
-    print("=" * 88)
     sample_indices = [0, count // 4, count // 2, 3 * count // 4]
+    print("\nSample Generated Prompts:")
     for s_idx in sample_indices:
         if s_idx < len(contexts):
             ctx = contexts[s_idx]
@@ -344,12 +268,54 @@ def run_dry_run(count, concurrency=5):
     print("=" * 88)
 
 
-def run_generation(target_count, output_path, api_key, backend=None, concurrency=10, model=None, rpm=None):
-    backend = backend or cfg.GENERATOR_BACKEND
-    model = model or cfg.GEMINI_MODEL
-    rpm = rpm or getattr(cfg, "GEMINI_REQUESTS_PER_MINUTE", 45.0)
+def run_generation(
+    target_count,
+    output_path,
+    credentials_path,
+    model="gemini-3.8-flash",
+    location="global",
+    concurrency=10,
+    rpm=60.0
+):
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    creds_path = Path(credentials_path)
+    if not creds_path.is_absolute():
+        creds_path = cfg.REPO_ROOT / creds_path
+
+    if not creds_path.exists():
+        sys.exit(f"❌ Credentials file not found: {creds_path}")
+
+    with open(creds_path) as f:
+        creds_data = json.load(f)
+    project_id = creds_data.get("project_id", "lookmax-generation")
+    client_email = creds_data.get("client_email")
+
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(creds_path.resolve())
+
+    # Initialize google-genai Vertex AI Client with explicit 45s socket timeout
+    from google import genai
+    from google.genai import types
+
+    client = genai.Client(
+        vertexai=True,
+        project=project_id,
+        location=location,
+        http_options=types.HttpOptions(timeout=45000),
+    )
+
+    system_instruction = (
+        cfg.SYSTEM_PROMPT
+        + "\n6. When suggesting closer-fitting garments for baggy items, use terms like "
+        "'tailored', 'tapered', or 'well-fitted' (never use the word 'slimmer')."
+    )
+
+    gen_config = types.GenerateContentConfig(
+        system_instruction=system_instruction,
+        temperature=cfg.GEMINI_TEMPERATURE,
+        max_output_tokens=cfg.GEMINI_GENERATION_MAX_OUTPUT_TOKENS,
+    )
 
     rate_limiter = ThreadSafeRateLimiter(rpm)
 
@@ -379,10 +345,12 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
     ]
 
     print("=" * 88)
-    print(f"STYLIST LLM DATASET GENERATION")
-    print(f"Backend: {backend} ({model if backend == 'gemini' else cfg.OLLAMA_MODEL})")
+    print("LOOKMAX VERTEX AI DATASET GENERATION")
+    print(f"Platform: Google Cloud Vertex AI / Agent Platform")
+    print(f"Service Account: {client_email}")
+    print(f"Project: {project_id} | Location: {location} | Model: {model}")
     print(f"Target count: {target_count} | Already in file: {already_done} | Remaining to generate: {len(remaining)}")
-    print(f"Rate limit: {rpm:.1f} RPM (interval ~{60.0/rpm:.2f}s) across {concurrency} worker threads")
+    print(f"Rate limit: {rpm:.1f} RPM across {concurrency} worker threads")
     print(f"Output file: {output_path}")
     print("=" * 88)
 
@@ -398,23 +366,25 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
         advice = None
 
         for attempt in range(1, MAX_RETRIES_PER_EXAMPLE + 1):
-            if backend == "gemini":
-                rate_limiter.acquire()
+            rate_limiter.acquire()
+            if attempt > 1:
+                print(f"[{ctx['index']:04d}] attempt {attempt}: requesting regenerated advice from Vertex AI...")
             try:
-                if backend == "ollama":
-                    text = _call_ollama(prompt)
-                else:
-                    text = _call_gemini(prompt, api_key, model=model)
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=gen_config,
+                )
+                text = (response.text or "").strip()
             except Exception as e:
                 err_msg = str(e).lower()
                 is_rate_limit = any(term in err_msg for term in ("429", "resource_exhausted", "quota", "rate limit"))
                 backoff = (2 ** attempt) * 2 + random.uniform(1.0, 5.0)
                 if is_rate_limit:
-                    if backend == "gemini":
-                        rate_limiter.penalize(backoff)
-                    print(f"[{ctx['index']:04d}] Rate limit encountered, backing off {backoff:.1f}s...")
+                    rate_limiter.penalize(backoff)
+                    print(f"[{ctx['index']:04d}] Rate limit encountered on Vertex AI, pausing {backoff:.1f}s...")
                 else:
-                    print(f"[{ctx['index']:04d}] attempt {attempt} error: {e}, retry in {backoff:.1f}s")
+                    print(f"[{ctx['index']:04d}] attempt {attempt} error ({type(e).__name__}): {e}, retry in {backoff:.1f}s")
                 time.sleep(backoff)
                 continue
 
@@ -447,6 +417,7 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
                 "posture": ctx["row"].get("posture"),
                 "lighting": ctx["row"].get("lighting"),
                 "color_harmony": ctx["row"].get("color_harmony"),
+                "generator": f"vertex_ai_{model}",
             },
         }
 
@@ -462,7 +433,7 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
             rate_rpm = rate * 60.0
             remaining_sec = (len(remaining) - written_count) / rate if rate > 0 else 0
 
-            bullet_count = len([l for l in advice.splitlines() if l.strip().startswith("- ")])
+            bullet_count = len([l for l in advice.splitlines() if l.strip().startswith(("- ", "• ", "* "))])
             word_count = len(advice.split())
             print(f"[{ctx['index']:04d}] ✓ ({ctx['category']} | {ctx['tier']} score {score:.1f} -> "
                   f"{bullet_count} bullets, {word_count}w) | "
@@ -480,7 +451,7 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
 
     total_time = time.time() - t_start
     print("\n" + "=" * 88)
-    print(f"Run complete in {total_time/60:.1f} minutes ({total_time:.1f}s).")
+    print(f"Vertex AI Run complete in {total_time/60:.1f} minutes ({total_time:.1f}s).")
     print(f"Wrote {written_count} new examples ({failed_count} failed/skipped).")
     print(f"Total in {output_path}: {already_done + written_count}")
     print("=" * 88)
@@ -488,47 +459,56 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate the stylist LLM's synthetic training set (Gemma 4 31B IT / Gemini or local Ollama)."
+        description="Generate the stylist LLM synthetic training set using Google Cloud Vertex AI (Gemini 3.8 Flash)."
     )
     parser.add_argument("--dry-run", action="store_true", help="Validate contexts, prompts, and parallel dispatch.")
-    parser.add_argument("--count", type=int, default=cfg.SYNTHETIC_TARGET_COUNT,
-                        help=f"Target number of examples (default {cfg.SYNTHETIC_TARGET_COUNT}).")
-    parser.add_argument("--output", default=str(cfg.RAW_GENERATED_DIR / "stylist_advice.jsonl"),
-                        help="Output JSONL path (default under raw_generated/).")
-    parser.add_argument("--backend", choices=["ollama", "gemini"], default=cfg.GENERATOR_BACKEND,
-                        help=f"Generation backend (default {cfg.GENERATOR_BACKEND}, see config.py).")
-    parser.add_argument("--model", default=cfg.GEMINI_MODEL,
-                        help=f"Model identifier (default {cfg.GEMINI_MODEL}).")
-    parser.add_argument("--rpm", type=float, default=getattr(cfg, "GEMINI_REQUESTS_PER_MINUTE", 15.0),
-                        help="Requests per minute rate limit across threads (default 15.0).")
-    parser.add_argument("--api-key", default=None, help="Gemini API key (or set GEMINI_API_KEY env var).")
-    parser.add_argument("--concurrency", type=int, default=2,
-                        help="Number of concurrent worker threads (default 2).")
+    parser.add_argument("--count", type=int, default=6000,
+                        help="Target number of examples (default 6000).")
+    parser.add_argument(
+        "--output",
+        default=str(cfg.RAW_GENERATED_DIR / "stylist_advice_vertex.jsonl"),
+        help="Output JSONL path (default raw_generated/stylist_advice_vertex.jsonl)."
+    )
+    parser.add_argument(
+        "--credentials",
+        default="lookmax-generation-513e3f9ab69e.json",
+        help="Path to Google Cloud service account JSON key."
+    )
+    parser.add_argument(
+        "--model",
+        default="gemini-3.8-flash",
+        help="Vertex AI model identifier (default gemini-3.8-flash)."
+    )
+    parser.add_argument(
+        "--location",
+        default="global",
+        help="Vertex AI location (default global)."
+    )
+    parser.add_argument(
+        "--rpm",
+        type=float,
+        default=60.0,
+        help="Requests per minute rate limit across threads (default 60.0)."
+    )
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=10,
+        help="Number of concurrent worker threads (default 10)."
+    )
     args = parser.parse_args()
 
     if args.dry_run:
         run_dry_run(min(args.count, 20) if args.count > 20 else args.count, concurrency=args.concurrency)
         return
 
-    api_key = None
-    if args.backend == "gemini":
-        api_key = args.api_key or os.environ.get("GEMINI_API_KEY")
-        if not api_key:
-            env_file = cfg.REPO_ROOT / ".env"
-            if env_file.exists():
-                for line in env_file.read_text().splitlines():
-                    if line.strip().startswith("GEMINI_API_KEY="):
-                        api_key = line.split("=", 1)[1].split("#")[0].strip().strip('"').strip("'")
-        if not api_key:
-            sys.exit("!! No Gemini API key found. Pass --api-key or set GEMINI_API_KEY in .env.")
-
     run_generation(
-        args.count,
-        args.output,
-        api_key,
-        backend=args.backend,
-        concurrency=args.concurrency,
+        target_count=args.count,
+        output_path=args.output,
+        credentials_path=args.credentials,
         model=args.model,
+        location=args.location,
+        concurrency=args.concurrency,
         rpm=args.rpm,
     )
 

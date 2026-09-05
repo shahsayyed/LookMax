@@ -47,6 +47,12 @@ _BANNED_PATTERNS = [
 ]
 _BANNED_RE = re.compile("|".join(_BANNED_PATTERNS), re.IGNORECASE)
 
+# Unobservable sensory items -- camera/vision models cannot detect smell or fragrance.
+_UNOBSERVABLE_PATTERNS = [
+    r"\bcologne\b", r"\bperfume\b", r"\bfragrance\b", r"\bdeodorant\b", r"\bscent\b",
+]
+_UNOBSERVABLE_RE = re.compile("|".join(_UNOBSERVABLE_PATTERNS), re.IGNORECASE)
+
 _META_CHATTER_OPENERS = (
     "sure", "here's", "here is", "as a stylist", "certainly", "of course",
     "i'd suggest", "i would suggest", "great question", "absolutely",
@@ -61,14 +67,16 @@ _ACTIONABLE_VERBS = (
     "trim", "shave", "size down", "size up", "swap", "tie", "polish",
     "shine", "brush", "comb", "style", "layer", "untuck", "hem", "belt",
     "wash", "moisturize", "line up", "clean up", "shorten", "lengthen",
+    "straighten", "align", "adjust", "replace", "pair", "smooth",
+    "square", "correct", "add", "edge", "apply", "balance",
 )
 
 
 def check_record(record):
     """Returns (passed: bool, reasons: list[str]) -- reasons is non-empty
     only on failure or warning; passed is False only on a hard failure
-    (word count / meta-chatter / banned phrase), never on the soft
-    actionable-verb warning alone."""
+    (word count / meta-chatter / banned genetics / unobservable / checklist format),
+    never on the soft actionable-verb warning alone."""
     reasons = []
     messages = record.get("messages", [])
     assistant_msgs = [m["content"] for m in messages if m.get("role") == "assistant"]
@@ -79,6 +87,7 @@ def check_record(record):
     if not content:
         return False, ["empty assistant response"]
 
+    # Word count bounds
     word_count = len(content.split())
     if word_count < cfg.MIN_RESPONSE_WORDS:
         reasons.append(f"too short ({word_count} words, need >= {cfg.MIN_RESPONSE_WORDS})")
@@ -93,6 +102,40 @@ def check_record(record):
     if banned_match:
         reasons.append(f"banned genetics/body-shape phrase: '{banned_match.group(0)}'")
 
+    unobs_match = _UNOBSERVABLE_RE.search(content)
+    if unobs_match:
+        reasons.append(f"unobservable item mentioned: '{unobs_match.group(0)}'")
+
+    # Checklist format checks
+    lines = [l.strip() for l in content.splitlines() if l.strip()]
+    bullet_lines = [l for l in lines if l.startswith("- ") or l.startswith("• ") or l.startswith("* ")]
+    if len(bullet_lines) != len(lines):
+        reasons.append(f"non-checklist format ({len(lines) - len(bullet_lines)} lines lack bullet prefix)")
+
+    if len(lines) < 2:
+        reasons.append(f"too few checklist items ({len(lines)}, need >= 2)")
+    elif len(lines) > 5:
+        reasons.append(f"too many checklist items ({len(lines)}, need <= 5)")
+
+    # Check words per line (<= 15 words)
+    for idx, l in enumerate(lines):
+        line_words = len(l.split())
+        if line_words > 16:
+            reasons.append(f"line {idx+1} too long ({line_words} words, need <= 15)")
+
+    # Score-adaptive count check if score is available in record["meta"]
+    meta = record.get("meta", {})
+    score = meta.get("score")
+    if score is not None:
+        try:
+            s = float(score)
+            if s >= 9.0 and len(lines) > 3:
+                reasons.append(f"high score ({s:.1f}) should have 2-3 polish tips, got {len(lines)}")
+            elif s < 9.0 and len(lines) < 3:
+                reasons.append(f"low/average score ({s:.1f}) should have 3-5 fixes, got {len(lines)}")
+        except (ValueError, TypeError):
+            pass
+
     hard_fail = bool(reasons)
 
     if not any(verb in lower for verb in _ACTIONABLE_VERBS):
@@ -106,22 +149,43 @@ def check_record(record):
 # no generated data required. Run this once after editing this file.
 # --------------------------------------------------------------------------
 _FIXTURES = [
-    ("good, should pass",
-     "Cuff the denim twice to eliminate ankle stacking; the bunching drags down your silhouette and reads as unintentional rather than styled, especially in bright lighting where the fabric pool is obvious to anyone looking.",
+    ("good checklist (high score 9.5), should pass",
+     "- Roll sleeves to mid-forearm to create intentional, crisp proportions.\n"
+     "- Brush hair upward with a light matte clay for subtle volume.\n"
+     "- Wipe shoe leather with a damp cloth to restore natural sheen.",
      True),
-    ("meta-chatter, should fail",
-     "Sure! Here's a tip: cuff your jeans twice at the ankle to clean up the silhouette and make the outfit look more intentional overall today.",
+    ("good checklist (lower score 4.0), should pass",
+     "- Steam the linen shirt thoroughly to eliminate heavy chest creases.\n"
+     "- Hem trousers one inch to remove excessive ankle bunching.\n"
+     "- Swap worn athletic sneakers for clean minimal leather low-tops.\n"
+     "- Align belt color to match your footwear leather tone.",
+     True),
+    ("meta-chatter opener, should fail",
+     "Sure! Here's a tip:\n- Cuff your jeans twice at the ankle to clean up silhouette.",
      False),
     ("banned genetics phrase, should fail",
-     "Losing weight and clearing up your skin would help this outfit look better on you overall before your interview this week for sure.",
+     "- Lose weight to make the slim trousers drape better on your body.\n"
+     "- Clear up your skin before attending the formal interview.\n"
+     "- Swap the jacket for a neutral tone.",
+     False),
+    ("unobservable item (cologne), should fail",
+     "- Spray a subtle citrus cologne before leaving the house.\n"
+     "- Iron shirt collar to maintain structured shape.\n"
+     "- Clean white sneaker midsoles with a damp sponge.",
+     False),
+    ("plain paragraph (not checklist), should fail",
+     "Cuff the denim twice to eliminate ankle stacking; the bunching drags down your silhouette and reads as unintentional rather than styled.",
      False),
     ("too short, should fail",
-     "Cuff your jeans.",
+     "- Cuff your jeans.",
      False),
     ("too long, should fail",
-     "Cuff the denim twice to eliminate ankle stacking, then also consider ironing the shirt, changing the shoes, adjusting the belt, re-tucking the shirt, "
-     "swapping the jacket, steaming the trousers, re-lacing the sneakers, brushing the hair, trimming the beard, and polishing the belt buckle before you "
-     "leave the house today for the best results overall in every single category available.",
+     "- Steam the linen shirt thoroughly to eliminate heavy chest creases before leaving.\n"
+     "- Hem trousers one inch to remove excessive ankle bunching completely today.\n"
+     "- Swap worn athletic sneakers for clean minimal leather low-tops right now.\n"
+     "- Align belt color to match your footwear leather tone perfectly across all settings.\n"
+     "- Layer with a lightweight tailored blazer to add instant visual structure and polish before your big meeting today.\n"
+     "- Also remember to polish all metal accessories including your watch and belt buckle to maintain optimal cohesion across your entire wardrobe today.",
      False),
 ]
 

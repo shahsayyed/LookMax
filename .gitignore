@@ -69,6 +69,8 @@ iOS/LookMax/Config/APIKeys.local.xcconfig
 .env.*
 *.env
 local.env
+*serviceaccount*.json
+lookmax-generation*.json
 
 # ML Pipeline & Large Image Datasets
 ML/data/1_Raw_Scrapes/**/*

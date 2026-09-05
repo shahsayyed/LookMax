@@ -44,6 +44,35 @@ import taxonomy as vision_tx  # noqa: E402  (see module docstring -- deliberate,
 
 
 # --------------------------------------------------------------------------
+# Apple Vision native signals (posture, lighting, color harmony) --
+# derived from iOS Vision framework (VNDetectHumanBodyPoseRequest,
+# CoreImage / saliency color analysis).
+# --------------------------------------------------------------------------
+POSTURE_STATES = [
+    "upright_aligned", "slight_slouch", "lateral_lean", "shoulders_uneven"
+]
+LIGHTING_CONDITIONS = [
+    "well_lit", "dim_overhead", "harsh_shadows", "soft_window_light"
+]
+COLOR_HARMONIES = [
+    "classic_contrast", "monochromatic_neutral", "clashing_tones",
+    "earthy_analogous", "complementary_pop"
+]
+
+
+def posture_states():
+    return list(POSTURE_STATES)
+
+
+def lighting_conditions():
+    return list(LIGHTING_CONDITIONS)
+
+
+def color_harmonies():
+    return list(COLOR_HARMONIES)
+
+
+# --------------------------------------------------------------------------
 # Occasion -- not part of the vision model's output, see module docstring.
 # --------------------------------------------------------------------------
 OCCASIONS = [
@@ -85,7 +114,7 @@ def full_vocabulary_terms():
     """Every literal word/class-name the pruned tokenizer must be able to
     spell losslessly: garment types (both genders), patterns, formality
     classes, hair lengths, facial hair styles, makeup styles, occasions,
-    plus the tag-format's own field names."""
+    Apple Vision signals, plus the tag-format's own field names."""
     terms = set()
     for gender in ("man", "woman"):
         terms.update(garment_vocabulary(gender))
@@ -95,11 +124,18 @@ def full_vocabulary_terms():
     terms.update(vision_tx.FACIAL_HAIR_STYLES)
     terms.update(vision_tx.MAKEUP_STYLES)
     terms.update(OCCASIONS)
+    terms.update(POSTURE_STATES)
+    terms.update(LIGHTING_CONDITIONS)
+    terms.update(COLOR_HARMONIES)
     terms.update([
         "top", "outer", "bottoms", "shoes", "hair", "skin", "eyebrows",
         "facial_hair", "makeup", "priority_defect", "overall_score",
         "occasion", "gender", "vibe", "tags", "formality", "pattern",
         "none", "male", "female", "casual", "polished",
+        # Apple Vision & fine-grained defect fields
+        "posture", "lighting", "color_harmony", "fit", "fabric",
+        "footwear_condition", "baggy_level", "tight_level", "tailored",
+        "wrinkled_level", "crisp", "worn_level",
         # ChatML role names -- rendered as plain word tokens by the chat
         # template's own text (e.g. "<|im_start|>system\n"), NOT covered
         # by tokenizer.all_special_ids (only the <|im_start|>/<|im_end|>
@@ -159,6 +195,44 @@ def _outfit_tag_lines(category, row):
         lines.append(f"- bottoms: {lower_type} (pattern: {row.get('lower_pattern', 'solid')})")
     lines.append(f"- shoes: {row.get('footwear_type', 'unknown')}")
     lines.append(f"- formality: {row.get('formality', 'casual')}")
+
+    # Detailed fit observations if present
+    fit_parts = []
+    if int(row.get("fit_baggy", 0)) > 0:
+        fit_parts.append(f"baggy_level: {row.get('fit_baggy')}")
+    if int(row.get("fit_tight", 0)) > 0:
+        fit_parts.append(f"tight_level: {row.get('fit_tight')}")
+    if int(row.get("fit_tailored", 0)) > 0:
+        fit_parts.append("tailored")
+    if fit_parts:
+        lines.append(f"- fit: {', '.join(fit_parts)}")
+
+    # Detailed fabric observations if present
+    fabric_parts = []
+    if int(row.get("fabric_wrinkled", 0)) > 0:
+        fabric_parts.append(f"wrinkled_level: {row.get('fabric_wrinkled')}")
+    if int(row.get("fabric_crisp", 0)) > 0:
+        fabric_parts.append("crisp")
+    if fabric_parts:
+        lines.append(f"- fabric: {', '.join(fabric_parts)}")
+
+    # Footwear condition if present
+    footwear_parts = []
+    if int(row.get("footwear_worn", 0)) > 0:
+        footwear_parts.append(f"worn_level: {row.get('footwear_worn')}")
+    if int(row.get("footwear_polished", 0)) > 0:
+        footwear_parts.append("polished")
+    if footwear_parts:
+        lines.append(f"- footwear_condition: {', '.join(footwear_parts)}")
+
+    # Apple Vision native signals
+    if "color_harmony" in row:
+        lines.append(f"- color_harmony: {row['color_harmony']}")
+    if "posture" in row:
+        lines.append(f"- posture: {row['posture']}")
+    if "lighting" in row:
+        lines.append(f"- lighting: {row['lighting']}")
+
     return lines
 
 
@@ -179,6 +253,13 @@ def _grooming_tag_lines(category, row):
         lines.append(
             f"- makeup: {row.get('makeup_style', 'none')} (uneven_level: {row.get('makeup_uneven', 0)})"
         )
+
+    # Apple Vision native signals
+    if "posture" in row:
+        lines.append(f"- posture: {row['posture']}")
+    if "lighting" in row:
+        lines.append(f"- lighting: {row['lighting']}")
+
     return lines
 
 
