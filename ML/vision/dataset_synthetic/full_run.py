@@ -182,17 +182,27 @@ def already_done_indices(images_dir):
 # groups of size 1.
 # --------------------------------------------------------------------------
 def group_by_resolution(pending, gen_batch_size):
-    group = []
-    group_res = None
+    """Bucket tasks by resolution so gen_batch_size > 1 forms full batches
+    even though shuffled task order interleaves square (grooming) and
+    portrait (outfit) resolutions. For gen_batch_size <= 1, yields each task
+    in strict sequence."""
+    if gen_batch_size <= 1:
+        for item in pending:
+            yield [item]
+        return
+
+    buckets = {}
     for item in pending:
         res = item["task"]["resolution"]
-        if group and (res != group_res or len(group) >= gen_batch_size):
-            yield group
-            group = []
-        group.append(item)
-        group_res = res
-    if group:
-        yield group
+        if res not in buckets:
+            buckets[res] = []
+        buckets[res].append(item)
+        if len(buckets[res]) >= gen_batch_size:
+            yield buckets[res]
+            buckets[res] = []
+    for remaining in buckets.values():
+        if remaining:
+            yield remaining
 
 
 # --------------------------------------------------------------------------

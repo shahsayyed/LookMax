@@ -51,6 +51,13 @@ if ! python3 -c "import torch" &> /dev/null; then
     exit 1
 fi
 
+if ! command -v git &> /dev/null; then
+    if command -v apt-get &> /dev/null; then
+        echo "==> git not found; installing via apt-get..."
+        apt-get update && apt-get install -y git
+    fi
+fi
+
 echo "==> Installing diffusers from source (needed for QwenImagePipeline) + Qwen-Image deps"
 pip install --upgrade "git+https://github.com/huggingface/diffusers"
 pip install --upgrade "transformers>=4.51.3"
@@ -59,7 +66,7 @@ pip install accelerate sentencepiece protobuf hf_transfer opencv-python-headless
 echo ""
 echo "==> Setup complete."
 echo ""
-echo "IMPORTANT: HF_HOME and LOOKMAX_DATA_DIR must be set explicitly before running anything that"
+echo "IMPORTANT: HF_HOME, HF_HUB_ENABLE_HF_TRANSFER, and LOOKMAX_DATA_DIR must be set explicitly before running anything that"
 echo "downloads the model or writes output -- do NOT trust the ambient shell env to already have"
 echo "these; three separate past incidents (see PLAN.md) proved that unreliable across"
 echo "sessions/reattaches on these boxes. full_run.py's own default output dir is a LOCAL folder"
@@ -67,6 +74,7 @@ echo "next to the script (so it also works on a laptop with no /data mount) -- o
 echo "override it, in the SAME shell you run the Python scripts from:"
 echo ""
 echo "    export HF_HOME=\"$DATA_DIR/huggingface_cache\""
+echo "    export HF_HUB_ENABLE_HF_TRANSFER=1"
 echo "    export HF_XET_HIGH_PERFORMANCE=1"
 echo "    export LOOKMAX_DATA_DIR=\"$DATA_DIR\""
 echo ""

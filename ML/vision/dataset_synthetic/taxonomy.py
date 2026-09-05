@@ -455,6 +455,16 @@ FOOTWEAR_CONDITION_PHRASE = {
     "average": "plain and clean, unremarkable",
     "polished": "clean and freshly polished",
 }
+FOOTWEAR_CONDITION_PHRASE_UNLACED = {
+    "flaw_severe": "visibly scuffed, worn down, and dirty",
+    "flaw_mild": "a bit worn and scuffed",
+    "average": "plain and clean, unremarkable",
+    "polished": "clean and freshly polished",
+}
+FOOTWEAR_WITH_LACES = {
+    "canvas_sneakers", "running_shoes", "leather_sneakers", "suede_desert_boots",
+    "oxford_shoes", "leather_dress_shoes", "sneakers", "ankle_boots",
+}
 STYLING_PHRASE = {
     "flaw_severe": "the whole outfit looking sloppy and thrown-together, with no thought given to how the pieces work together",
     "flaw_mild": "the outfit looking like not much thought went into how it was put together",
@@ -467,14 +477,17 @@ def sample_fit_direction(rng):
     return "baggy" if rng.random() < 0.5 else "tight"
 
 
-def build_outfit_condition(tier, rng):
+def build_outfit_condition(tier, rng, footwear_type=None):
     """Returns (mods dict of text fragments, labels dict) for one outfit
     image's effort condition -- independent of which garments were picked
-    by sample_outfit()."""
+    by sample_outfit(). Footwear phrase adapts to laced vs unlaced styles."""
     direction = sample_fit_direction(rng)
     fit_phrase = FIT_CONDITION_PHRASE[(tier, direction)]
     fabric_phrase = FABRIC_CONDITION_PHRASE[tier]
-    footwear_phrase = FOOTWEAR_CONDITION_PHRASE[tier]
+    if footwear_type and footwear_type not in FOOTWEAR_WITH_LACES:
+        footwear_phrase = FOOTWEAR_CONDITION_PHRASE_UNLACED[tier]
+    else:
+        footwear_phrase = FOOTWEAR_CONDITION_PHRASE[tier]
     styling_phrase = STYLING_PHRASE[tier]
 
     severity = severity_for_tier(tier)
@@ -490,9 +503,13 @@ def build_outfit_condition(tier, rng):
         "styling_sloppy": severity,
         "styling_sharp": positive,
     }
+    lower_fabric_phrase = (
+        "deeply wrinkled with visible crease lines and rumpled fabric"
+        if tier == "flaw_severe" else fabric_phrase
+    )
     mods = {
         "upper_mod": f"{fabric_phrase}, the fit {fit_phrase}",
-        "lower_mod": f"{fabric_phrase}, the fit {fit_phrase}",
+        "lower_mod": f"{lower_fabric_phrase}, the fit {fit_phrase}",
         "mid_short_phrase": {"flaw_severe": "looking worn and neglected", "flaw_mild": "a bit rumpled",
                               "average": "in ordinary condition", "polished": "crisp and well-kept"}[tier],
         "footwear_mod": footwear_phrase,

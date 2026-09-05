@@ -80,18 +80,26 @@ def build_variation_tasks(samples_per_cell, seed=VARIATION_SEED):
 
 
 def group_by_resolution(pending, batch_size):
-    """Group consecutive same-resolution tasks up to batch_size."""
-    group = []
-    group_res = None
+    """Bucket tasks by resolution so batch_size > 1 forms full batches
+    even across different resolution categories. For batch_size <= 1,
+    yields each task in strict sequence."""
+    if batch_size <= 1:
+        for item in pending:
+            yield [item]
+        return
+
+    buckets = {}
     for item in pending:
         res = item["task"]["resolution"]
-        if group and (res != group_res or len(group) >= batch_size):
-            yield group
-            group = []
-        group.append(item)
-        group_res = res
-    if group:
-        yield group
+        if res not in buckets:
+            buckets[res] = []
+        buckets[res].append(item)
+        if len(buckets[res]) >= batch_size:
+            yield buckets[res]
+            buckets[res] = []
+    for remaining in buckets.values():
+        if remaining:
+            yield remaining
 
 
 def run_dry_run(tasks, batch_size=1, shard=None, num_shards=None, num_workers=1):

@@ -129,7 +129,7 @@ def build_outfit_task(category, tier, rng):
     hair_desc = tx.sample_outfit_hair(rng)
 
     outfit = tx.sample_outfit(gender, rng)
-    mods, cond_labels = tx.build_outfit_condition(tier, rng)
+    mods, cond_labels = tx.build_outfit_condition(tier, rng, footwear_type=outfit["footwear"][0])
 
     row = {"score": tx.sample_score(tier, rng)}
     row.update(cond_labels)

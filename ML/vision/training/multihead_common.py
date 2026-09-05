@@ -500,14 +500,20 @@ def discover_synthetic_source(category: str, qa_dir: Path, raw_dir: Path) -> dic
             return None
         schema_path = base_dir / f"label_schema_{category}.json"
         images_dir = base_dir / "images"
+        if not images_dir.exists() and (raw_dir / "images").exists():
+            images_dir = raw_dir / "images"
+        if not schema_path.exists() and (raw_dir / f"label_schema_{category}.json").exists():
+            schema_path = raw_dir / f"label_schema_{category}.json"
+
         csv_candidates = [
             base_dir / f"labels_{category}_measured.csv",
             base_dir / f"labels_{category}.csv",
         ]
         csv_path = next((p for p in csv_candidates if p.exists()), None)
-        if not schema_path.exists() or csv_path is None or not images_dir.exists():
+        if csv_path is None or not images_dir.exists():
             return None
-        schema = load_schema(schema_path)
+
+        schema = load_schema(schema_path) if schema_path.exists() else tx.get_label_schema(category)
         with open(csv_path, newline="") as f:
             rows = list(csv.DictReader(f))
         return {"schema": schema, "schema_path": schema_path, "images_dir": images_dir,
