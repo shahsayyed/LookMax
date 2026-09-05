@@ -408,11 +408,17 @@ def run_generation(target_count, output_path, api_key, backend=None, concurrency
             except Exception as e:
                 err_msg = str(e).lower()
                 is_rate_limit = any(term in err_msg for term in ("429", "resource_exhausted", "quota", "rate limit"))
+                is_net_error = any(term in err_msg for term in ("nodename nor servname", "no route to host", "network is unreachable", "connection refused"))
                 backoff = (2 ** attempt) * 2 + random.uniform(1.0, 5.0)
                 if is_rate_limit:
                     if backend == "gemini":
                         rate_limiter.penalize(backoff)
                     print(f"[{ctx['index']:04d}] Rate limit encountered, backing off {backoff:.1f}s...")
+                elif is_net_error:
+                    net_pause = min(backoff * 3, 45.0)
+                    if backend == "gemini":
+                        rate_limiter.penalize(net_pause)
+                    print(f"[{ctx['index']:04d}] Network issue ({e}), pausing {net_pause:.1f}s...")
                 else:
                     print(f"[{ctx['index']:04d}] attempt {attempt} error: {e}, retry in {backoff:.1f}s")
                 time.sleep(backoff)

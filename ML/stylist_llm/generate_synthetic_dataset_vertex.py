@@ -275,7 +275,9 @@ def run_generation(
     model="gemini-3.8-flash",
     location="global",
     concurrency=10,
-    rpm=60.0
+    rpm=60.0,
+    max_consecutive_failures=10,
+    max_total_failures=50,
 ):
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -351,21 +353,30 @@ def run_generation(
     print(f"Project: {project_id} | Location: {location} | Model: {model}")
     print(f"Target count: {target_count} | Already in file: {already_done} | Remaining to generate: {len(remaining)}")
     print(f"Rate limit: {rpm:.1f} RPM across {concurrency} worker threads")
+    print(f"Circuit Breaker: Stop if {max_consecutive_failures} consecutive or {max_total_failures} total failures occur")
     print(f"Output file: {output_path}")
     print("=" * 88)
 
     file_lock = threading.Lock()
     written_count = 0
     failed_count = 0
+    consecutive_failures = 0
+    stop_event = threading.Event()
     t_start = time.time()
 
     def process_task(ctx):
-        nonlocal written_count, failed_count
+        nonlocal written_count, failed_count, consecutive_failures
+        if stop_event.is_set():
+            return False
+
         prompt = tv.format_tag_prompt(ctx["category"], ctx["occasion"], ctx["row"])
         score = ctx["row"].get("score")
         advice = None
 
         for attempt in range(1, MAX_RETRIES_PER_EXAMPLE + 1):
+            if stop_event.is_set():
+                return False
+
             rate_limiter.acquire()
             if attempt > 1:
                 print(f"[{ctx['index']:04d}] attempt {attempt}: requesting regenerated advice from Vertex AI...")
@@ -398,7 +409,15 @@ def run_generation(
         if advice is None:
             with file_lock:
                 failed_count += 1
-            print(f"[{ctx['index']:04d}] ✗ FAILED after {MAX_RETRIES_PER_EXAMPLE} attempts -- skipping.")
+                consecutive_failures += 1
+                print(f"[{ctx['index']:04d}] ✗ FAILED after {MAX_RETRIES_PER_EXAMPLE} attempts "
+                      f"(consecutive failures: {consecutive_failures}/{max_consecutive_failures}).")
+                if consecutive_failures >= max_consecutive_failures:
+                    print(f"\n🚨 CIRCUIT BREAKER TRIGGERED: {consecutive_failures} consecutive failures. Stopping generation immediately.")
+                    stop_event.set()
+                elif failed_count >= max_total_failures:
+                    print(f"\n🚨 CIRCUIT BREAKER TRIGGERED: {failed_count} total failures exceeded threshold ({max_total_failures}). Stopping generation.")
+                    stop_event.set()
             return False
 
         record = {
@@ -427,6 +446,7 @@ def run_generation(
                 f.flush()
             existing_prompts.add(prompt.strip())
             written_count += 1
+            consecutive_failures = 0  # reset streak on success
             current_total = already_done + written_count
             elapsed = time.time() - t_start
             rate = written_count / elapsed if elapsed > 0 else 0
@@ -444,6 +464,9 @@ def run_generation(
     with ThreadPoolExecutor(max_workers=concurrency) as executor:
         futures = [executor.submit(process_task, ctx) for ctx in remaining]
         for f in as_completed(futures):
+            if stop_event.is_set():
+                for pending_f in futures:
+                    pending_f.cancel()
             try:
                 f.result()
             except Exception as e:
@@ -493,8 +516,20 @@ def main():
     parser.add_argument(
         "--concurrency",
         type=int,
+        default=6,
+        help="Number of concurrent worker threads (default 6)."
+    )
+    parser.add_argument(
+        "--max-consecutive-failures",
+        type=int,
         default=10,
-        help="Number of concurrent worker threads (default 10)."
+        help="Maximum consecutive context failures before aborting (default 10)."
+    )
+    parser.add_argument(
+        "--max-total-failures",
+        type=int,
+        default=50,
+        help="Maximum total context failures before aborting (default 50)."
     )
     args = parser.parse_args()
 
@@ -510,6 +545,8 @@ def main():
         location=args.location,
         concurrency=args.concurrency,
         rpm=args.rpm,
+        max_consecutive_failures=args.max_consecutive_failures,
+        max_total_failures=args.max_total_failures,
     )
 
 
