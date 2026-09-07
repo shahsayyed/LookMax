@@ -12,9 +12,11 @@
 # so as long as DATA_DIR is really your large disk, nothing in this
 # pipeline can end up writing to /workspace.
 # ==========================================================================
-set -e
+if [ -d "/venv/main/bin" ]; then
+    export PATH="/venv/main/bin:$PATH"
+fi
 
-MIN_FREE_GB=150   # ~58GB model cache + ~28,000 images (grooming 1024x1024, outfit 768x1024) + headroom
+MIN_FREE_GB=60    # ~35GB for 28,000 images + logs and headroom
 DATA_DIR="${LOOKMAX_DATA_DIR:-/data}"
 
 mkdir -p "$DATA_DIR"

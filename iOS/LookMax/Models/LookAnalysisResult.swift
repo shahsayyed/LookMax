@@ -2,6 +2,7 @@ import Foundation
 
 struct LookAnalysisResult {
     let score: Double
+    let potentialScore: Double
     let headlineBadge: String
     let goodPoints: [String]
     let badPoints: [String]

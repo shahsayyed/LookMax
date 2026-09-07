@@ -73,6 +73,50 @@ def merge_category(output_dir, category):
             print(f"    ... and {len(duplicates) - 20} more.")
 
 
+def merge_logs(output_dir):
+    shard_logs = sorted(output_dir.glob("generation_log_shard*.jsonl"))
+    if not shard_logs:
+        return
+    import json
+    seen_indices = set()
+    merged_lines = []
+    main_log = output_dir / "generation_log.jsonl"
+    if main_log.exists():
+        with open(main_log) as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        d = json.loads(line)
+                        idx = d.get("index")
+                        if idx is not None:
+                            seen_indices.add(idx)
+                        merged_lines.append(line.strip())
+                    except Exception:
+                        merged_lines.append(line.strip())
+
+    duplicates = 0
+    for s_log in shard_logs:
+        with open(s_log) as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        d = json.loads(line)
+                        idx = d.get("index")
+                        if idx is not None and idx in seen_indices:
+                            duplicates += 1
+                            continue
+                        if idx is not None:
+                            seen_indices.add(idx)
+                        merged_lines.append(line.strip())
+                    except Exception:
+                        merged_lines.append(line.strip())
+
+    with open(main_log, "w") as f:
+        for line in merged_lines:
+            f.write(line + "\n")
+    print(f"generation_log: merged {len(shard_logs)} shard log(s) -> {main_log.name} ({len(merged_lines)} entries).")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Merge per-shard label CSVs into one CSV per category.")
     parser.add_argument("--data-dir", default=str(full_run.DEFAULT_DATA_DIR))
@@ -85,6 +129,7 @@ def main():
 
     for category in args.categories:
         merge_category(output_dir, category)
+    merge_logs(output_dir)
 
 
 if __name__ == "__main__":

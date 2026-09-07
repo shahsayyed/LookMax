@@ -27,9 +27,17 @@ struct SuggestionRow: View {
                     .strikethrough(isDone, color: .secondary)
                     .foregroundColor(isDone ? .secondary : .white)
 
-                Text(suggestion.effortTime)
-                    .font(.system(size: 12, weight: .regular))
-                    .foregroundColor(.secondary)
+                HStack(spacing: 5) {
+                    Text(String(format: "+%.1f pts", suggestion.pointImpact))
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundColor(Theme.emerald)
+                    Text("·")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                    Text(suggestion.effortTime)
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(.secondary)
+                }
             }
 
             Spacer()
@@ -50,28 +58,45 @@ struct LookDetailCard: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 14) {
-            // ─── Left Column: Large Score ───
-            VStack(spacing: 6) {
+            // ─── Left Column: Large Score + Potential Score ───
+            VStack(spacing: 5) {
                 Text("AI LOOK DETAIL")
                     .font(.system(size: 10, weight: .bold, design: .rounded))
                     .foregroundColor(.secondary)
                     .tracking(0.6)
 
                 Text(String(format: "%.1f", look.score))
-                    .font(.system(size: 64, weight: .heavy, design: .rounded))
+                    .font(.system(size: 58, weight: .heavy, design: .rounded))
                     .foregroundColor(Theme.scoreColor(look.score))
-                    .neonGlow(color: Theme.scoreColor(look.score), radius: 16)
+                    .neonGlow(color: Theme.scoreColor(look.score), radius: 14)
 
-                Text("OVERALL SCORE")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                Text("CURRENT SCORE")
+                    .font(.system(size: 9, weight: .bold, design: .rounded))
                     .foregroundColor(.secondary)
                     .tracking(0.4)
 
+                // Potential Score pill
+                let gain = max(0.0, look.potentialScore - look.score)
+                HStack(spacing: 4) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(Theme.warmAmber)
+                    Text(String(format: "5-Min: %.1f (+%.1f)", look.potentialScore, gain))
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .foregroundColor(Theme.warmAmber)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(Theme.warmAmber.opacity(0.16))
+                .overlay(Capsule().stroke(Theme.warmAmber.opacity(0.4), lineWidth: 0.8))
+                .clipShape(Capsule())
+                .padding(.top, 1)
+
                 Text(look.headlineBadge)
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.system(size: 11, weight: .bold))
                     .foregroundColor(.white)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
                     .background(Theme.scoreColor(look.score))
                     .clipShape(Capsule())
                     .padding(.top, 2)
@@ -80,7 +105,7 @@ struct LookDetailCard: View {
                     Label("Top Pick", systemImage: "trophy.fill")
                         .font(.caption2.bold())
                         .foregroundColor(Theme.warmAmber)
-                        .padding(.top, 4)
+                        .padding(.top, 2)
                 }
             }
             .frame(minWidth: 130)

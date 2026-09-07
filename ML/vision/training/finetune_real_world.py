@@ -53,9 +53,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import (
     SYNTHETIC_QA_DIR, SYNTHETIC_RAW_DIR, TRAINING_DATA_DIR, MODELS_DIR,
     CATEGORIES, CATEGORY_TO_STREAM, DEMOGRAPHICS, AESTHETIC_TIERS,
-    BACKBONE, IMAGE_SIZE, BATCH_SIZE, TRAIN_SPLIT,
+    BACKBONE, IMAGE_SIZE, GROOMING_IMAGE_SIZE, OUTFIT_IMAGE_SIZE, get_image_size,
+    BATCH_SIZE, TRAIN_SPLIT,
     FINETUNE_LEARNING_RATE, FINETUNE_NUM_EPOCHS, REPLAY_RATIO_DEFAULT,
-    EARLY_STOPPING_PATIENCE,
+    EARLY_STOPPING_PATIENCE, ANNOTATIONS_FILE,
 )
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -74,7 +75,7 @@ if HAS_TORCH:
         GREEN, YELLOW, RED, CYAN, BOLD, RESET, header, get_device, get_transforms,
         MultiHeadModel, SyntheticCsvDataset, RealWorldScoreDataset, ReplayMixedLoader,
         compute_losses, evaluate, discover_synthetic_source, discover_real_samples,
-        trainable_fields, export_to_coreml,
+        trainable_fields, export_to_coreml, load_annotations_scores,
     )
 
 
@@ -119,6 +120,14 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
     for tier, cnt in real["per_tier_counts"].items():
         print(f"    {tier:24s}: {cnt} images")
 
+    annotations_scores = load_annotations_scores(ANNOTATIONS_FILE)
+    matched_scores = sum(1 for s in real["samples"] if s[0].name in annotations_scores)
+    if annotations_scores:
+        print(f"  Score targets: {matched_scores}/{real['total']} calibrated continuous VLM scores loaded "
+              f"from {ANNOTATIONS_FILE.name}")
+    else:
+        print(f"  {YELLOW}⚠ Score targets: no annotations file found; falling back to deterministic tier midpoints{RESET}")
+
     synth = discover_synthetic_source(category, SYNTHETIC_QA_DIR, SYNTHETIC_RAW_DIR)
     if synth["warning"]:
         print(f"  {YELLOW}⚠ {synth['warning']}{RESET}")
@@ -135,11 +144,14 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
         if args.replay_ratio > 0 and not synth["available"]:
             print(f"  {YELLOW}[DRY-RUN] No synthetic replay data yet — a real run would need "
                   f"--replay-ratio 0 or synthetic data to proceed.{RESET}")
+        img_size_cat = get_image_size(category) if args.image_size is None else args.image_size
+        size_str = f"{img_size_cat[0]}×{img_size_cat[1]}" if isinstance(img_size_cat, tuple) else f"{img_size_cat}×{img_size_cat}"
         if ckpt_ok and real["total"] > 0 and (synth["available"] or args.replay_ratio <= 0):
-            print(f"  {YELLOW}[DRY-RUN] Would fine-tune {args.epochs} epoch(s), "
+            print(f"  {YELLOW}[DRY-RUN] Would fine-tune {args.epochs} epoch(s), image_size={size_str}, "
                   f"batch_size={args.batch_size}, lr={args.learning_rate}.{RESET}")
         return {"category": category, "status": plan_status, "real_images": real["total"],
-                "synthetic_rows": len(synth["rows"]), "checkpoint_found": ckpt_ok}
+                "synthetic_rows": len(synth["rows"]), "checkpoint_found": ckpt_ok,
+                "continuous_scores_matched": matched_scores}
 
     # ── Non-dry-run validation — clear errors, no stack traces ──────────
     if not ckpt_ok:
@@ -167,8 +179,18 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
     ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     schema = ckpt["schema"]
     backbone_name = args.backbone or ckpt.get("backbone", BACKBONE)
-    image_size = args.image_size or ckpt.get("image_size", IMAGE_SIZE)
-    print(f"  Loaded Phase A checkpoint: backbone={backbone_name}, image_size={image_size}, "
+    if args.image_size:
+        if "x" in str(args.image_size).lower():
+            parts = str(args.image_size).lower().split("x")
+            image_size = (int(parts[0]), int(parts[1]))
+        else:
+            image_size = (int(args.image_size), int(args.image_size))
+    elif "image_size" in ckpt:
+        image_size = ckpt["image_size"]
+    else:
+        image_size = get_image_size(category)
+    size_str = f"{image_size[0]}×{image_size[1]}" if isinstance(image_size, tuple) else f"{image_size}×{image_size}"
+    print(f"  Loaded Phase A checkpoint: backbone={backbone_name}, image_size={size_str}, "
           f"schema fields={len(trainable_fields(schema))}")
 
     model = MultiHeadModel(backbone_name, schema, pretrained=False)
@@ -176,14 +198,16 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
     model = model.to(device)
 
     # ── Real dataset split ────────────────────────────────────────────────
-    real_train_full = RealWorldScoreDataset(real["samples"], schema, get_transforms(image_size, is_train=True))
+    real_train_full = RealWorldScoreDataset(real["samples"], schema, get_transforms(image_size, is_train=True),
+                                            annotations_scores=annotations_scores)
     n_real_train = max(1, int(len(real_train_full) * TRAIN_SPLIT))
     n_real_val = len(real_train_full) - n_real_train
     if n_real_val == 0:
         n_real_train -= 1
         n_real_val = 1
     real_train_ds, real_val_idx = random_split(real_train_full, [n_real_train, n_real_val])
-    real_val_full = RealWorldScoreDataset(real["samples"], schema, get_transforms(image_size, is_train=False))
+    real_val_full = RealWorldScoreDataset(real["samples"], schema, get_transforms(image_size, is_train=False),
+                                          annotations_scores=annotations_scores)
     real_val_ds = torch.utils.data.Subset(real_val_full, real_val_idx.indices)
     print(f"  Real train : {n_real_train} | Real val: {n_real_val}")
 
@@ -374,9 +398,9 @@ def main():
     parser.add_argument("--epochs", type=int, default=FINETUNE_NUM_EPOCHS)
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     parser.add_argument("--lr", type=float, default=FINETUNE_LEARNING_RATE, dest="learning_rate")
-    parser.add_argument("--image-size", type=int, default=None,
-                         help="Override the image size recorded in the checkpoint "
-                             f"(defaults to whatever Phase A used, else config.IMAGE_SIZE={IMAGE_SIZE}).")
+    parser.add_argument("--image-size", type=str, default=None,
+                         help="Override the image size (e.g. 384 or 512x384). Defaults to checkpoint value "
+                              "or category auto-default (Grooming: 384x384, Outfit: 512x384).")
     parser.add_argument("--backbone", type=str, default=None,
                          choices=["mobilenet_v3_large", "mobilenet_v3_small", "efficientnet_b0"],
                          help="Override the backbone recorded in the checkpoint (defaults to "
@@ -408,7 +432,7 @@ def main():
     print(f"  Epochs       : {args.epochs}")
     print(f"  Batch size   : {args.batch_size}")
     print(f"  LR           : {args.learning_rate}")
-    print(f"  Image size   : {args.image_size if args.image_size else '(from checkpoint)'}")
+    print(f"  Image size   : {args.image_size if args.image_size else '(from checkpoint / auto)'}")
     print(f"  Replay ratio : {args.replay_ratio:.0%} synthetic / {1 - args.replay_ratio:.0%} real")
     print(f"  Output       : {MODELS_DIR}")
     print(f"  Dry-run      : {args.dry_run}")

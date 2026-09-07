@@ -42,7 +42,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import (
     SYNTHETIC_QA_DIR, SYNTHETIC_RAW_DIR, MODELS_DIR, CATEGORIES,
-    BACKBONE, IMAGE_SIZE, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE,
+    BACKBONE, IMAGE_SIZE, GROOMING_IMAGE_SIZE, OUTFIT_IMAGE_SIZE, get_image_size,
+    BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE,
     TRAIN_SPLIT, EARLY_STOPPING_PATIENCE,
 )
 
@@ -92,15 +93,25 @@ def train_category(category: str, device, args, dry_run: bool) -> dict:
     print(f"  Heads      : score (regression, weight 1.0) + "
           f"{sum(1 for f in trainable if f['name'] != 'score')} attribute head(s)")
 
+    if args.image_size is not None:
+        if "x" in str(args.image_size).lower():
+            parts = str(args.image_size).lower().split("x")
+            img_size = (int(parts[0]), int(parts[1]))
+        else:
+            img_size = (int(args.image_size), int(args.image_size))
+    else:
+        img_size = get_image_size(category)
+    size_str = f"{img_size[0]}×{img_size[1]}" if isinstance(img_size, tuple) else f"{img_size}×{img_size}"
+
     if dry_run:
         print(f"  {YELLOW}[DRY-RUN] Would train {args.epochs} epoch(s) on {len(src['rows'])} images "
-              f"(backbone={args.backbone}, image_size={args.image_size}, batch_size={args.batch_size}).{RESET}")
+              f"(backbone={args.backbone}, image_size={size_str}, batch_size={args.batch_size}).{RESET}")
         return {"category": category, "status": "dry_run", "total_rows": src["total_rows"],
                 "usable_rows": len(src["rows"])}
 
     # ── Build datasets ───────────────────────────────────────────────────
     rows = src["rows"]
-    full_ds = SyntheticCsvDataset(rows, src["images_dir"], schema, get_transforms(args.image_size, is_train=True))
+    full_ds = SyntheticCsvDataset(rows, src["images_dir"], schema, get_transforms(img_size, is_train=True))
     n_train = max(1, int(len(full_ds) * TRAIN_SPLIT))
     n_val = len(full_ds) - n_train
     if n_val == 0:
@@ -108,9 +119,10 @@ def train_category(category: str, device, args, dry_run: bool) -> dict:
         n_val = 1
     train_ds, val_ds_idx = random_split(full_ds, [n_train, n_val])
     # Re-wrap val split with no-augmentation transform, same indices.
-    val_full_ds = SyntheticCsvDataset(rows, src["images_dir"], schema, get_transforms(args.image_size, is_train=False))
+    val_full_ds = SyntheticCsvDataset(rows, src["images_dir"], schema, get_transforms(img_size, is_train=False))
     val_ds = torch.utils.data.Subset(val_full_ds, val_ds_idx.indices)
 
+    print(f"  Resolution : {size_str}")
     print(f"  Train      : {n_train} | Val: {n_val}")
 
     train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True,
@@ -246,7 +258,9 @@ def main():
     parser.add_argument("--epochs", type=int, default=NUM_EPOCHS)
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     parser.add_argument("--lr", type=float, default=LEARNING_RATE, dest="learning_rate")
-    parser.add_argument("--image-size", type=int, default=IMAGE_SIZE)
+    parser.add_argument("--image-size", type=str, default=None,
+                         help="Override image size (e.g. 384 or 512x384). Defaults to auto: "
+                              "Grooming -> 384x384, Outfit -> 512x384")
     parser.add_argument("--backbone", type=str, default=BACKBONE,
                          choices=["mobilenet_v3_large", "mobilenet_v3_small", "efficientnet_b0"])
     parser.add_argument("--dry-run", action="store_true",
@@ -264,7 +278,8 @@ def main():
     print(f"  Backbone   : {args.backbone}")
     print(f"  Epochs     : {args.epochs}")
     print(f"  Batch size : {args.batch_size}")
-    print(f"  Image size : {args.image_size}×{args.image_size}")
+    img_size_display = args.image_size if args.image_size else "Auto (Grooming: 384×384, Outfit: 512×384)"
+    print(f"  Image size : {img_size_display}")
     print(f"  Output     : {MODELS_DIR}")
     print(f"  Dry-run    : {args.dry_run}")
 

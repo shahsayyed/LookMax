@@ -47,12 +47,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy as tx
 import prompt_builder as pb
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(line_buffering=True)
+
 DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "variation_test_output"
 DEFAULT_SAMPLES_PER_CELL = 4  # 4 categories x 4 tiers x 4 = 64 images
 VARIATION_SEED = 99  # deliberately different from full_run.py's TASK_SEED=42 -- this test's
                       # identities/garments/colours are a separate deterministic sequence, not
                       # just a replay of the first N rows of the real run
-MIN_FREE_GB = 70  # just the model cache -- 64 images is a trivial footprint on disk
+MIN_FREE_GB = 30  # 64 images is a trivial footprint on disk (~80MB)
 
 
 def build_variation_tasks(samples_per_cell, seed=VARIATION_SEED):
@@ -234,7 +237,16 @@ def run_multi_worker(samples_per_cell, output_dir, num_workers, batch_size=1, de
     processes = []
     t_start = time.time()
 
+    num_gpus = 1
+    try:
+        import torch
+        if torch.cuda.is_available():
+            num_gpus = max(1, torch.cuda.device_count())
+    except Exception:
+        num_gpus = 1
+
     for k in range(num_workers):
+        worker_device = device if device else (f"cuda:{k % num_gpus}" if num_gpus > 1 else None)
         cmd = [
             sys.executable, str(script_path),
             "--samples-per-cell", str(samples_per_cell),
@@ -243,9 +255,9 @@ def run_multi_worker(samples_per_cell, output_dir, num_workers, batch_size=1, de
             "--batch-size", str(batch_size),
             "--output-dir", str(output_dir),
         ]
-        if device:
-            cmd.extend(["--device", device])
-        print(f"Launching Worker {k}: {' '.join(cmd)}")
+        if worker_device:
+            cmd.extend(["--device", worker_device])
+        print(f"Launching Worker {k} on {worker_device or 'default GPU'}: {' '.join(cmd)}")
         p = subprocess.Popen(cmd)
         processes.append((k, p))
 

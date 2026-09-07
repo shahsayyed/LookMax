@@ -103,10 +103,20 @@ GEMINI_MODEL = "gemma-4-31b-it"
 VLM_PARALLEL_WORKERS = 8            # Concurrent VLM worker threads
 VLM_REQUEST_TIMEOUT_SEC = 30        # Per-image VLM timeout
 
-# ─── Training Hyperparameters (Phase 4) ──────────────────────────────────────
 BACKBONE = "mobilenet_v3_large"     # "mobilenet_v3_large" | "fastvit_t8"
-IMAGE_SIZE = 224
 BATCH_SIZE = 32
+
+# Category-specific input resolutions: Grooming is 1:1 square, Outfit is 3:4 portrait.
+# Format is (Height, Width) matching torchvision / PyTorch conventions.
+GROOMING_IMAGE_SIZE = (384, 384)    # (H, W) Square for head-and-shoulders / face crop
+OUTFIT_IMAGE_SIZE   = (512, 384)    # (H, W) 3:4 Portrait for full-body head-to-shoes
+IMAGE_SIZE          = 224           # Legacy fallback alias
+
+def get_image_size(category: str) -> tuple[int, int]:
+    """Returns (height, width) for category: Grooming -> (384, 384), Outfit -> (512, 384)."""
+    if "grooming" in category.lower():
+        return GROOMING_IMAGE_SIZE
+    return OUTFIT_IMAGE_SIZE
 NUM_EPOCHS = 25
 LEARNING_RATE = 3e-4
 TRAIN_SPLIT = 0.80                  # 80% train, 20% validation

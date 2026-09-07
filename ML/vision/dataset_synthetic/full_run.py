@@ -47,6 +47,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy as tx
 import prompt_builder as pb
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(line_buffering=True)
+
 # --------------------------------------------------------------------------
 # Seeding -- see module docstring. TASK_SEED drives every sampled value in
 # every task's content; SHUFFLE_SEED is a SEPARATE deterministic seed used
@@ -67,17 +70,18 @@ SHUFFLE_SEED = 43
 # check_disk_space() actually checking whatever directory is in play,
 # not by hardcoding one path that only exists on one specific host.
 DEFAULT_DATA_DIR = Path(os.environ.get("LOOKMAX_DATA_DIR", str(Path(__file__).resolve().parent / "output")))
-MIN_FREE_GB = 150  # ~58GB model cache + 28,000 PNGs (grooming 1024x1024 + outfit 768x1024) with headroom
+MIN_FREE_GB = 60  # ~35GB for 28,000 PNGs + logs and headroom
 DEFAULT_GEN_BATCH_SIZE = 1
 MAX_CONSECUTIVE_FAILURES = 50
 
 
-def output_paths(data_dir):
+def output_paths(data_dir, shard=None):
     output_dir = Path(data_dir) / "qwen_dataset_output"
+    log_name = f"generation_log_shard{shard}.jsonl" if shard is not None else "generation_log.jsonl"
     return {
         "output_dir": output_dir,
         "images_dir": output_dir / "images",
-        "log_path": output_dir / "generation_log.jsonl",
+        "log_path": output_dir / log_name,
     }
 
 
@@ -141,18 +145,19 @@ def write_schema_files(output_dir):
 # and install_qwen.sh -- Vast.ai's /workspace-is-tiny quirk. Checks the
 # ACTUAL data_dir argument, never trusts cwd or shell env.)
 # --------------------------------------------------------------------------
-def check_disk_space(data_dir, min_free_gb=MIN_FREE_GB):
+def check_disk_space(data_dir, target_count=None):
     data_dir = Path(data_dir)
     data_dir.mkdir(parents=True, exist_ok=True)
     free_gb = shutil.disk_usage(data_dir).free / (1024 ** 3)
-    if free_gb < min_free_gb:
+    min_needed = 5 if (target_count is not None and target_count < 1000) else MIN_FREE_GB
+    if free_gb < min_needed:
         sys.exit(
-            f"!! Only {free_gb:.1f}GB free on {data_dir} -- need at least {min_free_gb}GB for the full "
-            f"run (model cache + ~28,000 images). Run 'df -h' and confirm {data_dir} is your LARGE disk "
+            f"!! Only {free_gb:.1f}GB free on {data_dir} -- need at least {min_needed}GB. "
+            f"Run 'df -h' and confirm {data_dir} is your LARGE disk "
             f"(on Vast.ai, /workspace is a tiny loop device -- use /data). Pass --data-dir to point "
             f"elsewhere if needed."
         )
-    print(f"Disk check OK: {free_gb:.1f}GB free on {data_dir} (need >= {min_free_gb}GB).")
+    print(f"Disk check OK: {free_gb:.1f}GB free on {data_dir} (need >= {min_needed}GB).")
 
 
 # --------------------------------------------------------------------------
@@ -208,90 +213,189 @@ def group_by_resolution(pending, gen_batch_size):
 # --------------------------------------------------------------------------
 # Benchmark
 # --------------------------------------------------------------------------
-def run_benchmark(data_dir, num_shards=None, batch_size=1, compare_modes=False, device=None):
+def run_benchmark(data_dir, num_shards=None, batch_size=1, compare_modes=False, device=None, num_workers=1):
     import qwen_pipeline as qp
 
     tasks = build_full_task_list()
+    num_gpus = 1
+    try:
+        import torch
+        if torch.cuda.is_available():
+            num_gpus = max(1, torch.cuda.device_count())
+    except Exception:
+        num_gpus = 1
+
+    if num_workers > 1 and num_gpus >= 2 and not compare_modes:
+        print(f"\n{'='*88}\nMULTI-GPU CONCURRENT BENCHMARK ({num_workers} workers across {num_gpus} GPUs)\n{'='*88}\n")
+        sub_dir = Path(data_dir) / "benchmark_multi_worker_tmp"
+        sub_dir.mkdir(parents=True, exist_ok=True)
+        t0 = time.time()
+        procs = []
+        script_path = Path(__file__).resolve()
+        imgs_per_worker = 3
+        for k in range(num_workers):
+            w_dev = f"cuda:{k % num_gpus}"
+            cmd = [
+                sys.executable, str(script_path), str(imgs_per_worker), str(batch_size or 1),
+                "--shard", str(k), "--num-shards", str(num_workers),
+                "--data-dir", str(sub_dir), "--device", w_dev
+            ]
+            print(f"Launching Benchmark Worker {k} on {w_dev}: {' '.join(cmd)}")
+            procs.append(subprocess.Popen(cmd))
+
+        for k, p in enumerate(procs):
+            ret = p.wait()
+            if ret != 0:
+                print(f"Benchmark Worker {k} failed with code {ret}!")
+
+        total_time = time.time() - t0
+        shutil.rmtree(sub_dir, ignore_errors=True)
+        total_imgs = num_workers * imgs_per_worker
+        effective_sec_per_img = total_time / total_imgs
+        img_per_min = 60.0 / effective_sec_per_img
+        total_production_images = sum(tx.CATEGORY_COUNTS.values())
+        est_hours = (effective_sec_per_img * total_production_images) / 3600.0
+
+        print(f"\n{'='*88}\nMULTI-GPU BENCHMARK RESULTS ({num_workers} GPUs Active)\n{'='*88}")
+        print(f"Total images generated concurrently : {total_imgs} ({imgs_per_worker} per GPU)")
+        print(f"Wall-clock elapsed time             : {total_time:.1f}s")
+        print(f"Effective throughput                : {effective_sec_per_img:.2f}s / image ({img_per_min:.1f} images/min)")
+        print(f"Projected full 28,000 dataset time  : {est_hours:.1f} GPU-hours ({est_hours/24:.1f} days)")
+        print(f"{'='*88}\n")
+        return
+
     if compare_modes:
         print(f"\n{'='*88}\nBENCHMARK: COMPARING MODES ON THIS HARDWARE\n{'='*88}")
-        print("Evaluating throughput across Sequential, Batched, and Concurrent Multi-Worker modes.")
-        sample = [tasks[0], tasks[1], tasks[7000], tasks[7001]]  # 2 grooming square, 2 outfit portrait
+        num_gpus = 1
+        try:
+            import torch
+            if torch.cuda.is_available():
+                num_gpus = max(1, torch.cuda.device_count())
+        except Exception:
+            num_gpus = 1
+
+        # Balanced sample: 4 grooming square (tasks 0-3) + 4 outfit portrait (tasks 7000-7003)
+        sample = [tasks[0], tasks[1], tasks[2], tasks[3], tasks[7000], tasks[7001], tasks[7002], tasks[7003]]
 
         # Warmup
-        print("Running warm-up forward pass...")
+        print(f"Running warm-up forward pass on {device or 'default device'}...")
         pipe, can_batch = qp.load_pipeline(device=device)
         qp.generate(pipe, [sample[0]["task"]], seeds=[sample[0]["index"]], num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
         qp.unload(pipe)
 
         results = []
 
-        # Mode 1: Sequential (1 worker, batch=1)
-        print("\n[Mode 1] Testing Sequential Generation (workers=1, batch=1)...")
-        pipe, can_batch = qp.load_pipeline(device=device)
-        t0 = time.time()
-        for item in sample:
-            qp.generate(pipe, [item["task"]], seeds=[item["index"]], num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
-        t_seq = time.time() - t0
-        qp.unload(pipe)
-        results.append(("Sequential (Workers=1, Batch=1)", 1, 1, t_seq))
-        print(f"  -> {len(sample)} images in {t_seq:.1f}s ({t_seq / len(sample):.2f}s/image)")
+        if num_gpus >= 2:
+            print(f"\nDetected {num_gpus} GPUs. Benchmarking Multi-GPU configurations (utilizing all available cards)...")
+            script_path = Path(__file__).resolve()
 
-        # Mode 2: Batched (1 worker, batch=2)
-        if can_batch:
-            print("\n[Mode 2] Testing Batched Generation (workers=1, batch=2)...")
+            def benchmark_configuration(name, n_workers, b_size, n_images_per_worker):
+                sub_dir = Path(data_dir) / f"benchmark_w{n_workers}_b{b_size}_tmp"
+                sub_dir.mkdir(parents=True, exist_ok=True)
+                t0 = time.time()
+                procs = []
+                for k in range(n_workers):
+                    w_dev = f"cuda:{k % num_gpus}"
+                    cmd_k = [
+                        sys.executable, str(script_path), str(n_images_per_worker), str(b_size),
+                        "--shard", str(k), "--num-shards", str(n_workers),
+                        "--data-dir", str(sub_dir), "--device", w_dev
+                    ]
+                    procs.append(subprocess.Popen(cmd_k))
+                failed = False
+                for p in procs:
+                    ret = p.wait()
+                    if ret != 0:
+                        failed = True
+                t_elapsed = time.time() - t0
+                shutil.rmtree(sub_dir, ignore_errors=True)
+                total_imgs = n_workers * n_images_per_worker
+                if failed:
+                    results.append((name, n_workers, b_size, None, total_imgs))
+                    print(f"  -> FAILED / OOM: {n_workers} workers with batch={b_size} failed or exceeded VRAM.")
+                else:
+                    results.append((name, n_workers, b_size, t_elapsed, total_imgs))
+                    print(f"  -> {total_imgs} images in {t_elapsed:.1f}s ({t_elapsed / total_imgs:.2f}s/image)")
+
+            # Mode 1: 2 Workers (1 per GPU), Batch=1 (Baseline)
+            print("\n[Mode 1] Testing Multi-GPU (Workers=2 [1/GPU], Batch=1)...")
+            benchmark_configuration("Multi-GPU (Workers=2 [1/GPU], Batch=1)", 2, 1, 4)
+
+            # Mode 2: 4 Workers (2 per GPU), Batch=1
+            print("\n[Mode 2] Testing Multi-GPU (Workers=4 [2/GPU], Batch=1)...")
+            benchmark_configuration("Multi-GPU (Workers=4 [2/GPU], Batch=1)", 4, 1, 2)
+
+            # Mode 3: 6 Workers (3 per GPU), Batch=1 (User Target: 3 instances per B300)
+            print("\n[Mode 3] Testing Multi-GPU (Workers=6 [3/GPU], Batch=1)...")
+            benchmark_configuration("Multi-GPU (Workers=6 [3/GPU], Batch=1)", 6, 1, 2)
+
+            # Mode 4: 2 Workers (1 per GPU), Batch=2 (Batched test on Blackwell)
+            print("\n[Mode 4] Testing Multi-GPU Batched (Workers=2 [1/GPU], Batch=2)...")
+            benchmark_configuration("Multi-GPU Batched (Workers=2 [1/GPU], Batch=2)", 2, 2, 4)
+
+            # Mode 5: 4 Workers (2 per GPU), Batch=3 (High Concurrency + Micro-batching)
+            print("\n[Mode 5] Testing Multi-GPU Batched (Workers=4 [2/GPU], Batch=3)...")
+            benchmark_configuration("Multi-GPU Batched (Workers=4 [2/GPU], Batch=3)", 4, 3, 3)
+
+        else:
+            # Single GPU fallback modes
+            print("\n[Mode 1] Testing Single GPU Sequential (workers=1, batch=1)...")
             pipe, can_batch = qp.load_pipeline(device=device)
             t0 = time.time()
-            for batch in group_by_resolution(sample, 2):
-                qp.generate(pipe, [item["task"] for item in batch], seeds=[item["index"] for item in batch],
-                            num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
-            t_batch = time.time() - t0
+            for item in sample:
+                qp.generate(pipe, [item["task"]], seeds=[item["index"]], num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
+            t_seq = time.time() - t0
             qp.unload(pipe)
-            results.append(("Batched (Workers=1, Batch=2)", 1, 2, t_batch))
-            print(f"  -> {len(sample)} images in {t_batch:.1f}s ({t_batch / len(sample):.2f}s/image)")
-        else:
-            print("\n[Mode 2] Batched generation skipped (VRAM offload mode forces batch=1).")
+            results.append(("Sequential (Workers=1, Batch=1)", 1, 1, t_seq, len(sample)))
+            print(f"  -> {len(sample)} images in {t_seq:.1f}s ({t_seq / len(sample):.2f}s/image)")
 
-        # Mode 3: Concurrent Independent Workers (workers=2, batch=1)
-        print("\n[Mode 3] Testing Concurrent Independent Workers (workers=2, batch=1)...")
-        script_path = Path(__file__).resolve()
-        sub_dir = Path(data_dir) / "benchmark_multi_worker_tmp"
-        sub_dir.mkdir(parents=True, exist_ok=True)
-        t0 = time.time()
-        cmd_p0 = [
-            sys.executable, str(script_path), "2", "1", "--shard", "0", "--num-shards", "2",
-            "--data-dir", str(sub_dir)
-        ]
-        cmd_p1 = [
-            sys.executable, str(script_path), "2", "1", "--shard", "1", "--num-shards", "2",
-            "--data-dir", str(sub_dir)
-        ]
-        if device:
-            cmd_p0.extend(["--device", device])
-            cmd_p1.extend(["--device", device])
-        p0 = subprocess.Popen(cmd_p0)
-        p1 = subprocess.Popen(cmd_p1)
-        p0.wait()
-        p1.wait()
-        t_concurrent = time.time() - t0
-        shutil.rmtree(sub_dir, ignore_errors=True)
-        results.append(("Concurrent (Workers=2, Batch=1)", 2, 1, t_concurrent))
-        print(f"  -> {len(sample)} images in {t_concurrent:.1f}s ({t_concurrent / len(sample):.2f}s/image)")
+            if can_batch:
+                print("\n[Mode 2] Testing Single GPU Batched (workers=1, batch=2)...")
+                pipe, can_batch = qp.load_pipeline(device=device)
+                t0 = time.time()
+                for batch in group_by_resolution(sample, 2):
+                    qp.generate(pipe, [item["task"] for item in batch], seeds=[item["index"] for item in batch],
+                                num_inference_steps=tx.NUM_INFERENCE_STEPS_FULL)
+                t_batch = time.time() - t0
+                qp.unload(pipe)
+                results.append(("Batched (Workers=1, Batch=2)", 1, 2, t_batch, len(sample)))
+                print(f"  -> {len(sample)} images in {t_batch:.1f}s ({t_batch / len(sample):.2f}s/image)")
+
+            print("\n[Mode 3] Testing Single GPU Concurrent (workers=2, batch=1)...")
+            script_path = Path(__file__).resolve()
+            sub_dir = Path(data_dir) / "benchmark_multi_worker_tmp"
+            sub_dir.mkdir(parents=True, exist_ok=True)
+            t0 = time.time()
+            p0 = subprocess.Popen([sys.executable, str(script_path), "4", "1", "--shard", "0", "--num-shards", "2",
+                                   "--data-dir", str(sub_dir)])
+            p1 = subprocess.Popen([sys.executable, str(script_path), "4", "1", "--shard", "1", "--num-shards", "2",
+                                   "--data-dir", str(sub_dir)])
+            p0.wait(); p1.wait()
+            t_concurrent = time.time() - t0
+            shutil.rmtree(sub_dir, ignore_errors=True)
+            results.append(("Concurrent (Workers=2, Batch=1)", 2, 1, t_concurrent, 8))
+            print(f"  -> 8 images in {t_concurrent:.1f}s ({t_concurrent / 8:.2f}s/image)")
 
         total_production_images = sum(tx.CATEGORY_COUNTS.values())
-        print(f"\n{'='*88}\nBENCHMARK RESULTS & PROJECTIONS (Full 28,000-Image Run)\n{'='*88}")
-        print(f"{'Mode':<34} | {'Workers':>7} | {'Batch':>5} | {'Sec/Image':>9} | {'Img/Min':>7} | {'Full Run Est.':>14}")
-        print("-" * 88)
-        base_sec = results[0][3] / len(sample)
-        for name, workers, b_size, total_t in results:
-            sec_img = total_t / len(sample)
-            img_min = 60.0 / sec_img
-            full_hrs = (sec_img * total_production_images) / 3600.0
-            speedup = base_sec / sec_img
-            speedup_str = f" ({speedup:.2f}x)" if speedup != 1.0 else ""
-            print(f"{name:<34} | {workers:>7} | {b_size:>5} | {sec_img:>8.2f}s | {img_min:>7.1f} | {full_hrs:>10.1f}h{speedup_str}")
-        print("-" * 88)
-        fastest = min(results, key=lambda x: x[3])
-        print(f"Recommendation: Fastest configuration on this hardware is '{fastest[0]}' ({fastest[3] / len(sample):.2f}s/image).\n")
+        print(f"\n{'='*98}\nBENCHMARK RESULTS & PROJECTIONS (Full 28,000-Image Run)\n{'='*98}")
+        print(f"{'Mode':<46} | {'Workers':>7} | {'Batch':>5} | {'Sec/Image':>9} | {'Img/Min':>7} | {'Full Run Est.':>14}")
+        print("-" * 98)
+        valid_results = [r for r in results if r[3] is not None]
+        base_sec = (valid_results[0][3] / valid_results[0][4]) if valid_results else 1.0
+        for name, workers, b_size, total_t, total_n in results:
+            if total_t is None:
+                print(f"{name:<46} | {workers:>7} | {b_size:>5} | {'OOM':>9} | {'N/A':>7} | {'OOM / Failed':>14}")
+            else:
+                sec_img = total_t / total_n
+                img_min = 60.0 / sec_img
+                full_hrs = (sec_img * total_production_images) / 3600.0
+                speedup = base_sec / sec_img
+                speedup_str = f" ({speedup:.2f}x)" if speedup != 1.0 else ""
+                print(f"{name:<46} | {workers:>7} | {b_size:>5} | {sec_img:>8.2f}s | {img_min:>7.1f} | {full_hrs:>10.1f}h{speedup_str}")
+        print("-" * 98)
+        if valid_results:
+            fastest = min(valid_results, key=lambda x: x[3] / x[4])
+            print(f"Recommendation: Fastest working configuration on this hardware is '{fastest[0]}' ({fastest[3] / fastest[4]:.2f}s/image).\n")
         return
 
     # Standard benchmark
@@ -337,10 +441,10 @@ def run_benchmark(data_dir, num_shards=None, batch_size=1, compare_modes=False, 
 # --------------------------------------------------------------------------
 # Multi-worker runner (orchestrates concurrent workers locally)
 # --------------------------------------------------------------------------
-def run_multi_worker(num_workers, gen_batch_size, target_count, data_dir, device=None):
+def run_multi_worker(num_workers, gen_batch_size, target_count, data_dir, device=None, task_range=None):
     paths = output_paths(data_dir)
     output_dir = paths["output_dir"]
-    check_disk_space(data_dir)
+    check_disk_space(data_dir, target_count=target_count)
     write_schema_files(output_dir)
 
     print(f"\n{'='*88}\nCONCURRENT MULTI-WORKER RUN ({num_workers} workers, batch_size={gen_batch_size})\n{'='*88}\n")
@@ -354,7 +458,16 @@ def run_multi_worker(num_workers, gen_batch_size, target_count, data_dir, device
     if target_count is not None:
         per_worker_target = (target_count + num_workers - 1) // num_workers
 
+    num_gpus = 1
+    try:
+        import torch
+        if torch.cuda.is_available():
+            num_gpus = max(1, torch.cuda.device_count())
+    except Exception:
+        num_gpus = 1
+
     for k in range(num_workers):
+        worker_device = device if device else (f"cuda:{k % num_gpus}" if num_gpus > 1 else None)
         cmd = [
             sys.executable, str(script_path),
             "--shard", str(k),
@@ -364,9 +477,11 @@ def run_multi_worker(num_workers, gen_batch_size, target_count, data_dir, device
         ]
         if per_worker_target is not None:
             cmd.extend(["--target-count", str(per_worker_target)])
-        if device:
-            cmd.extend(["--device", device])
-        print(f"Launching Worker {k}: {' '.join(cmd)}")
+        if worker_device:
+            cmd.extend(["--device", worker_device])
+        if task_range is not None:
+            cmd.extend(["--task-range", str(task_range)])
+        print(f"Launching Worker {k} on {worker_device or 'default GPU'}: {' '.join(cmd)}")
         p = subprocess.Popen(cmd)
         processes.append((k, p))
 
@@ -394,8 +509,8 @@ def run_multi_worker(num_workers, gen_batch_size, target_count, data_dir, device
 # --------------------------------------------------------------------------
 # Main generation loop
 # --------------------------------------------------------------------------
-def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dry_run, device=None):
-    paths = output_paths(data_dir)
+def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dry_run, device=None, task_range=None):
+    paths = output_paths(data_dir, shard=shard)
     output_dir, images_dir = paths["output_dir"], paths["images_dir"]
 
     write_schema_files(output_dir)
@@ -405,20 +520,55 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
     for category, count in tx.CATEGORY_COUNTS.items():
         print(f"  {category:16s}: {count}")
 
+    if task_range is not None:
+        try:
+            parts = task_range.split(":")
+            start_p = int(parts[0]) if parts[0].strip() else 0
+            end_p = int(parts[1]) if len(parts) > 1 and parts[1].strip() else len(tasks)
+        except Exception:
+            sys.exit(f"Invalid --task-range: '{task_range}'. Expected format 'START:END', e.g. '14000:28000'.")
+        tasks = tasks[start_p:end_p]
+        print(f"Task range applied [{start_p}:{end_p}]: {len(tasks)} tasks assigned to this run.")
+
     if shard is not None:
-        if num_shards is None:
-            sys.exit("--shard requires --num-shards")
-        tasks = [t for t in tasks if t["index"] % num_shards == shard]
-        print(f"Shard {shard}/{num_shards}: {len(tasks)} tasks assigned to this worker.")
+        if num_shards is not None:
+            tasks = [t for t in tasks if t["index"] % num_shards == shard]
+            print(f"Shard {shard}/{num_shards}: {len(tasks)} tasks assigned to this worker.")
+        else:
+            print(f"Worker tagged with shard ID {shard} (outputs saved with _shard{shard} suffix).")
 
     if dry_run:
         print("\n[DRY RUN] Not touching the GPU, disk, or CSVs beyond the schema files above.")
         print(f"[DRY RUN] {len(tasks)} tasks would be processed by this invocation "
-              f"(shard={shard}, num_shards={num_shards}).")
+              f"(shard={shard}, num_shards={num_shards}, task_range={task_range}).")
         return
 
-    check_disk_space(data_dir)
+    check_disk_space(data_dir, target_count=target_count)
     images_dir.mkdir(parents=True, exist_ok=True)
+
+    # Interruption resilience: purge any orphan .tmp files left from mid-generation preemption
+    orphan_tmps = list(images_dir.glob("*.tmp"))
+    if orphan_tmps:
+        print(f"Interruption cleanup: purged {len(orphan_tmps)} dangling .tmp file(s) from previous run.")
+        for p in orphan_tmps:
+            try:
+                p.unlink()
+            except Exception:
+                pass
+
+    # Clear lingering GPU VRAM state before initializing
+    try:
+        import gc
+        gc.collect()
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            try:
+                torch.cuda.ipc_collect()
+            except Exception:
+                pass
+    except Exception:
+        pass
 
     done = already_done_indices(images_dir)
     pending = [t for t in tasks if t["index"] not in done]
@@ -474,6 +624,19 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
                 for p in tmp_paths:
                     if p.exists():
                         p.unlink()
+                # Clear GPU cache and garbage collect on failure/OOM to recover VRAM
+                try:
+                    import gc
+                    gc.collect()
+                    import torch
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                        try:
+                            torch.cuda.ipc_collect()
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
                 consecutive_failures += len(batch)
                 if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
                     sys.exit(f"{worker_tag}Aborting: {consecutive_failures} consecutive failures "
@@ -483,7 +646,7 @@ def run_generation(target_count, gen_batch_size, shard, num_shards, data_dir, dr
             elapsed = time.time() - t0
 
             for item, filename, tmp_path, image in zip(batch, filenames, tmp_paths, images):
-                image.save(tmp_path)
+                image.save(tmp_path, format="PNG")
 
                 category, tier, index = item["category"], item["tier"], item["index"]
                 row = pb.row_for_csv(category, tier, filename, item["task"])
@@ -538,6 +701,8 @@ def main():
     parser.add_argument("--compare-modes", action="store_true",
                         help="Benchmark and compare single vs batched vs concurrent multi-worker modes.")
     parser.add_argument("--dry-run", action="store_true", help="Plan the run and write schema files, touch nothing else.")
+    parser.add_argument("--task-range", default=None,
+                        help="Slice of shuffled tasks to generate as START:END (e.g. '0:14000' or '14000:28000').")
     parser.add_argument("--data-dir", default=str(DEFAULT_DATA_DIR), help=f"Large-disk root (default {DEFAULT_DATA_DIR}).")
     args = parser.parse_args()
 
@@ -548,14 +713,16 @@ def main():
 
     if args.compare_modes or args.benchmark:
         run_benchmark(args.data_dir, args.num_shards, batch_size=gen_batch_size,
-                      compare_modes=args.compare_modes, device=args.device)
+                      compare_modes=args.compare_modes, device=args.device, num_workers=args.num_workers)
         return
 
     if args.num_workers > 1 and args.shard is None and not args.dry_run:
-        run_multi_worker(args.num_workers, gen_batch_size, target_count, args.data_dir, device=args.device)
+        run_multi_worker(args.num_workers, gen_batch_size, target_count, args.data_dir, device=args.device,
+                         task_range=args.task_range)
         return
 
-    run_generation(target_count, gen_batch_size, args.shard, args.num_shards, args.data_dir, args.dry_run, device=args.device)
+    run_generation(target_count, gen_batch_size, args.shard, args.num_shards, args.data_dir, args.dry_run,
+                   device=args.device, task_range=args.task_range)
 
 
 if __name__ == "__main__":

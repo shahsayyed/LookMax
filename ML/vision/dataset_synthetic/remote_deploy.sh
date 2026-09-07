@@ -24,11 +24,11 @@ elif [ -n "$1" ]; then
     RSYNC_RSH="ssh"
     DEST="$TARGET_HOST:$REMOTE_DIR"
 else
-    # Default to 'vast' SSH alias configured in ~/.ssh/config
-    TARGET_HOST="vast"
+    # Default to REMOTE_HOST env var or 'vast' SSH alias configured in ~/.ssh/config
+    TARGET_HOST="${REMOTE_HOST:-vast}"
     SSH_CMD="ssh"
     RSYNC_RSH="ssh"
-    DEST="vast:$REMOTE_DIR"
+    DEST="$TARGET_HOST:$REMOTE_DIR"
 fi
 
 echo "==> Deploying synthetic dataset generator to: $DEST"

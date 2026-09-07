@@ -98,7 +98,11 @@ The vision pipeline trains **4 models** (consolidated across age brackets to max
 Backbone: `mobilenet_v3_large` (or `fastvit_t8`).
 Multi-head architecture dynamically constructed from `label_schema_<Category>.json`:
 * **Primary Head**: Continuous `score` regression (1.0 to 10.0 scale) trained with `SmoothL1Loss` (weight 1.0).
-* **Auxiliary Heads**: Attribute classification heads (`upper_type`, `formality`, `fabric_wrinkled`, `fit_torso`, `grooming_hair`, etc.) trained with cross-entropy (weight 0.3, or 0.5 for formality).
+* **Auxiliary Heads**: Attribute classification heads (`upper_type`, `formality`, `fabric_wrinkled`, `fit_baggy`, `hair_styled`, etc.) trained with cross-entropy (weight 0.3, or 0.5 for formality).
+* **Category-Specific Input Resolutions & Transforms**:
+  - **Grooming (`LookMax_Men/Women_Grooming`)**: $384 \times 384$ Square. iOS uses Apple Vision `face.boundingBox` expanded with a ~35% margin to crop the head, hair, and neckline tightly into a square. This ensures consistent scale and maximizes facial feature density regardless of distance.
+  - **Outfit (`LookMax_Men/Women_Outfit`)**: $384 \times 512$ Portrait (3:4 aspect ratio). Directly resized from the camera's 3:4 portrait view without destructive center-cropping, preserving the entire body from head/collar down to hemline/shoes.
+  - *Legacy $224 \times 224$ and `CenterCrop` were removed to prevent amputating head/shoes and washing out fine fabric micro-wrinkles.*
 
 #### Two-Phase Training Strategy
 * **Phase A: Synthetic Pretraining (`pretrain_synthetic.py`)**:

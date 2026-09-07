@@ -36,7 +36,7 @@ the flaw tier this whole dataset depends on, so it is never wired in here.
 """
 import taxonomy as tx
 
-FULL_RESIDENT_MIN_VRAM_GB = 80  # threshold with real headroom above the ~58GB pipeline size
+FULL_RESIDENT_MIN_VRAM_GB = 70  # threshold with real headroom above the ~58GB pipeline size (80GB GPUs report ~79.2GB)
 
 MODEL_ID = "Qwen/Qwen-Image-2512"
 
@@ -47,6 +47,16 @@ def load_pipeline(device=None):
     `device` can be None, 'cuda', or a specific device e.g. 'cuda:0', 'cuda:1'."""
     import torch
     from diffusers import QwenImagePipeline
+
+    # Blackwell (SM100) compatibility: disable cuDNN SDP to avoid "No valid execution plans built"
+    # and use native FlashAttention / Mem-efficient SDP instead.
+    if torch.cuda.is_available():
+        try:
+            torch.backends.cuda.enable_cudnn_sdp(False)
+            torch.backends.cuda.enable_flash_sdp(True)
+            torch.backends.cuda.enable_mem_efficient_sdp(True)
+        except Exception:
+            pass
 
     print(f"Loading {MODEL_ID}... this can take a while on first run (~58GB download).")
     pipe = QwenImagePipeline.from_pretrained(MODEL_ID, torch_dtype=torch.bfloat16)
@@ -130,7 +140,10 @@ def unload(pipe):
     driving process reclaims everything on exit regardless), but makes
     freed VRAM visible in nvidia-smi immediately, which matters when
     scripts are run back-to-back in the same shell/tmux session."""
-    import torch
-    del pipe
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
+    try:
+        import torch
+        del pipe
+        if torch.cuda.is_available() and torch.cuda.is_initialized():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass

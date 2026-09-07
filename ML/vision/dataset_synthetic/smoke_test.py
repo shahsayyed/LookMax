@@ -31,6 +31,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy as tx
 import prompt_builder as pb
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(line_buffering=True)
+
 DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "smoke_test_output"
 
 

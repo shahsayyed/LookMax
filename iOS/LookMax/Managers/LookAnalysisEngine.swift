@@ -272,7 +272,7 @@ enum LookAnalysisEngine {
             goodPoints.append("Light/white top reflects flattering illumination toward the face, brightening the overall look.")
         }
 
-        // ─── Final Score ───
+        // ─── Final Score & 5-Min Potential Score ───
         let finalScore = max(6.5, min(9.8, baseScore))
         let headline: String
         switch finalScore {
@@ -286,8 +286,12 @@ enum LookAnalysisEngine {
         if goodPoints.isEmpty { goodPoints.append("Natural relaxed presence and authentic expression.") }
         if badPoints.isEmpty  { badPoints.append("No major issues detected – see the 5-min tweaks below for polishing details.") }
 
+        let totalTweakImpact = suggestions.prefix(5).reduce(0.0) { $0 + $1.pointImpact }
+        let potentialScore = min(9.8, finalScore + (suggestions.isEmpty ? 0.3 : totalTweakImpact))
+
         return LookAnalysisResult(
             score: finalScore,
+            potentialScore: potentialScore,
             headlineBadge: headline,
             goodPoints: goodPoints,
             badPoints: badPoints,
@@ -314,15 +318,24 @@ enum LookAnalysisEngine {
         visionResult: LookAnalysisResult
     ) -> LookAnalysisResult {
 
-        // Convert GeminiTweaks -> StyleSuggestions for display
+        // Convert GeminiTweaks -> StyleSuggestions for display with point impacts
         let tweakSuggestions: [StyleSuggestion] = gemini.tweaks.map { tweak in
-            StyleSuggestion(
+            let impact: Double
+            let lower = tweak.category.lowercased()
+            if lower.contains("posture") { impact = 0.6 }
+            else if lower.contains("groom") || lower.contains("hair") { impact = 0.5 }
+            else if lower.contains("collar") || lower.contains("fit") || lower.contains("tailor") { impact = 0.5 }
+            else if lower.contains("light") { impact = 0.4 }
+            else { impact = 0.4 }
+
+            return StyleSuggestion(
                 category: tweak.category,
                 icon: iconForCategory(tweak.category),
                 iconColor: colorForCategory(tweak.category),
                 title: tweak.title,
                 recommendation: tweak.recommendation,
-                effortTime: tweak.effortTime
+                effortTime: tweak.effortTime,
+                pointImpact: impact
             )
         }
 
@@ -333,6 +346,9 @@ enum LookAnalysisEngine {
             !geminiCategories.contains(sug.category.lowercased())
         }
         let combinedSuggestions = tweakSuggestions + uniqueVisionSuggestions.prefix(2)
+
+        let totalImpact = combinedSuggestions.prefix(5).reduce(0.0) { $0 + $1.pointImpact }
+        let potentialScore = min(9.8, gemini.overallScore + max(0.4, totalImpact))
 
         // Good points: Gemini's + Vision's (de-duped by prefix)
         var mergedGood = gemini.goodPoints
@@ -352,6 +368,7 @@ enum LookAnalysisEngine {
 
         return LookAnalysisResult(
             score: gemini.overallScore,
+            potentialScore: potentialScore,
             headlineBadge: gemini.headlineBadge,
             goodPoints: Array(mergedGood.prefix(4)),
             badPoints: Array(mergedBad.prefix(4)),
@@ -366,6 +383,38 @@ enum LookAnalysisEngine {
             fitNote: gemini.fitNote,
             styleNote: gemini.styleNote
         )
+    }
+
+    // MARK: - Dynamic Face Crop for Grooming (384x384 Square + 35% Margin)
+    static func cropFaceForGrooming(cgImage: CGImage, face: VNFaceObservation?) -> CGImage? {
+        guard let face = face else { return nil }
+        let w = CGFloat(cgImage.width)
+        let h = CGFloat(cgImage.height)
+
+        let box = face.boundingBox
+        let marginX = box.width * 0.35
+        let marginY = box.height * 0.35
+
+        let minX = max(0, box.origin.x - marginX)
+        let minY = max(0, box.origin.y - marginY)
+        let maxX = min(1.0, box.origin.x + box.width + marginX)
+        let maxY = min(1.0, box.origin.y + box.height + marginY)
+
+        let cropX = minX * w
+        let cropY = (1.0 - maxY) * h
+        let cropW = (maxX - minX) * w
+        let cropH = (maxY - minY) * h
+
+        let side = max(cropW, cropH)
+        let centerX = cropX + cropW / 2.0
+        let centerY = cropY + cropH / 2.0
+
+        let squareX = max(0, min(w - side, centerX - side / 2.0))
+        let squareY = max(0, min(h - side, centerY - side / 2.0))
+        let squareSide = min(side, min(w - squareX, h - squareY))
+
+        let squareRect = CGRect(x: squareX, y: squareY, width: squareSide, height: squareSide)
+        return cgImage.cropping(to: squareRect)
     }
 
     private static func iconForCategory(_ category: String) -> String {

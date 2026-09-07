@@ -5,6 +5,7 @@ struct LookItem: Identifiable, Codable {
     let imagePath: String
     let timestamp: Date
     let score: Double
+    var potentialScore: Double
     let headlineBadge: String
     let goodPoints: [String]
     let badPoints: [String]
@@ -26,6 +27,7 @@ struct LookItem: Identifiable, Codable {
         imagePath: String,
         timestamp: Date = Date(),
         score: Double,
+        potentialScore: Double? = nil,
         headlineBadge: String,
         goodPoints: [String],
         badPoints: [String],
@@ -44,6 +46,7 @@ struct LookItem: Identifiable, Codable {
         self.imagePath = imagePath
         self.timestamp = timestamp
         self.score = score
+        self.potentialScore = potentialScore ?? min(9.8, score + 0.8)
         self.headlineBadge = headlineBadge
         self.goodPoints = goodPoints
         self.badPoints = badPoints
@@ -60,7 +63,7 @@ struct LookItem: Identifiable, Codable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, imagePath, timestamp, score, headlineBadge, goodPoints, badPoints
+        case id, imagePath, timestamp, score, potentialScore, headlineBadge, goodPoints, badPoints
         case suggestions, detectedOutfitColor, detectedFaceShape, lightingScore
         case postureScore, fitScore, groomingScore, postureNote, fitNote, styleNote
     }
@@ -71,6 +74,7 @@ struct LookItem: Identifiable, Codable {
         imagePath = try container.decode(String.self, forKey: .imagePath)
         timestamp = try container.decode(Date.self, forKey: .timestamp)
         score = try container.decode(Double.self, forKey: .score)
+        potentialScore = try container.decodeIfPresent(Double.self, forKey: .potentialScore) ?? min(9.8, score + 0.8)
         headlineBadge = try container.decode(String.self, forKey: .headlineBadge)
         goodPoints = try container.decode([String].self, forKey: .goodPoints)
         badPoints = try container.decode([String].self, forKey: .badPoints)

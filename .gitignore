@@ -147,3 +147,7 @@ htmlcov/
 # Graphify intermediate cache, machine-specific paths, and temp state
 graphify-out/cache/
 graphify-out/.*
+
+# API keys and secrets
+**/.vast_api_key
+.vast_api_key

@@ -50,6 +50,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy as tx
 import prompt_builder as pb
 
+# Ensure stdout flushes immediately even in non-interactive / web terminal environments
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(line_buffering=True)
+
 DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "quick_prompt_test_output"
 MIN_FREE_GB = 70  # just the ~58GB model cache + headroom -- this script only generates 6 images
 
@@ -261,24 +265,25 @@ def main():
         filenames = [b[0] for b in batch]
         tasks = [{"prompt": b[1]["prompt"], "resolution": b[1]["resolution"]} for b in batch]
         seeds = [42 + b_idx * 10 + i for i in range(len(batch))]
-        print(f"[{generated_count + 1}-{generated_count + len(batch)}/{total_images}] Generating: {', '.join(filenames)}...")
+        print(f"[{generated_count + 1}-{generated_count + len(batch)}/{total_images}] Generating: {', '.join(filenames)}...", flush=True)
 
         t0 = time.time()
         images = qp.generate(pipe, tasks, seeds=seeds, num_inference_steps=tx.NUM_INFERENCE_STEPS_TEST)
         elapsed = time.time() - t0
-        print(f"  -> {len(batch)} image(s) generated in {elapsed:.1f}s ({elapsed / len(batch):.2f}s/image)")
+        print(f"  -> {len(batch)} image(s) generated in {elapsed:.1f}s ({elapsed / len(batch):.2f}s/image)", flush=True)
 
         for img, fn in zip(images, filenames):
             img.save(output_dir / fn)
         generated_count += len(batch)
 
-    qp.unload(pipe)
     total_elapsed = time.time() - t_start
 
-    print(f"\nDone in {total_elapsed:.1f}s (average {total_elapsed / total_images:.2f}s/image). Check '{output_dir}'.")
-    print("Compare 01 vs 02 for the severity gradient (two different levels of bad, not a repeat),")
-    print("and 05 vs 06 for polished-outfit diversity (not a jacket every time).")
-    print("If these 6 look right, move on to smoke_test.py --per-tier and variation_test.py.")
+    print(f"\nAll {total_images} test images generated in {total_elapsed:.1f}s (average {total_elapsed / total_images:.2f}s/image). Check '{output_dir}'.", flush=True)
+    print("Compare 01 vs 02 for the severity gradient (two different levels of bad, not a repeat),", flush=True)
+    print("and 05 vs 06 for polished-outfit diversity (not a jacket every time).", flush=True)
+    print("If these 6 look right, move on to smoke_test.py --per-tier and variation_test.py.", flush=True)
+
+    qp.unload(pipe)
 
 
 if __name__ == "__main__":

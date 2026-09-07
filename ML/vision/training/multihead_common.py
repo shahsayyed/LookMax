@@ -74,21 +74,29 @@ def get_device() -> "torch.device":
 # ──────────────────────────────────────────────────────────────────────────────
 # Data Transforms (unchanged from the previous single-head trainer)
 # ──────────────────────────────────────────────────────────────────────────────
-def get_transforms(image_size: int, is_train: bool) -> "T.Compose":
+def get_transforms(image_size: tuple[int, int] | int, is_train: bool) -> "T.Compose":
+    """Returns torchvision transforms for training or evaluation.
+    image_size: (height, width) tuple or int for square.
+    Non-destructive: preserves full body from head to shoes without CenterCrop amputation."""
+    if isinstance(image_size, (int, float)):
+        h, w = int(image_size), int(image_size)
+    else:
+        h, w = int(image_size[0]), int(image_size[1])
+
     if is_train:
+        aspect = w / max(1, h)
         return T.Compose([
-            T.RandomResizedCrop(image_size, scale=(0.75, 1.0)),
+            T.RandomResizedCrop((h, w), scale=(0.90, 1.0), ratio=(aspect * 0.95, aspect * 1.05)),
             T.RandomHorizontalFlip(p=0.5),
-            T.ColorJitter(brightness=0.25, contrast=0.25, saturation=0.2, hue=0.08),
-            T.RandomAffine(degrees=8, translate=(0.05, 0.05), scale=(0.92, 1.08)),
-            T.RandomGrayscale(p=0.05),
+            T.ColorJitter(brightness=0.20, contrast=0.20, saturation=0.15, hue=0.05),
+            T.RandomAffine(degrees=5, translate=(0.03, 0.03), scale=(0.95, 1.05)),
+            T.RandomGrayscale(p=0.03),
             T.ToTensor(),
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
     else:
         return T.Compose([
-            T.Resize(int(image_size * 1.14)),
-            T.CenterCrop(image_size),
+            T.Resize((h, w)),
             T.ToTensor(),
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
@@ -305,24 +313,44 @@ class SyntheticCsvDataset(Dataset):
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Real-world dataset — tier -> score anchor, score head only
+# Annotation Scores Loader
+# ──────────────────────────────────────────────────────────────────────────────
+def load_annotations_scores(annotations_file: Path) -> dict[str, float]:
+    """Loads true continuous overall_score floats from dataset_annotations.jsonl.
+    Maps filename (e.g. 'd44cdd65d3ce7f8f.jpg') -> float score (1.0 to 10.0)."""
+    scores = {}
+    if not annotations_file or not Path(annotations_file).exists():
+        return scores
+    with open(annotations_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                vlm = data.get("vlm_result") or {}
+                score = vlm.get("overall_score")
+                fn = data.get("filename")
+                if fn and score is not None and float(score) > 0:
+                    scores[fn] = float(score)
+            except (json.JSONDecodeError, ValueError):
+                continue
+    return scores
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Real-world dataset — continuous VLM score anchor, score head only
 # ──────────────────────────────────────────────────────────────────────────────
 class RealWorldScoreDataset(Dataset):
     """Wraps a flat list of (image_path, tier) samples pooled across all
     age-demographics for one gender+stream category (see
     05_finetune_real_world.py's discover_real_samples()). Real photos only
-    carry a tier label, never the synthetic pipeline's rich attribute
-    labels, so every sample supervises ONLY the `score` head; every other
-    head is masked to 0.0 (present in the target dict purely so a batch
-    can collate/concatenate uniformly with synthetic replay samples in
-    the same forward/backward pass — see ReplayMixedLoader).
+    carry tier and VLM scores, so every sample supervises ONLY the `score`
+    head; every other head is masked to 0.0.
 
-    Score anchors are DERIVED from taxonomy.SCORE_BANDS (not
-    hand-duplicated numbers) so Phase A's synthetic score scale and Phase
-    B's real-tier score scale are the same continuous 1-10 scale:
-      1_Needs_Improvement -> combined flaw_severe ∪ flaw_mild band (1.0, 3.0)
-      2_Average            -> exactly taxonomy.SCORE_BANDS["average"]  (4.0, 6.0)
-      3_Polished            -> exactly taxonomy.SCORE_BANDS["polished"] (7.0, 10.0)
+    When `annotations_scores` is provided, each image uses its real continuous
+    VLM `overall_score` (1.0 to 10.0 scale) directly from dataset_annotations.jsonl,
+    providing true continuous regression targets without pseudo-random jitter.
     """
     TIER_SCORE_RANGES = {
         "1_Needs_Improvement": (tx.SCORE_BANDS["flaw_severe"][0], tx.SCORE_BANDS["flaw_mild"][1]),
@@ -330,10 +358,11 @@ class RealWorldScoreDataset(Dataset):
         "3_Polished": tx.SCORE_BANDS["polished"],
     }
 
-    def __init__(self, samples: list, schema: list, transform, seed: int = 0):
+    def __init__(self, samples: list, schema: list, transform, annotations_scores: dict = None, seed: int = 0):
         self.samples = samples  # list of (Path, tier_str)
         self.schema = trainable_fields(schema)
         self.transform = transform
+        self.annotations_scores = annotations_scores or {}
         self._seed = seed
 
     def __len__(self):
@@ -344,13 +373,14 @@ class RealWorldScoreDataset(Dataset):
         image = Image.open(path).convert("RGB")
         image = self.transform(image)
 
-        # Deterministic-but-varied per (idx, epoch-independent) draw: seed a
-        # local RNG from the sample index so re-reading the same sample
-        # within an epoch (num_workers>0 re-invoking __getitem__) is stable
-        # while different samples get different anchors.
-        rng = random.Random(self._seed * 1_000_003 + idx)
-        lo, hi = self.TIER_SCORE_RANGES[tier]
-        score = round(rng.uniform(lo, hi), 1)
+        # Look up true continuous VLM overall_score from annotations log;
+        # fall back deterministically to tier midpoint if unannotated.
+        filename = path.name
+        if filename in self.annotations_scores:
+            score = self.annotations_scores[filename]
+        else:
+            lo, hi = self.TIER_SCORE_RANGES[tier]
+            score = round((lo + hi) / 2.0, 1)
 
         targets, masks = {}, {}
         for f in self.schema:
@@ -591,7 +621,7 @@ def discover_real_samples(category: str, training_data_dir: Path,
 # ──────────────────────────────────────────────────────────────────────────────
 # CoreML Export — multi-output (score + one output per attribute head)
 # ──────────────────────────────────────────────────────────────────────────────
-def export_to_coreml(model: "nn.Module", schema: list, image_size: int, category: str,
+def export_to_coreml(model: "nn.Module", schema: list, image_size: tuple[int, int] | int, category: str,
                       backbone_name: str, output_path: Path, extra_metadata: dict = None) -> Path:
     """Traces the model and converts to .mlpackage with one NAMED output
     per trainable schema head: the score head is exported as a raw scalar
@@ -599,9 +629,15 @@ def export_to_coreml(model: "nn.Module", schema: list, image_size: int, category
     a softmax so iOS gets a probability distribution rather than raw
     logits. user_defined_metadata carries the full label schema (as JSON)
     so the iOS side can interpret which output is which without
-    hand-maintaining a duplicate list of head names/types."""
+    hand-maintaining a duplicate list of head names/types.
+    image_size: (height, width) tuple or int for square."""
     if not HAS_CT:
         raise RuntimeError("coremltools is not installed — cannot export to CoreML.")
+
+    if isinstance(image_size, (int, float)):
+        h, w = int(image_size), int(image_size)
+    else:
+        h, w = int(image_size[0]), int(image_size[1])
 
     model = model.eval().cpu()
     trainable = trainable_fields(schema)
@@ -625,7 +661,7 @@ def export_to_coreml(model: "nn.Module", schema: list, image_size: int, category
             return tuple(results)
 
     wrapper = _ExportWrapper(model, trainable).eval()
-    example_input = torch.zeros(1, 3, image_size, image_size)
+    example_input = torch.zeros(1, 3, h, w)
     traced = torch.jit.trace(wrapper, example_input)
 
     output_names = [f["name"] for f in trainable]
@@ -634,7 +670,7 @@ def export_to_coreml(model: "nn.Module", schema: list, image_size: int, category
         inputs=[
             ct.ImageType(
                 name="image",
-                shape=(1, 3, image_size, image_size),
+                shape=(1, 3, h, w),
                 scale=1.0 / 255.0,
                 bias=[-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225],
                 color_layout=ct.colorlayout.RGB,
@@ -649,14 +685,14 @@ def export_to_coreml(model: "nn.Module", schema: list, image_size: int, category
     mlmodel.author = "LookMax ML Pipeline"
     mlmodel.license = "Proprietary — NexurTech"
     mlmodel.short_description = (
-        f"LookMax {category} effort model. Input: {image_size}x{image_size} RGB image. "
+        f"LookMax {category} effort model. Input: {h}x{w} RGB image. "
         f"Outputs: 'score' (1-10 regression) plus one probability distribution per "
         f"attribute head — see user_defined_metadata['label_schema']."
     )
     mlmodel.version = "1.0"
     mlmodel.user_defined_metadata["category"] = category
     mlmodel.user_defined_metadata["backbone"] = backbone_name
-    mlmodel.user_defined_metadata["input_size"] = str(image_size)
+    mlmodel.user_defined_metadata["input_size"] = f"{h}x{w}"
     mlmodel.user_defined_metadata["output_names"] = ", ".join(output_names)
     mlmodel.user_defined_metadata["label_schema"] = json.dumps(schema)
     if extra_metadata:

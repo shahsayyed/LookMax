@@ -284,6 +284,7 @@ struct SessionDetailView: View {
             let initialLook = LookItem(
                 imagePath: imagePath,
                 score: visionAnalysis.score,
+                potentialScore: visionAnalysis.potentialScore,
                 headlineBadge: visionAnalysis.headlineBadge,
                 goodPoints: visionAnalysis.goodPoints,
                 badPoints: visionAnalysis.badPoints,
@@ -330,6 +331,7 @@ struct SessionDetailView: View {
                                 id: initialLook.id,
                                 imagePath: imagePath,
                                 score: merged.score,
+                                potentialScore: merged.potentialScore,
                                 headlineBadge: merged.headlineBadge,
                                 goodPoints: merged.goodPoints,
                                 badPoints: merged.badPoints,
