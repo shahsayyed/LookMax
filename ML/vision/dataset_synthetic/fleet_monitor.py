@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-fleet_monitor.py -- Automated health, progress monitor, and auto-destroy controller
-for LookMax synthetic generation fleet on Vast.ai.
+fleet_monitor.py -- Automated health, progress monitor, auto-destroy controller,
+and cross-machine zero-byte coordination sync for LookMax synthetic generation fleet.
 
 Features:
 - Queries image counts, tmux status, and GPU utilization via SSH.
@@ -14,11 +14,22 @@ Features:
     2. Verifies local data integrity and ensures 0 .tmp files.
     3. Calls Vast.ai REST API to destroy the instance so billing stops immediately.
     4. Alerts the user with confirmation of safe completion and destruction.
+- ZERO-BYTE CROSS-MACHINE COORDINATION (--sync-loop):
+  Every 5 minutes:
+    1. Pulls real completed .png (min-size=1, no .tmp) from each machine -> local Mac.
+    2. For every image now on local Mac, creates a zero-byte marker in a staging dir.
+    3. Pushes those zero-byte markers to every OTHER reachable machine with
+       --ignore-existing, so a machine that already has the real file is unaffected,
+       but a machine that has not generated it yet will skip it (already_done_indices
+       in full_run.py skips any .png that exists, regardless of size).
+  This prevents duplicate generation if two machines are ever assigned overlapping slices.
 
 Usage:
   python3 fleet_monitor.py                     # Single manual status check
   python3 fleet_monitor.py --cron              # Silent cron check; exit 2 if alert, exit 0 if normal
   python3 fleet_monitor.py --loop              # Background loop running every hour (3600s)
+  python3 fleet_monitor.py --sync-loop         # Continuous 5-min pull+push sync (run as daemon)
+  python3 fleet_monitor.py --sync-once         # Run one sync cycle then exit
   python3 fleet_monitor.py --set-api-key <KEY> # Save Vast.ai API key securely
   python3 fleet_monitor.py --test-api-key      # Validate Vast.ai API key and list active instances
 """
@@ -38,9 +49,12 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parents[2]
 STATE_FILE = SCRIPT_DIR / "fleet_state.json"
 LOG_FILE = SCRIPT_DIR / "fleet_monitor.log"
+SYNC_LOG_FILE = SCRIPT_DIR / "fleet_sync.log"
 STATUS_MD = SCRIPT_DIR / "fleet_status.md"
 API_KEY_FILE = SCRIPT_DIR / ".vast_api_key"
 LOCAL_DEST_DIR = REPO_ROOT / "ML" / "data" / "vision_synthetic" / "raw_generated"
+# Staging dir for zero-byte markers — never touches real images
+MARKERS_DIR = LOCAL_DEST_DIR / ".markers"
 
 HOSTS = {
     "vast2": {
@@ -49,21 +63,28 @@ HOSTS = {
         "instance_id": 50095177,
         "desc": "2x H100 SXM5 (80GB)"
     },
+    "vast1": {
+        "slice": "4810:13000",
+        "target": 8190,
+        "instance_id": 50166753,
+        "desc": "4x H100 PCIe (80GB)"
+    },
     "vast3": {
-        "slice": "4810:16000",
-        "target": 11190,
-        "instance_id": 50100378,
-        "desc": "2x H100 PCIe (80GB)"
+        "slice": "13000:16000",
+        "target": 3000,
+        "instance_id": 50149174,
+        "desc": "1x H100 NVL (80GB)"
     }
 }
 
-STALL_ALERT_HOURS = 3.0  # Alert if stopped for >= 3 hours
+STALL_ALERT_HOURS = 3.0      # Alert if stopped for >= 3 hours
+SYNC_INTERVAL_SECS = 30      # 30 seconds between sync cycles
 
 REMOTE_CHECK_CMD = r"""
 CONFIG="/data/LookMax_Generator/.auto_resume_config"
 TASK_RANGE=""
 [ -f "$CONFIG" ] && source "$CONFIG"
-IMG_COUNT=$(find /data/qwen_dataset_output/images -maxdepth 1 -name "*.png" ! -name "*.tmp" 2>/dev/null | wc -l | tr -d " ")
+IMG_COUNT=$(find /data/qwen_dataset_output/images -maxdepth 1 -name "*.png" ! -name "*.tmp" ! -size 0 2>/dev/null | wc -l | tr -d " ")
 TMUX_STATE=$(tmux has-session -t lookmax_gen 2>/dev/null && echo "RUNNING" || echo "STOPPED")
 GPU_STATS=$(nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits 2>/dev/null || echo "")
 echo "COUNT=$IMG_COUNT"
@@ -75,12 +96,14 @@ echo "GPU_END"
 """
 
 
+# ---------------------------------------------------------------------------
+# API key helpers
+# ---------------------------------------------------------------------------
+
 def get_vast_api_key() -> str | None:
-    # 1. Environment variable
     env_key = os.environ.get("VAST_API_KEY")
     if env_key and env_key.strip():
         return env_key.strip()
-    # 2. Local config file (.vast_api_key)
     if API_KEY_FILE.exists():
         try:
             k = API_KEY_FILE.read_text().strip()
@@ -88,7 +111,6 @@ def get_vast_api_key() -> str | None:
                 return k
         except Exception:
             pass
-    # 3. User home ~/.vast_api_key
     home_file = Path.home() / ".vast_api_key"
     if home_file.exists():
         try:
@@ -111,7 +133,6 @@ def test_vast_api_key(key: str | None = None) -> bool:
     if not api_key:
         print("✗ No Vast.ai API key found. Use --set-api-key <KEY> to save one.")
         return False
-
     url = f"https://console.vast.ai/api/v1/instances/?api_key={api_key}"
     req = urllib.request.Request(url, headers={"Accept": "application/json"})
     try:
@@ -138,8 +159,12 @@ def test_vast_api_key(key: str | None = None) -> bool:
         return False
 
 
+# ---------------------------------------------------------------------------
+# Vast.ai instance management
+# ---------------------------------------------------------------------------
+
 def destroy_vast_instance(instance_id: int, api_key: str) -> bool:
-    url = f"https://console.vast.ai/api/v1/instances/{instance_id}/?api_key={api_key}"
+    url = f"https://console.vast.ai/api/v0/instances/{instance_id}/?api_key={api_key}"
     req = urllib.request.Request(url, method="DELETE", headers={"Accept": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=25) as resp:
@@ -149,6 +174,10 @@ def destroy_vast_instance(instance_id: int, api_key: str) -> bool:
         print(f"Error calling Vast.ai DELETE on instance {instance_id}: {e}")
         return False
 
+
+# ---------------------------------------------------------------------------
+# Final completion sync (full verified pull — unchanged)
+# ---------------------------------------------------------------------------
 
 def sync_and_verify_host(host: str, expected_count: int) -> bool:
     LOCAL_DEST_DIR.mkdir(parents=True, exist_ok=True)
@@ -172,17 +201,227 @@ def sync_and_verify_host(host: str, expected_count: int) -> bool:
         print(f"✗ rsync error: {e}")
         return False
 
-    # Verify local file count and absence of .tmp files
     local_images = list(images_dest.glob("*.png"))
     local_tmps = list(images_dest.glob("*.tmp"))
-
     if local_tmps:
         print(f"✗ Warning: {len(local_tmps)} .tmp files found in local storage!")
         return False
-
     print(f"✓ Local archive verified: {len(local_images)} total valid images present in {images_dest}.")
     return True
 
+
+# ---------------------------------------------------------------------------
+# Zero-byte cross-machine coordination sync
+# ---------------------------------------------------------------------------
+
+def _sync_log(msg: str):
+    """Append a timestamped line to fleet_sync.log."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(SYNC_LOG_FILE, "a") as f:
+        f.write(f"[{ts}] {msg}\n")
+
+
+def is_host_reachable(host: str) -> bool:
+    """Quick SSH probe — returns True only if shell responds."""
+    try:
+        proc = subprocess.run(
+            ["ssh", "-S", "none", "-o", "ConnectTimeout=8",
+             "-o", "StrictHostKeyChecking=no", "-o", "BatchMode=yes",
+             host, "echo ok"],
+            capture_output=True, text=True, timeout=12
+        )
+        return proc.returncode == 0 and "ok" in proc.stdout
+    except Exception:
+        return False
+
+
+def pull_images_from_host(host: str, images_dest: Path) -> int:
+    """
+    Pull real completed images (min-size=1, exclude .tmp) from remote -> local.
+
+    --ignore-existing: a real local image is NEVER overwritten (protects against
+    a race where the remote somehow has a zero-byte file for a name we already
+    have locally as a full image).
+
+    Returns number of newly added files, or -1 on failure.
+    """
+    images_dest.mkdir(parents=True, exist_ok=True)
+    before = {f.name for f in images_dest.iterdir()
+              if f.is_file() and not f.name.endswith(".tmp")}
+
+    rsync_cmd = [
+        "rsync", "-az",
+        "--exclude=*.tmp",    # never pull in-progress temp files
+        "--min-size=1",       # never pull zero-byte markers we previously pushed
+        "--ignore-existing",  # never overwrite a real local image
+        "-e", "ssh -S none -o ConnectTimeout=15 -o StrictHostKeyChecking=no",
+        f"{host}:/data/qwen_dataset_output/images/",
+        str(images_dest) + "/"
+    ]
+    try:
+        proc = subprocess.run(rsync_cmd, capture_output=True, text=True, timeout=300)
+        if proc.returncode != 0:
+            _sync_log(f"PULL {host} FAILED rc={proc.returncode}: {proc.stderr.strip()[:120]}")
+            return -1
+    except Exception as e:
+        _sync_log(f"PULL {host} exception: {e}")
+        return -1
+
+    after = {f.name for f in images_dest.iterdir()
+             if f.is_file() and not f.name.endswith(".tmp")}
+    return len(after - before)
+
+
+def rebuild_markers_dir(images_dest: Path) -> int:
+    """
+    Rebuild MARKERS_DIR so it contains exactly one zero-byte file for every
+    real (non-zero, non-.tmp) image that exists locally on the Mac.
+
+    Called ONCE per sync cycle before pushing to any host, so all hosts see
+    the same complete marker set.
+
+    Returns total number of real local images (= total markers now in MARKERS_DIR).
+    """
+    MARKERS_DIR.mkdir(parents=True, exist_ok=True)
+
+    real_images = {
+        f.name for f in images_dest.iterdir()
+        if f.is_file() and f.stat().st_size > 0 and not f.name.endswith(".tmp")
+    }
+
+    # Prune stale markers (image deleted locally)
+    for m in list(MARKERS_DIR.iterdir()):
+        if m.name not in real_images:
+            m.unlink(missing_ok=True)
+
+    # Create any missing zero-byte markers
+    for name in real_images:
+        marker = MARKERS_DIR / name
+        if not marker.exists():
+            marker.touch()  # zero bytes — the key invariant
+
+    return len(real_images)
+
+
+def push_markers_to_host(host: str) -> tuple[int, int]:
+    """
+    Push zero-byte markers from MARKERS_DIR to a remote machine.
+
+    Assumes rebuild_markers_dir() has already been called this cycle.
+
+    Safety: --ignore-existing means rsync will NOT touch any file that already
+    exists at the destination — real completed images on the remote are safe.
+
+    Uses --itemize-changes so we can count files ACTUALLY TRANSFERRED to this
+    specific host (not just files created locally), giving accurate per-host counts.
+
+    Returns (files_sent_to_this_host, rsync_exit_code).
+    """
+    if not any(MARKERS_DIR.iterdir()) if MARKERS_DIR.exists() else True:
+        return 0, 0
+
+    rsync_cmd = [
+        "rsync", "-az",
+        "--ignore-existing",    # NEVER overwrite anything at the destination
+        "--itemize-changes",    # one output line per file action — lets us count transfers
+        "-e", "ssh -S none -o ConnectTimeout=15 -o StrictHostKeyChecking=no",
+        str(MARKERS_DIR) + "/",
+        f"{host}:/data/qwen_dataset_output/images/"
+    ]
+    try:
+        proc = subprocess.run(rsync_cmd, capture_output=True, text=True, timeout=120)
+        # Lines starting with '>' mean the file was sent to the remote
+        sent = sum(1 for line in proc.stdout.splitlines() if line.startswith(">"))
+        return sent, proc.returncode
+    except Exception as e:
+        _sync_log(f"PUSH markers->{host} exception: {e}")
+        return 0, -1
+
+
+def sync_markers(verbose: bool = True) -> dict:
+    """
+    One full sync cycle:
+      Phase 1 — Pull real images from every reachable host -> local Mac.
+      Phase 2 — Rebuild MARKERS_DIR once from all local images.
+      Phase 3 — Push markers to every reachable host (--ignore-existing keeps real files safe).
+                 Per-host count = files actually transferred to that host (via --itemize-changes).
+
+    Returns per-host summary dict.
+    """
+    images_dest = LOCAL_DEST_DIR / "images"
+    images_dest.mkdir(parents=True, exist_ok=True)
+
+    summary = {}
+    reachable_hosts = []
+
+    # Phase 1: Pull real images from all reachable hosts
+    for host in HOSTS:
+        if verbose:
+            print(f"  [{host}] Pulling...", end=" ", flush=True)
+        reachable = is_host_reachable(host)
+        summary[host] = {"reachable": reachable, "pulled": 0, "markers_sent": 0, "push_rc": None}
+        if not reachable:
+            _sync_log(f"PULL {host}: unreachable — skipped")
+            if verbose:
+                print("unreachable")
+            continue
+        reachable_hosts.append(host)
+        n = pull_images_from_host(host, images_dest)
+        summary[host]["pulled"] = n
+        msg = f"+{n} new" if n >= 0 else "FAILED"
+        _sync_log(f"PULL {host}: {msg}")
+        if verbose:
+            print(msg)
+
+    # Phase 2: Rebuild markers dir ONCE from the full local image set
+    total_local = rebuild_markers_dir(images_dest)
+
+    # Phase 3: Push markers to every reachable host
+    for host in reachable_hosts:
+        if verbose:
+            print(f"  [{host}] Pushing {total_local} markers...", end=" ", flush=True)
+        sent, rc = push_markers_to_host(host)
+        summary[host]["markers_sent"] = sent
+        summary[host]["push_rc"] = rc
+        status = "ok" if rc == 0 else f"FAILED rc={rc}"
+        _sync_log(f"PUSH markers->{host}: {status} ({sent} new markers sent to remote, {total_local} total)")
+    ls = get_local_dataset_summary()
+    if verbose:
+        print(f"  Local Mac Storage : {ls['total_real']:,} / 28,000 ({ls['pct_total']:.1f}%) real images saved locally.")
+        slice_parts = [f"{s['key']}: {s['done']}/{s['target']} ({s['pct']:.1f}%)" for s in ls["slices"]]
+        print(f"  Slices            : {' | '.join(slice_parts)}")
+
+    _sync_log(f"Cycle done. Local total={total_local}. Reachable={reachable_hosts or ['none']}")
+    return summary
+
+
+
+
+def run_sync_loop(interval: int = SYNC_INTERVAL_SECS):
+    """
+    Continuous sync daemon — runs sync_markers() every `interval` seconds.
+    Intended to be launched alongside the hourly --cron job.
+    """
+    print(f"LookMax fleet sync daemon started (interval: {interval}s = {interval//60} min)")
+    print(f"Sync log: {SYNC_LOG_FILE}")
+    print("Ctrl-C to stop.\n")
+    _sync_log(f"Sync daemon started (interval={interval}s)")
+
+    while True:
+        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{ts}] Sync cycle...", flush=True)
+        try:
+            sync_markers(verbose=True)
+        except Exception as e:
+            _sync_log(f"Sync cycle ERROR: {e}")
+            print(f"  ERROR: {e}")
+        print(f"  Next in {interval}s...\n", flush=True)
+        time.sleep(interval)
+
+
+# ---------------------------------------------------------------------------
+# State helpers
+# ---------------------------------------------------------------------------
 
 def load_state() -> dict:
     if STATE_FILE.exists():
@@ -198,6 +437,117 @@ def save_state(state: dict):
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=2)
 
+
+# ---------------------------------------------------------------------------
+# Remote host querying
+# ---------------------------------------------------------------------------
+# Local Mac dataset progress tracking (offline-safe)
+# ---------------------------------------------------------------------------
+
+def get_local_dataset_summary() -> dict:
+    """
+    Scans local Mac storage (/ML/data/vision_synthetic/raw_generated/images)
+    and computes slice-by-slice & category progress independent of server status.
+    """
+    images_dir = LOCAL_DEST_DIR / "images"
+    done_indices = set()
+    if images_dir.exists():
+        import re
+        for f in images_dir.iterdir():
+            if f.is_file() and f.stat().st_size > 0 and not f.name.endswith(".tmp"):
+                m = re.match(r"^(\d+)_", f.name)
+                if m:
+                    done_indices.add(int(m.group(1)))
+
+    total_real = len(done_indices)
+
+    all_tasks = []
+    try:
+        sys.path.insert(0, str(SCRIPT_DIR))
+        from full_run import build_full_task_list
+        all_tasks = build_full_task_list()
+    except Exception:
+        pass
+
+    slices_def = [
+        ("original", "[0:4810] (Original)", 0, 4810),
+        ("vast1", "[4810:13000] (vast1 slice)", 4810, 13000),
+        ("vast3", "[13000:16000] (vast3 slice)", 13000, 16000),
+        ("vast2", "[16000:28000] (vast2 slice)", 16000, 28000),
+    ]
+
+    slice_stats = []
+    for key, label, start_idx, end_idx in slices_def:
+        if all_tasks:
+            sub_tasks = all_tasks[start_idx:end_idx]
+            target = len(sub_tasks)
+            done_cnt = sum(1 for t in sub_tasks if t["index"] in done_indices)
+        else:
+            target = end_idx - start_idx
+            done_cnt = sum(1 for idx in done_indices if start_idx <= idx < end_idx)
+
+        pct = (done_cnt / target * 100.0) if target else 0.0
+        rem = target - done_cnt
+        slice_stats.append({
+            "key": key,
+            "label": label,
+            "start": start_idx,
+            "end": end_idx,
+            "target": target,
+            "done": done_cnt,
+            "pct": pct,
+            "remaining": rem
+        })
+
+    cat_stats = {}
+    if all_tasks:
+        from collections import Counter
+        cat_done = Counter()
+        cat_total = Counter()
+        for t in all_tasks:
+            cat_total[t["category"]] += 1
+            if t["index"] in done_indices:
+                cat_done[t["category"]] += 1
+        for cat in ["Men_Grooming", "Women_Grooming", "Men_Outfit", "Women_Outfit"]:
+            dn = cat_done[cat]
+            tot = cat_total[cat]
+            pct = (dn / tot * 100.0) if tot else 0.0
+            cat_stats[cat] = {"done": dn, "total": tot, "pct": pct, "remaining": tot - dn}
+
+    return {
+        "total_real": total_real,
+        "total_target": 28000,
+        "pct_total": (total_real / 28000.0 * 100.0),
+        "slices": slice_stats,
+        "categories": cat_stats
+    }
+
+
+def print_local_summary():
+    s = get_local_dataset_summary()
+    print("================================================================================")
+    print(f" LookMax Synthetic Dataset -- Local Mac Storage Summary (Offline-Safe)")
+    print("================================================================================")
+    print(f" Local Storage Dir : {LOCAL_DEST_DIR / 'images'}")
+    print(f" Total Real Images : {s['total_real']:,} / {s['total_target']:,} ({s['pct_total']:.1f}% complete)")
+    print(f" Remaining Needed  : {(s['total_target'] - s['total_real']):,} images\n")
+
+    print(" Slice Breakdown (Local Mac Data):")
+    print(f"   {'Slice Range':<28} | {'Done':<8} | {'Target':<8} | {'Progress':<8} | {'Remaining':<10}")
+    print("   " + "-" * 70)
+    for sl in s["slices"]:
+        print(f"   {sl['label']:<28} | {sl['done']:<8} | {sl['target']:<8} | {sl['pct']:>6.1f}%  | {sl['remaining']:<10}")
+
+    if s["categories"]:
+        print("\n Category Breakdown (Local Mac Data):")
+        for cat, cst in s["categories"].items():
+            print(f"   - {cat:<18}: {cst['done']:>5} / {cst['total']:>5} ({cst['pct']:>5.1f}%) | Remaining: {cst['remaining']}")
+    print("================================================================================\n")
+
+
+# ---------------------------------------------------------------------------
+# Remote host querying
+# ---------------------------------------------------------------------------
 
 def query_host(host: str) -> dict:
     cmd = [
@@ -259,6 +609,10 @@ def query_host(host: str) -> dict:
     return result
 
 
+# ---------------------------------------------------------------------------
+# Fleet evaluation (health check + stall alert + auto-destroy)
+# ---------------------------------------------------------------------------
+
 def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
     state = load_state()
     now_dt = datetime.now(timezone.utc)
@@ -281,7 +635,6 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             "destroyed": False
         })
 
-        # If already destroyed, skip querying
         if host_state.get("destroyed"):
             host_summaries.append({
                 "host": host,
@@ -306,8 +659,9 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             host_state["stalled_hours"] = round(stalled_hours, 2)
             host_state["last_status"] = "UNREACHABLE"
 
-            status_str = f"{host}: UNREACHABLE (SSH failed: {data['raw_error'][:40]}) [Stalled: {stalled_hours:.1f}h]"
-            log_line_parts.append(status_str)
+            log_line_parts.append(
+                f"{host}: UNREACHABLE (SSH failed: {data['raw_error'][:40]}) [Stalled: {stalled_hours:.1f}h]"
+            )
             host_summaries.append({
                 "host": host,
                 "status": "UNREACHABLE",
@@ -320,48 +674,47 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             })
 
             if stalled_hours >= STALL_ALERT_HOURS:
-                alerts.append(f"🚨 {host} has been UNREACHABLE for {stalled_hours:.1f} hours! Error: {data['raw_error']}")
+                alerts.append(
+                    f"🚨 {host} has been UNREACHABLE for {stalled_hours:.1f} hours! "
+                    f"Error: {data['raw_error']}"
+                )
             continue
 
-        # Host is reachable
         curr_count = data["count"]
         last_count = host_state["last_count"]
         delta = curr_count - last_count
         target = meta["target"]
         pct = (curr_count / target * 100.0) if target else 0.0
-
         is_generating = (delta > 0)
         is_tmux_running = (data["tmux"] == "RUNNING")
 
-        # Check if generation has finished!
         if curr_count >= target and target > 0 and not host_state.get("completed"):
             host_state["completed"] = True
             host_state["last_count"] = curr_count
             print(f"🎉 [{host}] Target reached: {curr_count}/{target} images generated!")
 
-            # 1. Run safe sync & local verification
             sync_ok = sync_and_verify_host(host, target)
             if sync_ok:
                 instance_id = meta.get("instance_id")
                 if api_key and instance_id:
-                    print(f"==> Destroying Vast.ai instance {instance_id} for {host} to prevent further charges...")
+                    print(f"==> Destroying Vast.ai instance {instance_id} for {host}...")
                     destroyed = destroy_vast_instance(instance_id, api_key)
                     if destroyed:
                         host_state["destroyed"] = True
                         host_state["last_status"] = "DESTROYED"
                         alerts.append(
                             f"🎉 {host} completed all {curr_count}/{target} images! "
-                            f"Data was verified locally, and instance {instance_id} was destroyed on Vast.ai (billing stopped)."
+                            f"Data verified locally. Instance {instance_id} destroyed (billing stopped)."
                         )
                     else:
                         alerts.append(
-                            f"⚠️ {host} completed all {curr_count}/{target} images and data is verified locally, "
-                            f"but the Vast.ai API call to destroy instance {instance_id} failed. Please destroy it in the Vast.ai console."
+                            f"⚠️ {host} completed {curr_count}/{target} images and data is verified locally, "
+                            f"but Vast.ai API destroy of instance {instance_id} failed. Please destroy it manually."
                         )
                 else:
                     alerts.append(
                         f"🎉 {host} completed all {curr_count}/{target} images and data is safely verified locally! "
-                        f"Please destroy instance {instance_id} in your Vast.ai console (or set your Vast.ai API key so it can be destroyed automatically)."
+                        f"Please destroy instance {instance_id} in your Vast.ai console."
                     )
             else:
                 alerts.append(
@@ -383,10 +736,8 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             stalled_hours = (now_dt - stalled_dt).total_seconds() / 3600.0
             host_state["stalled_hours"] = round(stalled_hours, 2)
             host_state["last_status"] = data["tmux"]
-
             if not is_tmux_running and not host_state.get("completed"):
                 host_state["last_status"] = "STOPPED"
-
             if stalled_hours >= STALL_ALERT_HOURS and not host_state.get("completed"):
                 alerts.append(
                     f"🚨 {host} has been STALLED for {stalled_hours:.1f} hours! "
@@ -395,9 +746,9 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
 
         gpu_desc = "/".join([g["util"] for g in data["gpus"]]) if data["gpus"] else "N/A"
         log_line_parts.append(
-            f"{host}: {curr_count}/{target} ({pct:.1f}%) [{data['tmux']}] GPUs: {gpu_desc} (Δ+{delta}, stalled={stalled_hours:.1f}h)"
+            f"{host}: {curr_count}/{target} ({pct:.1f}%) [{data['tmux']}] "
+            f"GPUs: {gpu_desc} (Δ+{delta}, stalled={stalled_hours:.1f}h)"
         )
-
         host_summaries.append({
             "host": host,
             "status": host_state["last_status"],
@@ -409,18 +760,14 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             "gpus": gpu_desc
         })
 
-    # Save state
     save_state(state)
 
-    # Append to log file
     log_entry = " | ".join(log_line_parts) + "\n"
     with open(LOG_FILE, "a") as f:
         f.write(log_entry)
 
-    # Update Markdown status table
     update_markdown_status(now_str, host_summaries, alerts)
 
-    # Return result
     if alerts:
         alert_msg = "\n".join(alerts)
         if cron_mode:
@@ -428,13 +775,18 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
         return 2, alert_msg
     else:
         summary_msg = "Fleet healthy:\n" + "\n".join([
-            f" - {h['host']}: {h['count']}/{h['target']} ({h['percent']:.1f}%) | {h['status']} | GPUs: {h['gpus']} (Δ+{h['delta']})"
+            f" - {h['host']}: {h['count']}/{h['target']} ({h['percent']:.1f}%) "
+            f"| {h['status']} | GPUs: {h['gpus']} (Δ+{h['delta']})"
             for h in host_summaries
         ])
         if not cron_mode:
             print(summary_msg)
         return 0, summary_msg
 
+
+# ---------------------------------------------------------------------------
+# Markdown status report
+# ---------------------------------------------------------------------------
 
 def update_markdown_status(timestamp: str, hosts: list[dict], alerts: list[str]):
     api_key = get_vast_api_key()
@@ -462,20 +814,53 @@ def update_markdown_status(timestamp: str, hosts: list[dict], alerts: list[str])
         total_done += h["count"]
         total_target += h["target"]
         stalled_str = f"{h['stalled_hours']:.1f}h" if h["stalled_hours"] > 0 else "0h (active)"
-        status_badge = "🟢 RUNNING" if h["status"] == "RUNNING" else ("🏁 DESTROYED" if h["status"] == "DESTROYED" else f"🔴 {h['status']}")
+        status_badge = ("🟢 RUNNING" if h["status"] == "RUNNING"
+                        else ("🏁 DESTROYED" if h["status"] == "DESTROYED"
+                              else f"🔴 {h['status']}"))
         lines.append(
-            f"| **{h['host']}** | `{HOSTS[h['host']]['instance_id']}` | {HOSTS[h['host']]['slice']} ({h['target']}) | "
-            f"**{h['count']}** | {h['percent']:.1f}% | {h['gpus']} | {stalled_str} | {status_badge} |\n"
+            f"| **{h['host']}** | `{HOSTS[h['host']]['instance_id']}` "
+            f"| {HOSTS[h['host']]['slice']} ({h['target']}) | "
+            f"**{h['count']}** | {h['percent']:.1f}% | {h['gpus']} "
+            f"| {stalled_str} | {status_badge} |\n"
         )
 
-    lines.append(f"| **TOTAL ACTIVE** | - | **{total_target}** | **{total_done}** | **{(total_done/total_target*100):.1f}%** | - | - | - |\n\n")
+    lines.append(
+        f"| **TOTAL** | - | **{total_target}** | **{total_done}** "
+        f"| **{(total_done/total_target*100):.1f}%** | - | - | - |\n\n"
+    )
+
+    ls = get_local_dataset_summary()
+    lines.append("### Local Storage Progress (Offline-Safe)\n\n")
+    lines.append(f"**Total Real Images Saved Locally on Mac**: `{ls['total_real']:,}` / `28,000` (**{ls['pct_total']:.1f}%** complete)\n\n")
+    lines.append("| Slice Range | Target | Saved Locally | Progress | Remaining |\n")
+    lines.append("| :--- | :--- | :--- | :--- | :--- |\n")
+    for sl in ls["slices"]:
+        lines.append(f"| **{sl['label']}** | {sl['target']:,} | **{sl['done']:,}** | {sl['pct']:.1f}% | {sl['remaining']:,} |\n")
+    lines.append("\n")
+
+    if ls["categories"]:
+        lines.append("#### Local Category Breakdown\n\n")
+        lines.append("| Category | Saved Locally | Target | Progress | Remaining |\n")
+        lines.append("| :--- | :--- | :--- | :--- | :--- |\n")
+        for cat, cst in ls["categories"].items():
+            lines.append(f"| **{cat}** | **{cst['done']:,}** | {cst['total']:,} | {cst['pct']:.1f}% | {cst['remaining']:,} |\n")
+        lines.append("\n")
+
+    if SYNC_LOG_FILE.exists():
+        lines.append("### Recent Sync Log\n```\n")
+        try:
+            with open(SYNC_LOG_FILE, "r") as f:
+                for l in f.readlines()[-8:]:
+                    lines.append(l)
+        except Exception:
+            pass
+        lines.append("```\n\n")
 
     if LOG_FILE.exists():
-        lines.append("### Recent Hourly Log Entries\n```\n")
+        lines.append("### Recent Hourly Health Log\n```\n")
         try:
             with open(LOG_FILE, "r") as f:
-                all_logs = f.readlines()
-                for l in all_logs[-10:]:
+                for l in f.readlines()[-10:]:
                     lines.append(l)
         except Exception:
             pass
@@ -485,15 +870,36 @@ def update_markdown_status(timestamp: str, hosts: list[dict], alerts: list[str])
         f.writelines(lines)
 
 
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
 def main():
-    parser = argparse.ArgumentParser(description="LookMax Fleet Health & Auto-Destroy Controller")
-    parser.add_argument("--cron", action="store_true", help="Cron check: silent unless alert or completed (exit code 2)")
-    parser.add_argument("--loop", action="store_true", help="Continuous monitoring loop (runs hourly)")
-    parser.add_argument("--interval", type=int, default=3600, help="Interval in seconds for loop mode (default: 3600)")
-    parser.add_argument("--set-api-key", type=str, help="Save Vast.ai API key")
-    parser.add_argument("--test-api-key", action="store_true", help="Verify Vast.ai API key against Vast.ai API")
-    parser.add_argument("--destroy-instance", type=int, help="Manually destroy a specific Vast.ai instance ID")
+    parser = argparse.ArgumentParser(description="LookMax Fleet Health, Sync & Auto-Destroy Controller")
+    parser.add_argument("--cron", action="store_true",
+                        help="Cron check: silent unless alert (exit 2) or healthy (exit 0)")
+    parser.add_argument("--loop", action="store_true",
+                        help="Continuous health monitoring loop (hourly by default)")
+    parser.add_argument("--sync-loop", action="store_true",
+                        help="Continuous 5-min pull+push zero-byte coordination sync daemon")
+    parser.add_argument("--sync-once", action="store_true",
+                        help="Run a single sync cycle (pull+push) then exit")
+    parser.add_argument("--interval", type=int, default=3600,
+                        help="Interval seconds for --loop (default: 3600)")
+    parser.add_argument("--sync-interval", type=int, default=SYNC_INTERVAL_SECS,
+                        help=f"Interval seconds for --sync-loop (default: {SYNC_INTERVAL_SECS})")
+    parser.add_argument("--set-api-key", type=str, help="Save Vast.ai API key securely")
+    parser.add_argument("--test-api-key", action="store_true",
+                        help="Validate Vast.ai API key and list active instances")
+    parser.add_argument("--destroy-instance", type=int,
+                        help="Manually destroy a specific Vast.ai instance ID")
+    parser.add_argument("--local", action="store_true",
+                        help="Print local Mac storage dataset summary (offline-safe, no SSH required)")
     args = parser.parse_args()
+
+    if args.local:
+        print_local_summary()
+        return
 
     if args.set_api_key:
         set_vast_api_key(args.set_api_key)
@@ -507,28 +913,33 @@ def main():
     if args.destroy_instance:
         key = get_vast_api_key()
         if not key:
-            print("Error: No Vast.ai API key configured. Run with --set-api-key <KEY> first.")
+            print("Error: No Vast.ai API key configured.")
             sys.exit(1)
-        confirm = input(f"Are you sure you want to DESTROY instance {args.destroy_instance}? (yes/no): ")
+        confirm = input(f"Destroy instance {args.destroy_instance}? (yes/no): ")
         if confirm.strip().lower() == "yes":
             ok = destroy_vast_instance(args.destroy_instance, key)
-            if ok:
-                print(f"✓ Instance {args.destroy_instance} destroyed.")
-            else:
-                print(f"✗ Failed to destroy instance {args.destroy_instance}.")
+            print(f"{'✓ Destroyed' if ok else '✗ Failed to destroy'} instance {args.destroy_instance}.")
+        return
+
+    if args.sync_once:
+        print("Running single sync cycle...")
+        sync_markers(verbose=True)
+        return
+
+    if args.sync_loop:
+        run_sync_loop(interval=args.sync_interval)
         return
 
     if args.loop:
-        print(f"Starting LookMax Fleet Monitor & Auto-Destroy loop (interval: {args.interval}s)...")
+        print(f"Starting fleet health monitor loop (interval: {args.interval}s)...")
         while True:
             code, msg = evaluate_fleet(cron_mode=False)
             if code == 2:
                 print(f"[ALERT] {datetime.now()}: {msg}")
                 try:
-                    subprocess.run([
-                        "osascript", "-e",
-                        'display notification "LookMax Fleet Alert!" with title "LookMax Alert"'
-                    ], check=False)
+                    subprocess.run(["osascript", "-e",
+                        'display notification "LookMax Fleet Alert!" with title "LookMax Alert"'],
+                        check=False)
                 except Exception:
                     pass
             time.sleep(args.interval)

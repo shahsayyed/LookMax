@@ -1,18 +1,29 @@
 {
   "hosts": {
     "vast2": {
-      "last_count": 1608,
-      "last_progress_iso": "2026-09-07T00:00:07.183906+00:00",
-      "stalled_since_iso": null,
+      "last_count": 4893,
+      "last_progress_iso": "2026-09-07T06:56:40.999389+00:00",
+      "stalled_since_iso": "2026-09-07T08:00:07.841134+00:00",
+      "stalled_hours": 6.45,
+      "last_status": "UNREACHABLE"
+    },
+    "vast1": {
+      "last_count": 0,
+      "last_progress_iso": "2026-09-07T15:27:00+00:00",
+      "stalled_since_iso": "2026-09-07T14:27:15.860007+00:00",
       "stalled_hours": 0.0,
-      "last_status": "RUNNING"
+      "last_status": "RUNNING",
+      "completed": false,
+      "destroyed": false
     },
     "vast3": {
-      "last_count": 464,
-      "last_progress_iso": "2026-09-06T23:00:02.558196+00:00",
-      "stalled_since_iso": "2026-09-07T00:00:07.183906+00:00",
+      "last_count": 137,
+      "last_progress_iso": "2026-09-07T14:27:15.860007+00:00",
+      "stalled_since_iso": null,
       "stalled_hours": 0.0,
-      "last_status": "UNREACHABLE"
+      "last_status": "RUNNING",
+      "completed": false,
+      "destroyed": false
     }
   },
   "history": []
