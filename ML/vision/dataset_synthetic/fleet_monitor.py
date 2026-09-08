@@ -57,27 +57,33 @@ LOCAL_DEST_DIR = REPO_ROOT / "ML" / "data" / "vision_synthetic" / "raw_generated
 MARKERS_DIR = LOCAL_DEST_DIR / ".markers"
 
 HOSTS = {
+    "vast1": {
+        "slice": "4810:10000",
+        "target": 5190,
+        "instance_id": 50209314,
+        "desc": "2x H100 SXM5 (80GB)"
+    },
     "vast2": {
         "slice": "16000:28000",
         "target": 12000,
-        "instance_id": 50095177,
+        "instance_id": 50210080,
         "desc": "2x H100 SXM5 (80GB)"
-    },
-    "vast1": {
-        "slice": "4810:13000",
-        "target": 8190,
-        "instance_id": 50166753,
-        "desc": "4x H100 PCIe (80GB)"
     },
     "vast3": {
         "slice": "13000:16000",
         "target": 3000,
-        "instance_id": 50149174,
-        "desc": "1x H100 NVL (80GB)"
+        "instance_id": 50199060,
+        "desc": "1x H100 SXM5 (80GB)"
+    },
+    "vast4": {
+        "slice": "10000:13000",
+        "target": 3000,
+        "instance_id": 50197596,
+        "desc": "1x H100 NVL (96GB)"
     }
 }
 
-STALL_ALERT_HOURS = 3.0      # Alert if stopped for >= 3 hours
+STALL_ALERT_HOURS = 0.5      # Alert and auto-destroy if interrupted/unreachable for >= 30 minutes
 SYNC_INTERVAL_SECS = 30      # 30 seconds between sync cycles
 
 REMOTE_CHECK_CMD = r"""
@@ -272,85 +278,109 @@ def pull_images_from_host(host: str, images_dest: Path) -> int:
     return len(after - before)
 
 
-def rebuild_markers_dir(images_dest: Path) -> int:
+FILENAME_TO_POS_MAP = None
+
+def get_filename_to_pos_map() -> dict:
+    global FILENAME_TO_POS_MAP
+    if FILENAME_TO_POS_MAP is None:
+        try:
+            sys.path.insert(0, str(SCRIPT_DIR))
+            from full_run import build_full_task_list
+            tasks = build_full_task_list()
+            FILENAME_TO_POS_MAP = {t["filename"]: i for i, t in enumerate(tasks)}
+        except Exception:
+            FILENAME_TO_POS_MAP = {}
+    return FILENAME_TO_POS_MAP
+
+
+def is_filename_in_host_slice(filename: str, host: str) -> bool:
+    """Check if filename's task list position (0..27999) falls inside host's assigned slice."""
+    meta = HOSTS.get(host)
+    if not meta or "slice" not in meta:
+        return False
+    try:
+        parts = meta["slice"].split(":")
+        start_pos, end_pos = int(parts[0]), int(parts[1])
+        pos_map = get_filename_to_pos_map()
+        pos = pos_map.get(filename)
+        if pos is not None:
+            return start_pos <= pos < end_pos
+    except Exception:
+        pass
+    return False
+
+
+def push_markers_to_host(host: str, images_dest: Path, state: dict) -> tuple[int, int]:
     """
-    Rebuild MARKERS_DIR so it contains exactly one zero-byte file for every
-    real (non-zero, non-.tmp) image that exists locally on the Mac.
+    Optimized Delta Marker Push:
+    Only sends markers for images that have NOT yet been recorded as pushed to `host`,
+    and NEVER pushes markers for images falling inside `host`'s own assigned task slice.
 
-    Called ONCE per sync cycle before pushing to any host, so all hosts see
-    the same complete marker set.
-
-    Returns total number of real local images (= total markers now in MARKERS_DIR).
+    If 0 new markers are needed for `host`, returns immediately (0.00s execution).
+    If new markers exist (e.g. 5 new images), creates a temporary delta folder,
+    rsyncs only those 5 files over SSH with --ignore-existing, and records them in state.
     """
-    MARKERS_DIR.mkdir(parents=True, exist_ok=True)
+    host_state = state["hosts"].setdefault(host, {})
+    pushed_set = set(host_state.get("pushed_markers", []))
 
+    # Real non-zero images saved locally on Mac
     real_images = {
         f.name for f in images_dest.iterdir()
         if f.is_file() and f.stat().st_size > 0 and not f.name.endswith(".tmp")
     }
 
-    # Prune stale markers (image deleted locally)
-    for m in list(MARKERS_DIR.iterdir()):
-        if m.name not in real_images:
-            m.unlink(missing_ok=True)
-
-    # Create any missing zero-byte markers
-    for name in real_images:
-        marker = MARKERS_DIR / name
-        if not marker.exists():
-            marker.touch()  # zero bytes — the key invariant
-
-    return len(real_images)
-
-
-def push_markers_to_host(host: str) -> tuple[int, int]:
-    """
-    Push zero-byte markers from MARKERS_DIR to a remote machine.
-
-    Assumes rebuild_markers_dir() has already been called this cycle.
-
-    Safety: --ignore-existing means rsync will NOT touch any file that already
-    exists at the destination — real completed images on the remote are safe.
-
-    Uses --itemize-changes so we can count files ACTUALLY TRANSFERRED to this
-    specific host (not just files created locally), giving accurate per-host counts.
-
-    Returns (files_sent_to_this_host, rsync_exit_code).
-    """
-    if not any(MARKERS_DIR.iterdir()) if MARKERS_DIR.exists() else True:
+    needed = real_images - pushed_set
+    if not needed:
         return 0, 0
 
-    rsync_cmd = [
-        "rsync", "-az",
-        "--ignore-existing",    # NEVER overwrite anything at the destination
-        "--itemize-changes",    # one output line per file action — lets us count transfers
-        "-e", "ssh -S none -o ConnectTimeout=15 -o StrictHostKeyChecking=no",
-        str(MARKERS_DIR) + "/",
-        f"{host}:/data/qwen_dataset_output/images/"
-    ]
+    delta_dir = SCRIPT_DIR / f".markers_delta_{host}"
+    if delta_dir.exists():
+        for p in delta_dir.iterdir():
+            p.unlink(missing_ok=True)
+    delta_dir.mkdir(parents=True, exist_ok=True)
+
     try:
-        proc = subprocess.run(rsync_cmd, capture_output=True, text=True, timeout=120)
-        # Lines starting with '>' mean the file was sent to the remote
-        sent = sum(1 for line in proc.stdout.splitlines() if line.startswith(">"))
-        return sent, proc.returncode
-    except Exception as e:
-        _sync_log(f"PUSH markers->{host} exception: {e}")
-        return 0, -1
+        for name in needed:
+            (delta_dir / name).touch()
+
+        rsync_cmd = [
+            "rsync", "-az",
+            "--ignore-existing",
+            "-e", "ssh -S none -o ConnectTimeout=15 -o StrictHostKeyChecking=no",
+            str(delta_dir) + "/",
+            f"{host}:/data/qwen_dataset_output/images/"
+        ]
+        proc = subprocess.run(rsync_cmd, capture_output=True, text=True, timeout=300)
+        if proc.returncode == 0:
+            pushed_set.update(needed)
+            host_state["pushed_markers"] = list(pushed_set)
+            save_state(state)
+            return len(needed), 0
+        else:
+            _sync_log(f"PUSH delta to {host} failed rc={proc.returncode}: {proc.stderr.strip()[:120]}")
+            return 0, proc.returncode
+    finally:
+        if delta_dir.exists():
+            for p in delta_dir.iterdir():
+                p.unlink(missing_ok=True)
+            try:
+                delta_dir.rmdir()
+            except Exception:
+                pass
 
 
 def sync_markers(verbose: bool = True) -> dict:
     """
     One full sync cycle:
       Phase 1 — Pull real images from every reachable host -> local Mac.
-      Phase 2 — Rebuild MARKERS_DIR once from all local images.
-      Phase 3 — Push markers to every reachable host (--ignore-existing keeps real files safe).
-                 Per-host count = files actually transferred to that host (via --itemize-changes).
+      Phase 2 — Push ONLY delta zero-byte markers to reachable hosts (0.00s if no new files).
 
     Returns per-host summary dict.
     """
     images_dest = LOCAL_DEST_DIR / "images"
     images_dest.mkdir(parents=True, exist_ok=True)
 
+    state = load_state()
     summary = {}
     reachable_hosts = []
 
@@ -373,18 +403,22 @@ def sync_markers(verbose: bool = True) -> dict:
         if verbose:
             print(msg)
 
-    # Phase 2: Rebuild markers dir ONCE from the full local image set
-    total_local = rebuild_markers_dir(images_dest)
+    total_local = sum(
+        1 for f in images_dest.iterdir()
+        if f.is_file() and f.stat().st_size > 0 and not f.name.endswith(".tmp")
+    )
 
-    # Phase 3: Push markers to every reachable host
+    # Phase 2: Push ONLY delta markers to every reachable host
     for host in reachable_hosts:
-        if verbose:
-            print(f"  [{host}] Pushing {total_local} markers...", end=" ", flush=True)
-        sent, rc = push_markers_to_host(host)
+        sent, rc = push_markers_to_host(host, images_dest, state)
         summary[host]["markers_sent"] = sent
         summary[host]["push_rc"] = rc
         status = "ok" if rc == 0 else f"FAILED rc={rc}"
-        _sync_log(f"PUSH markers->{host}: {status} ({sent} new markers sent to remote, {total_local} total)")
+        if sent > 0 or rc != 0:
+            _sync_log(f"PUSH markers->{host}: {status} ({sent} new delta markers sent to remote)")
+            if verbose:
+                print(f"  [{host}] Pushed +{sent} new marker(s)")
+
     ls = get_local_dataset_summary()
     if verbose:
         print(f"  Local Mac Storage : {ls['total_real']:,} / 28,000 ({ls['pct_total']:.1f}%) real images saved locally.")
@@ -424,13 +458,28 @@ def run_sync_loop(interval: int = SYNC_INTERVAL_SECS):
 # ---------------------------------------------------------------------------
 
 def load_state() -> dict:
+    state = {"hosts": {}, "history": []}
     if STATE_FILE.exists():
         try:
             with open(STATE_FILE, "r") as f:
-                return json.load(f)
+                state = json.load(f)
         except Exception:
             pass
-    return {"hosts": {}, "history": []}
+
+    # Auto-detect instance ID changes for any host & reset pushed_markers for new instances
+    for host_name, host_info in HOSTS.items():
+        curr_id = host_info.get("instance_id")
+        hdata = state.setdefault("hosts", {}).setdefault(host_name, {})
+        saved_id = hdata.get("instance_id")
+        if curr_id and saved_id != curr_id:
+            hdata["pushed_markers"] = []
+            hdata["instance_id"] = curr_id
+            hdata["last_count"] = 0
+            hdata["stalled_since_iso"] = None
+            hdata["stalled_hours"] = 0.0
+            hdata["completed"] = False
+            hdata["destroyed"] = False
+    return state
 
 
 def save_state(state: dict):
@@ -471,7 +520,8 @@ def get_local_dataset_summary() -> dict:
 
     slices_def = [
         ("original", "[0:4810] (Original)", 0, 4810),
-        ("vast1", "[4810:13000] (vast1 slice)", 4810, 13000),
+        ("vast1", "[4810:10000] (vast1 slice)", 4810, 10000),
+        ("vast4", "[10000:13000] (vast4 slice)", 10000, 13000),
         ("vast3", "[13000:16000] (vast3 slice)", 13000, 16000),
         ("vast2", "[16000:28000] (vast2 slice)", 16000, 28000),
     ]
@@ -674,10 +724,27 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             })
 
             if stalled_hours >= STALL_ALERT_HOURS:
-                alerts.append(
-                    f"🚨 {host} has been UNREACHABLE for {stalled_hours:.1f} hours! "
-                    f"Error: {data['raw_error']}"
-                )
+                instance_id = meta.get("instance_id")
+                if api_key and instance_id and not host_state.get("destroyed"):
+                    print(f"==> Machine {host} unreachable for {stalled_hours:.1f}h. Destroying Vast.ai instance {instance_id}...")
+                    destroyed = destroy_vast_instance(instance_id, api_key)
+                    if destroyed:
+                        host_state["destroyed"] = True
+                        host_state["last_status"] = "DESTROYED"
+                        alerts.append(
+                            f"🚨 {host} was UNREACHABLE for {stalled_hours:.1f}h (>= 30 min threshold). "
+                            f"Instance {instance_id} destroyed automatically."
+                        )
+                    else:
+                        alerts.append(
+                            f"🚨 {host} has been UNREACHABLE for {stalled_hours:.1f} hours! "
+                            f"Error: {data['raw_error']}"
+                        )
+                else:
+                    alerts.append(
+                        f"🚨 {host} has been UNREACHABLE for {stalled_hours:.1f} hours! "
+                        f"Error: {data['raw_error']}"
+                    )
             continue
 
         curr_count = data["count"]
@@ -739,10 +806,27 @@ def evaluate_fleet(cron_mode: bool = False) -> tuple[int, str]:
             if not is_tmux_running and not host_state.get("completed"):
                 host_state["last_status"] = "STOPPED"
             if stalled_hours >= STALL_ALERT_HOURS and not host_state.get("completed"):
-                alerts.append(
-                    f"🚨 {host} has been STALLED for {stalled_hours:.1f} hours! "
-                    f"(Count stuck at {curr_count}/{target}, tmux={data['tmux']})"
-                )
+                instance_id = meta.get("instance_id")
+                if api_key and instance_id and not host_state.get("destroyed"):
+                    print(f"==> Machine {host} stalled/stopped for {stalled_hours:.1f}h. Destroying Vast.ai instance {instance_id}...")
+                    destroyed = destroy_vast_instance(instance_id, api_key)
+                    if destroyed:
+                        host_state["destroyed"] = True
+                        host_state["last_status"] = "DESTROYED"
+                        alerts.append(
+                            f"🚨 {host} was STALLED for {stalled_hours:.1f}h (>= 30 min threshold). "
+                            f"Instance {instance_id} destroyed automatically."
+                        )
+                    else:
+                        alerts.append(
+                            f"🚨 {host} has been STALLED for {stalled_hours:.1f} hours! "
+                            f"(Count stuck at {curr_count}/{target}, tmux={data['tmux']})"
+                        )
+                else:
+                    alerts.append(
+                        f"🚨 {host} has been STALLED for {stalled_hours:.1f} hours! "
+                        f"(Count stuck at {curr_count}/{target}, tmux={data['tmux']})"
+                    )
 
         gpu_desc = "/".join([g["util"] for g in data["gpus"]]) if data["gpus"] else "N/A"
         log_line_parts.append(

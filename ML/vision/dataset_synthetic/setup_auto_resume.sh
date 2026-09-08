@@ -19,6 +19,7 @@ cat << EOF > "$SCRIPT_DIR/.auto_resume_config"
 TASK_RANGE="$TASK_RANGE"
 WORKERS="$WORKERS"
 LOOKMAX_DATA_DIR="/data"
+HF_TOKEN="${HF_TOKEN:-}"
 EOF
 
 # 1. Hook into /root/onstart.sh (executed by Vast.ai on container start / resume)
