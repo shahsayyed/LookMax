@@ -9382,7 +9382,7 @@
       "label": "get_vast_api_key()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L109",
+      "source_location": "L91",
       "id": "dataset_synthetic_fleet_monitor_get_vast_api_key",
       "community": 94,
       "norm_label": "get_vast_api_key()"
@@ -9391,7 +9391,7 @@
       "label": "str",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L109",
+      "source_location": "L91",
       "id": "ml_vision_dataset_synthetic_fleet_monitor_py_str",
       "community": 94,
       "norm_label": "str"
@@ -9400,7 +9400,7 @@
       "label": "set_vast_api_key()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L131",
+      "source_location": "L113",
       "id": "dataset_synthetic_fleet_monitor_set_vast_api_key",
       "community": 94,
       "norm_label": "set_vast_api_key()"
@@ -9409,7 +9409,7 @@
       "label": "test_vast_api_key()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L137",
+      "source_location": "L119",
       "id": "dataset_synthetic_fleet_monitor_test_vast_api_key",
       "community": 94,
       "norm_label": "test_vast_api_key()"
@@ -9418,7 +9418,7 @@
       "label": "bool",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L137",
+      "source_location": "L119",
       "id": "ml_vision_dataset_synthetic_fleet_monitor_py_bool",
       "community": 94,
       "norm_label": "bool"
@@ -9427,7 +9427,7 @@
       "label": "destroy_vast_instance()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L172",
+      "source_location": "L154",
       "id": "dataset_synthetic_fleet_monitor_destroy_vast_instance",
       "community": 94,
       "norm_label": "destroy_vast_instance()"
@@ -9436,7 +9436,7 @@
       "label": "int",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L172",
+      "source_location": "L154",
       "id": "ml_vision_dataset_synthetic_fleet_monitor_py_int",
       "community": 94,
       "norm_label": "int"
@@ -9445,7 +9445,7 @@
       "label": "sync_and_verify_host()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L188",
+      "source_location": "L170",
       "id": "dataset_synthetic_fleet_monitor_sync_and_verify_host",
       "community": 94,
       "norm_label": "sync_and_verify_host()"
@@ -9454,7 +9454,7 @@
       "label": "_sync_log()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L223",
+      "source_location": "L205",
       "id": "dataset_synthetic_fleet_monitor_sync_log",
       "community": 94,
       "norm_label": "_sync_log()"
@@ -9463,7 +9463,7 @@
       "label": "is_host_reachable()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L230",
+      "source_location": "L212",
       "id": "dataset_synthetic_fleet_monitor_is_host_reachable",
       "community": 94,
       "norm_label": "is_host_reachable()"
@@ -9472,7 +9472,7 @@
       "label": "pull_images_from_host()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L244",
+      "source_location": "L226",
       "id": "dataset_synthetic_fleet_monitor_pull_images_from_host",
       "community": 94,
       "norm_label": "pull_images_from_host()"
@@ -9481,7 +9481,7 @@
       "label": "Path",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L244",
+      "source_location": "L226",
       "id": "ml_vision_dataset_synthetic_fleet_monitor_py_path",
       "community": 94,
       "norm_label": "path"
@@ -9490,7 +9490,7 @@
       "label": "get_filename_to_pos_map()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L283",
+      "source_location": "L265",
       "id": "dataset_synthetic_fleet_monitor_get_filename_to_pos_map",
       "community": 94,
       "norm_label": "get_filename_to_pos_map()"
@@ -9499,7 +9499,7 @@
       "label": "is_filename_in_host_slice()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L296",
+      "source_location": "L278",
       "id": "dataset_synthetic_fleet_monitor_is_filename_in_host_slice",
       "community": 94,
       "norm_label": "is_filename_in_host_slice()"
@@ -9508,7 +9508,7 @@
       "label": "push_markers_to_host()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L313",
+      "source_location": "L295",
       "id": "dataset_synthetic_fleet_monitor_push_markers_to_host",
       "community": 94,
       "norm_label": "push_markers_to_host()"
@@ -9517,7 +9517,7 @@
       "label": "sync_markers()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L372",
+      "source_location": "L354",
       "id": "dataset_synthetic_fleet_monitor_sync_markers",
       "community": 94,
       "norm_label": "sync_markers()"
@@ -9526,7 +9526,7 @@
       "label": "run_sync_loop()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L434",
+      "source_location": "L416",
       "id": "dataset_synthetic_fleet_monitor_run_sync_loop",
       "community": 94,
       "norm_label": "run_sync_loop()"
@@ -9535,7 +9535,7 @@
       "label": "load_state()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L460",
+      "source_location": "L442",
       "id": "dataset_synthetic_fleet_monitor_load_state",
       "community": 94,
       "norm_label": "load_state()"
@@ -9544,7 +9544,7 @@
       "label": "save_state()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L485",
+      "source_location": "L467",
       "id": "dataset_synthetic_fleet_monitor_save_state",
       "community": 94,
       "norm_label": "save_state()"
@@ -9553,7 +9553,7 @@
       "label": "get_local_dataset_summary()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L496",
+      "source_location": "L478",
       "id": "dataset_synthetic_fleet_monitor_get_local_dataset_summary",
       "community": 94,
       "norm_label": "get_local_dataset_summary()"
@@ -9562,7 +9562,7 @@
       "label": "print_local_summary()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L576",
+      "source_location": "L558",
       "id": "dataset_synthetic_fleet_monitor_print_local_summary",
       "community": 94,
       "norm_label": "print_local_summary()"
@@ -9571,7 +9571,7 @@
       "label": "query_host()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L602",
+      "source_location": "L584",
       "id": "dataset_synthetic_fleet_monitor_query_host",
       "community": 94,
       "norm_label": "query_host()"
@@ -9580,7 +9580,7 @@
       "label": "evaluate_fleet()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L666",
+      "source_location": "L648",
       "id": "dataset_synthetic_fleet_monitor_evaluate_fleet",
       "community": 94,
       "norm_label": "evaluate_fleet()"
@@ -9589,7 +9589,7 @@
       "label": "update_markdown_status()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L875",
+      "source_location": "L857",
       "id": "dataset_synthetic_fleet_monitor_update_markdown_status",
       "community": 94,
       "norm_label": "update_markdown_status()"
@@ -9598,7 +9598,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L961",
+      "source_location": "L943",
       "id": "dataset_synthetic_fleet_monitor_main",
       "community": 94,
       "norm_label": "main()"
@@ -9607,8 +9607,8 @@
       "label": "Append a timestamped line to fleet_sync.log.",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L224",
-      "id": "dataset_synthetic_fleet_monitor_rationale_224",
+      "source_location": "L206",
+      "id": "dataset_synthetic_fleet_monitor_rationale_206",
       "community": 94,
       "norm_label": "append a timestamped line to fleet_sync.log."
     },
@@ -9616,8 +9616,8 @@
       "label": "Quick SSH probe \u2014 returns True only if shell responds.",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L231",
-      "id": "dataset_synthetic_fleet_monitor_rationale_231",
+      "source_location": "L213",
+      "id": "dataset_synthetic_fleet_monitor_rationale_213",
       "community": 94,
       "norm_label": "quick ssh probe \u2014 returns true only if shell responds."
     },
@@ -9625,8 +9625,8 @@
       "label": "Pull real completed images (min-size=1, exclude .tmp) from remote -> local.",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L245",
-      "id": "dataset_synthetic_fleet_monitor_rationale_245",
+      "source_location": "L227",
+      "id": "dataset_synthetic_fleet_monitor_rationale_227",
       "community": 94,
       "norm_label": "pull real completed images (min-size=1, exclude .tmp) from remote -> local."
     },
@@ -9634,8 +9634,8 @@
       "label": "Check if filename's task list position (0..27999) falls inside host's assigned s",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L297",
-      "id": "dataset_synthetic_fleet_monitor_rationale_297",
+      "source_location": "L279",
+      "id": "dataset_synthetic_fleet_monitor_rationale_279",
       "community": 94,
       "norm_label": "check if filename's task list position (0..27999) falls inside host's assigned s"
     },
@@ -9643,8 +9643,8 @@
       "label": "Optimized Delta Marker Push:     Only sends markers for images that have NOT yet",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L314",
-      "id": "dataset_synthetic_fleet_monitor_rationale_314",
+      "source_location": "L296",
+      "id": "dataset_synthetic_fleet_monitor_rationale_296",
       "community": 94,
       "norm_label": "optimized delta marker push:     only sends markers for images that have not yet"
     },
@@ -9652,8 +9652,8 @@
       "label": "One full sync cycle:       Phase 1 \u2014 Pull real images from every reachable host",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L373",
-      "id": "dataset_synthetic_fleet_monitor_rationale_373",
+      "source_location": "L355",
+      "id": "dataset_synthetic_fleet_monitor_rationale_355",
       "community": 94,
       "norm_label": "one full sync cycle:       phase 1 \u2014 pull real images from every reachable host"
     },
@@ -9661,8 +9661,8 @@
       "label": "Continuous sync daemon \u2014 runs sync_markers() every `interval` seconds.     Inten",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L435",
-      "id": "dataset_synthetic_fleet_monitor_rationale_435",
+      "source_location": "L417",
+      "id": "dataset_synthetic_fleet_monitor_rationale_417",
       "community": 94,
       "norm_label": "continuous sync daemon \u2014 runs sync_markers() every `interval` seconds.     inten"
     },
@@ -9670,8 +9670,8 @@
       "label": "Scans local Mac storage (/ML/data/vision_synthetic/raw_generated/images)     and",
       "file_type": "rationale",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
-      "source_location": "L497",
-      "id": "dataset_synthetic_fleet_monitor_rationale_497",
+      "source_location": "L479",
+      "id": "dataset_synthetic_fleet_monitor_rationale_479",
       "community": 94,
       "norm_label": "scans local mac storage (/ml/data/vision_synthetic/raw_generated/images)     and"
     },
@@ -11915,7 +11915,7 @@
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
       "source_location": "L1",
       "id": "extensions_cgimagepropertyorientation_helper",
-      "community": 181,
+      "community": 17,
       "norm_label": "cgimagepropertyorientation+helper.swift"
     },
     {
@@ -11924,7 +11924,7 @@
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
       "source_location": "L4",
       "id": "extensions_cgimagepropertyorientation_helper_cgimagepropertyorientation",
-      "community": 181,
+      "community": 17,
       "norm_label": "cgimagepropertyorientation"
     },
     {
@@ -11933,7 +11933,7 @@
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
       "source_location": "L5",
       "id": "extensions_cgimagepropertyorientation_helper_cgimagepropertyorientation_init",
-      "community": 181,
+      "community": 17,
       "norm_label": ".init()"
     },
     {
@@ -11942,7 +11942,7 @@
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
       "source_location": "L5",
       "id": "ios_lookmax_extensions_cgimagepropertyorientation_helper_swift_uiimage",
-      "community": 181,
+      "community": 17,
       "norm_label": "uiimage"
     },
     {
@@ -12185,7 +12185,7 @@
       "source_file": "iOS/LookMax/LookMaxApp.swift",
       "source_location": "L1",
       "id": "lookmax_lookmaxapp",
-      "community": 117,
+      "community": 32,
       "norm_label": "lookmaxapp.swift"
     },
     {
@@ -12194,7 +12194,7 @@
       "source_file": "iOS/LookMax/LookMaxApp.swift",
       "source_location": "L10",
       "id": "lookmax_lookmaxapp_lookmaxapp",
-      "community": 117,
+      "community": 32,
       "norm_label": "lookmaxapp"
     },
     {
@@ -12203,7 +12203,7 @@
       "source_file": "",
       "source_location": "",
       "id": "app",
-      "community": 117,
+      "community": 32,
       "norm_label": "app"
     },
     {
@@ -12212,7 +12212,7 @@
       "source_file": "iOS/LookMax/LookMaxApp.swift",
       "source_location": "L12",
       "id": "scene",
-      "community": 117,
+      "community": 32,
       "norm_label": "scene"
     },
     {
@@ -12221,7 +12221,7 @@
       "source_file": "iOS/LookMax/Managers/CameraController.swift",
       "source_location": "L1",
       "id": "managers_cameracontroller",
-      "community": 181,
+      "community": 5,
       "norm_label": "cameracontroller.swift"
     },
     {
@@ -12239,7 +12239,7 @@
       "source_file": "",
       "source_location": "",
       "id": "nsobject",
-      "community": 2,
+      "community": 23,
       "norm_label": "nsobject"
     },
     {
@@ -12248,7 +12248,7 @@
       "source_file": "",
       "source_location": "",
       "id": "observableobject",
-      "community": 2,
+      "community": 12,
       "norm_label": "observableobject"
     },
     {
@@ -12428,7 +12428,7 @@
       "source_file": "iOS/LookMax/Managers/CameraController.swift",
       "source_location": "L124",
       "id": "cgsize",
-      "community": 2,
+      "community": 82,
       "norm_label": "cgsize"
     },
     {
@@ -12545,7 +12545,7 @@
       "source_file": "iOS/LookMax/Managers/LookAnalysisEngine.swift",
       "source_location": "L1",
       "id": "managers_lookanalysisengine",
-      "community": 5,
+      "community": 6,
       "norm_label": "lookanalysisengine.swift"
     },
     {
@@ -12743,7 +12743,7 @@
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
       "source_location": "L1",
       "id": "managers_sessionstoragemanager",
-      "community": 181,
+      "community": 5,
       "norm_label": "sessionstoragemanager.swift"
     },
     {
@@ -12770,7 +12770,7 @@
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
       "source_location": "L11",
       "id": "url",
-      "community": 12,
+      "community": 107,
       "norm_label": "url"
     },
     {
@@ -12806,7 +12806,7 @@
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
       "source_location": "L29",
       "id": "managers_sessionstoragemanager_sessionstoragemanager_saveimage",
-      "community": 107,
+      "community": 12,
       "norm_label": ".saveimage()"
     },
     {
@@ -12815,7 +12815,7 @@
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
       "source_location": "L29",
       "id": "ios_lookmax_managers_sessionstoragemanager_swift_uiimage",
-      "community": 107,
+      "community": 12,
       "norm_label": "uiimage"
     },
     {
@@ -12824,7 +12824,7 @@
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
       "source_location": "L29",
       "id": "ios_lookmax_managers_sessionstoragemanager_swift_string",
-      "community": 107,
+      "community": 12,
       "norm_label": "string"
     },
     {
@@ -12878,7 +12878,7 @@
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
       "source_location": "L1",
       "id": "models_facebiometricsignature",
-      "community": 37,
+      "community": 17,
       "norm_label": "facebiometricsignature.swift"
     },
     {
@@ -12887,7 +12887,7 @@
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
       "source_location": "L3",
       "id": "models_facebiometricsignature_facebiometricsignature",
-      "community": 37,
+      "community": 17,
       "norm_label": "facebiometricsignature"
     },
     {
@@ -12905,7 +12905,7 @@
       "source_file": "",
       "source_location": "",
       "id": "equatable",
-      "community": 37,
+      "community": 17,
       "norm_label": "equatable"
     },
     {
@@ -12914,7 +12914,7 @@
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
       "source_location": "L4",
       "id": "ios_lookmax_models_facebiometricsignature_swift_double",
-      "community": 37,
+      "community": 17,
       "norm_label": "double"
     },
     {
@@ -12923,7 +12923,7 @@
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
       "source_location": "L11",
       "id": "models_facebiometricsignature_facebiometricsignature_similarity",
-      "community": 37,
+      "community": 17,
       "norm_label": ".similarity()"
     },
     {
@@ -13004,7 +13004,7 @@
       "source_file": "",
       "source_location": "",
       "id": "identifiable",
-      "community": 203,
+      "community": 87,
       "norm_label": "identifiable"
     },
     {
@@ -13418,7 +13418,7 @@
       "source_file": "iOS/LookMax/Models/LookSession.swift",
       "source_location": "L45",
       "id": "ios_lookmax_models_looksession_swift_double",
-      "community": 12,
+      "community": 104,
       "norm_label": "double"
     },
     {
@@ -13697,7 +13697,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L1",
       "id": "models_userprofile",
-      "community": 181,
+      "community": 17,
       "norm_label": "userprofile.swift"
     },
     {
@@ -13706,7 +13706,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L3",
       "id": "models_userprofile_userprofile",
-      "community": 205,
+      "community": 17,
       "norm_label": "userprofile"
     },
     {
@@ -13715,7 +13715,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L4",
       "id": "ios_lookmax_models_userprofile_swift_string",
-      "community": 205,
+      "community": 17,
       "norm_label": "string"
     },
     {
@@ -13724,7 +13724,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L5",
       "id": "ios_lookmax_models_userprofile_swift_data",
-      "community": 205,
+      "community": 17,
       "norm_label": "data"
     },
     {
@@ -13733,7 +13733,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L6",
       "id": "ios_lookmax_models_userprofile_swift_facebiometricsignature",
-      "community": 205,
+      "community": 17,
       "norm_label": "facebiometricsignature"
     },
     {
@@ -13742,7 +13742,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L7",
       "id": "ios_lookmax_models_userprofile_swift_date",
-      "community": 205,
+      "community": 17,
       "norm_label": "date"
     },
     {
@@ -13751,7 +13751,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L11",
       "id": "models_userprofile_userprofile_load",
-      "community": 205,
+      "community": 17,
       "norm_label": ".load()"
     },
     {
@@ -13760,7 +13760,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L16",
       "id": "models_userprofile_userprofile_save",
-      "community": 205,
+      "community": 17,
       "norm_label": ".save()"
     },
     {
@@ -13769,7 +13769,7 @@
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
       "source_location": "L22",
       "id": "models_userprofile_userprofile_clear",
-      "community": 205,
+      "community": 17,
       "norm_label": ".clear()"
     },
     {
@@ -13778,7 +13778,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L1",
       "id": "services_geminivisionservice",
-      "community": 181,
+      "community": 5,
       "norm_label": "geminivisionservice.swift"
     },
     {
@@ -13805,7 +13805,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L12",
       "id": "ios_lookmax_services_geminivisionservice_swift_string",
-      "community": 4,
+      "community": 204,
       "norm_label": "string"
     },
     {
@@ -13976,7 +13976,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L49",
       "id": "services_geminivisionservice_geminiserviceerror",
-      "community": 121,
+      "community": 204,
       "norm_label": "geminiserviceerror"
     },
     {
@@ -13985,7 +13985,7 @@
       "source_file": "",
       "source_location": "",
       "id": "localizederror",
-      "community": 121,
+      "community": 204,
       "norm_label": "localizederror"
     },
     {
@@ -13994,7 +13994,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L50",
       "id": "services_geminivisionservice_geminiserviceerror_missingapikey",
-      "community": 121,
+      "community": 204,
       "norm_label": "missingapikey"
     },
     {
@@ -14003,7 +14003,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L51",
       "id": "services_geminivisionservice_geminiserviceerror_imagetoolarge",
-      "community": 121,
+      "community": 204,
       "norm_label": "imagetoolarge"
     },
     {
@@ -14012,7 +14012,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L52",
       "id": "services_geminivisionservice_geminiserviceerror_networkerror",
-      "community": 121,
+      "community": 204,
       "norm_label": "networkerror"
     },
     {
@@ -14021,7 +14021,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L53",
       "id": "services_geminivisionservice_geminiserviceerror_parsingerror",
-      "community": 121,
+      "community": 204,
       "norm_label": "parsingerror"
     },
     {
@@ -14030,7 +14030,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L54",
       "id": "services_geminivisionservice_geminiserviceerror_ratelimited",
-      "community": 121,
+      "community": 204,
       "norm_label": "ratelimited"
     },
     {
@@ -14066,7 +14066,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L88",
       "id": "ios_lookmax_services_geminivisionservice_swift_uiimage",
-      "community": 204,
+      "community": 82,
       "norm_label": "uiimage"
     },
     {
@@ -14084,7 +14084,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L123",
       "id": "services_geminivisionservice_geminivisionservice_compressimage",
-      "community": 204,
+      "community": 82,
       "norm_label": ".compressimage()"
     },
     {
@@ -14093,7 +14093,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L123",
       "id": "ios_lookmax_services_geminivisionservice_swift_int",
-      "community": 204,
+      "community": 82,
       "norm_label": "int"
     },
     {
@@ -14102,7 +14102,7 @@
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
       "source_location": "L123",
       "id": "ios_lookmax_services_geminivisionservice_swift_data",
-      "community": 204,
+      "community": 82,
       "norm_label": "data"
     },
     {
@@ -14147,7 +14147,7 @@
       "source_file": "iOS/LookMax/Views/Camera/ARBiometricOverlayView.swift",
       "source_location": "L1",
       "id": "camera_arbiometricoverlayview",
-      "community": 192,
+      "community": 5,
       "norm_label": "arbiometricoverlayview.swift"
     },
     {
@@ -14156,7 +14156,7 @@
       "source_file": "iOS/LookMax/Views/Camera/ARBiometricOverlayView.swift",
       "source_location": "L3",
       "id": "camera_arbiometricoverlayview_arbiometricoverlayview",
-      "community": 192,
+      "community": 5,
       "norm_label": "arbiometricoverlayview"
     },
     {
@@ -14165,7 +14165,7 @@
       "source_file": "iOS/LookMax/Views/Camera/ARBiometricOverlayView.swift",
       "source_location": "L4",
       "id": "ios_lookmax_views_camera_arbiometricoverlayview_swift_cameracontroller",
-      "community": 192,
+      "community": 5,
       "norm_label": "cameracontroller"
     },
     {
@@ -14174,7 +14174,7 @@
       "source_file": "iOS/LookMax/Views/Camera/ARBiometricOverlayView.swift",
       "source_location": "L5",
       "id": "ios_lookmax_views_camera_arbiometricoverlayview_swift_occasioncategory",
-      "community": 192,
+      "community": 5,
       "norm_label": "occasioncategory"
     },
     {
@@ -14201,7 +14201,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L20",
       "id": "camera_camerapreviewview_camerapreviewview",
-      "community": 82,
+      "community": 2,
       "norm_label": "camerapreviewview"
     },
     {
@@ -14210,7 +14210,7 @@
       "source_file": "",
       "source_location": "",
       "id": "uiviewrepresentable",
-      "community": 82,
+      "community": 2,
       "norm_label": "uiviewrepresentable"
     },
     {
@@ -14219,7 +14219,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L21",
       "id": "ios_lookmax_views_camera_camerapreviewview_swift_cameracontroller",
-      "community": 82,
+      "community": 2,
       "norm_label": "cameracontroller"
     },
     {
@@ -14228,7 +14228,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L23",
       "id": "camera_camerapreviewview_camerapreviewview_makeuiview",
-      "community": 82,
+      "community": 2,
       "norm_label": ".makeuiview()"
     },
     {
@@ -14237,7 +14237,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L23",
       "id": "ios_lookmax_views_camera_camerapreviewview_swift_context",
-      "community": 82,
+      "community": 2,
       "norm_label": "context"
     },
     {
@@ -14246,7 +14246,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L23",
       "id": "camerapreviewuiview",
-      "community": 82,
+      "community": 2,
       "norm_label": "camerapreviewuiview"
     },
     {
@@ -14255,7 +14255,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L30",
       "id": "camera_camerapreviewview_camerapreviewview_updateuiview",
-      "community": 82,
+      "community": 2,
       "norm_label": ".updateuiview()"
     },
     {
@@ -14264,7 +14264,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L33",
       "id": "camera_camerapreviewview_camerapreviewuiview",
-      "community": 82,
+      "community": 2,
       "norm_label": "camerapreviewuiview"
     },
     {
@@ -14273,7 +14273,7 @@
       "source_file": "",
       "source_location": "",
       "id": "uiview",
-      "community": 82,
+      "community": 2,
       "norm_label": "uiview"
     },
     {
@@ -14282,7 +14282,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L34",
       "id": "anyclass",
-      "community": 82,
+      "community": 2,
       "norm_label": "anyclass"
     },
     {
@@ -14291,7 +14291,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
       "source_location": "L35",
       "id": "avcapturevideopreviewlayer",
-      "community": 82,
+      "community": 2,
       "norm_label": "avcapturevideopreviewlayer"
     },
     {
@@ -14309,7 +14309,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L4",
       "id": "camera_customcameraview_customcameraview",
-      "community": 2,
+      "community": 37,
       "norm_label": "customcameraview"
     },
     {
@@ -14318,7 +14318,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L5",
       "id": "ios_lookmax_views_camera_customcameraview_swift_bool",
-      "community": 2,
+      "community": 37,
       "norm_label": "bool"
     },
     {
@@ -14327,7 +14327,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L6",
       "id": "ios_lookmax_views_camera_customcameraview_swift_occasioncategory",
-      "community": 2,
+      "community": 37,
       "norm_label": "occasioncategory"
     },
     {
@@ -14336,7 +14336,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L7",
       "id": "ios_lookmax_views_camera_customcameraview_swift_uiimage",
-      "community": 2,
+      "community": 37,
       "norm_label": "uiimage"
     },
     {
@@ -14345,7 +14345,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L7",
       "id": "ios_lookmax_views_camera_customcameraview_swift_void",
-      "community": 2,
+      "community": 37,
       "norm_label": "void"
     },
     {
@@ -14354,7 +14354,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L12",
       "id": "ios_lookmax_views_camera_customcameraview_swift_cgfloat",
-      "community": 2,
+      "community": 37,
       "norm_label": "cgfloat"
     },
     {
@@ -14363,7 +14363,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L223",
       "id": "camera_customcameraview_customcameraview_zoombutton",
-      "community": 2,
+      "community": 37,
       "norm_label": ".zoombutton()"
     },
     {
@@ -14372,7 +14372,7 @@
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
       "source_location": "L223",
       "id": "ios_lookmax_views_camera_customcameraview_swift_string",
-      "community": 2,
+      "community": 37,
       "norm_label": "string"
     },
     {
@@ -15119,7 +15119,7 @@
       "source_file": "iOS/LookMax/Views/Sessions/CreateSessionSheet.swift",
       "source_location": "L4",
       "id": "ios_lookmax_views_sessions_createsessionsheet_swift_void",
-      "community": 12,
+      "community": 36,
       "norm_label": "void"
     },
     {
@@ -16968,6 +16968,78 @@
       "norm_label": "ml pipelines"
     },
     {
+      "label": "Append a timestamped line to fleet_sync.log.",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L224",
+      "community": 94,
+      "norm_label": "append a timestamped line to fleet_sync.log.",
+      "id": "dataset_synthetic_fleet_monitor_rationale_224"
+    },
+    {
+      "label": "Quick SSH probe \u2014 returns True only if shell responds.",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L231",
+      "community": 94,
+      "norm_label": "quick ssh probe \u2014 returns true only if shell responds.",
+      "id": "dataset_synthetic_fleet_monitor_rationale_231"
+    },
+    {
+      "label": "Pull real completed images (min-size=1, exclude .tmp) from remote -> local.",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L245",
+      "community": 94,
+      "norm_label": "pull real completed images (min-size=1, exclude .tmp) from remote -> local.",
+      "id": "dataset_synthetic_fleet_monitor_rationale_245"
+    },
+    {
+      "label": "Check if filename's task list position (0..27999) falls inside host's assigned s",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L297",
+      "community": 94,
+      "norm_label": "check if filename's task list position (0..27999) falls inside host's assigned s",
+      "id": "dataset_synthetic_fleet_monitor_rationale_297"
+    },
+    {
+      "label": "Optimized Delta Marker Push:     Only sends markers for images that have NOT yet",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L314",
+      "community": 94,
+      "norm_label": "optimized delta marker push:     only sends markers for images that have not yet",
+      "id": "dataset_synthetic_fleet_monitor_rationale_314"
+    },
+    {
+      "label": "One full sync cycle:       Phase 1 \u2014 Pull real images from every reachable host",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L373",
+      "community": 94,
+      "norm_label": "one full sync cycle:       phase 1 \u2014 pull real images from every reachable host",
+      "id": "dataset_synthetic_fleet_monitor_rationale_373"
+    },
+    {
+      "label": "Continuous sync daemon \u2014 runs sync_markers() every `interval` seconds.     Inten",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L435",
+      "community": 94,
+      "norm_label": "continuous sync daemon \u2014 runs sync_markers() every `interval` seconds.     inten",
+      "id": "dataset_synthetic_fleet_monitor_rationale_435"
+    },
+    {
+      "label": "Scans local Mac storage (/ML/data/vision_synthetic/raw_generated/images)     and",
+      "file_type": "rationale",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L497",
+      "community": 94,
+      "norm_label": "scans local mac storage (/ml/data/vision_synthetic/raw_generated/images)     and",
+      "id": "dataset_synthetic_fleet_monitor_rationale_497"
+    },
+    {
       "label": "# NOTE: \"gemini-2.5-flash\" (the original default) was retired (\"no longer availa",
       "file_type": "rationale",
       "source_file": "ML/stylist_llm/config.py",
@@ -17359,7 +17431,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
+      "community": 29,
       "file_type": "code",
       "norm_label": "view",
       "source_file": "iOS/LookMax/Extensions/Theme.swift",
@@ -17515,7 +17587,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "remappedtokenizer",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -17539,7 +17611,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": "looksession",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -17587,7 +17659,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 15,
+      "community": 176,
       "file_type": "code",
       "norm_label": "emptysessionsview",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -17611,7 +17683,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": "sessioncardview",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -17623,7 +17695,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 15,
+      "community": 176,
       "file_type": "code",
       "norm_label": "startsessioncta",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -17635,7 +17707,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 205,
+      "community": 17,
       "file_type": "code",
       "norm_label": "userprofile",
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
@@ -17683,7 +17755,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 37,
       "file_type": "code",
       "norm_label": "customcameraview",
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
@@ -17719,7 +17791,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 181,
+      "community": 17,
       "file_type": "code",
       "norm_label": "cgimagepropertyorientation",
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
@@ -17743,7 +17815,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "_pacedratelimiter",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -17779,7 +17851,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 32,
       "file_type": "code",
       "norm_label": "contentview",
       "source_file": "iOS/LookMax/ContentView.swift",
@@ -17791,7 +17863,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": "createsessionsheet",
       "source_file": "iOS/LookMax/Views/Sessions/CreateSessionSheet.swift",
@@ -17803,7 +17875,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 37,
+      "community": 17,
       "file_type": "code",
       "norm_label": "facebiometricsignature",
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
@@ -17863,7 +17935,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 82,
       "file_type": "code",
       "norm_label": "geminivisionservice",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -17875,7 +17947,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 117,
+      "community": 32,
       "file_type": "code",
       "norm_label": "lookmaxapp",
       "source_file": "iOS/LookMax/LookMaxApp.swift",
@@ -17899,7 +17971,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 82,
+      "community": 2,
       "file_type": "code",
       "norm_label": "camerapreviewuiview",
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
@@ -17911,7 +17983,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 82,
+      "community": 2,
       "file_type": "code",
       "norm_label": "camerapreviewview",
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
@@ -17994,7 +18066,7 @@
       "label": ".init()",
       "_callable": true,
       "_origin": "ast",
-      "community": 208,
+      "community": 29,
       "file_type": "code",
       "norm_label": ".init()",
       "source_file": "iOS/LookMax/Extensions/Color+Hex.swift",
@@ -18005,7 +18077,7 @@
       "label": ".toHex()",
       "_callable": true,
       "_origin": "ast",
-      "community": 29,
+      "community": 208,
       "file_type": "code",
       "norm_label": ".tohex()",
       "source_file": "iOS/LookMax/Extensions/Color+Hex.swift",
@@ -18676,7 +18748,7 @@
       "label": "_build_dataset()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "_build_dataset()",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -18687,7 +18759,7 @@
       "label": "_load_examples()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "_load_examples()",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -18698,7 +18770,7 @@
       "label": "main()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "main()",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -18709,7 +18781,7 @@
       "label": "run_dry_run()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "run_dry_run()",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -18720,7 +18792,7 @@
       "label": "run_finetune()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "run_finetune()",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -18731,7 +18803,7 @@
       "label": ".apply_chat_template()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": ".apply_chat_template()",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -18742,7 +18814,7 @@
       "label": ".decode()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": ".decode()",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -18753,7 +18825,7 @@
       "label": ".encode()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": ".encode()",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -18764,7 +18836,7 @@
       "label": ".from_pruned_dir()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": ".from_pruned_dir()",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -18775,7 +18847,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": ".__init__()",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -18786,7 +18858,7 @@
       "label": "build_review_contexts()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "build_review_contexts()",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -18797,7 +18869,7 @@
       "label": "main()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "main()",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -18808,7 +18880,7 @@
       "label": "_print_result()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "_print_result()",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -18819,7 +18891,7 @@
       "label": "run_checkpoint_mode()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "run_checkpoint_mode()",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -18830,7 +18902,7 @@
       "label": "run_mlpackage_mode()",
       "_callable": true,
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "run_mlpackage_mode()",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -18841,7 +18913,7 @@
       "label": ".binding()",
       "_callable": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 32,
       "file_type": "code",
       "norm_label": ".binding()",
       "source_file": "iOS/LookMax/ContentView.swift",
@@ -18852,7 +18924,7 @@
       "label": ".seedSampleDataIfNeeded()",
       "_callable": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".seedsampledataifneeded()",
       "source_file": "iOS/LookMax/ContentView.swift",
@@ -18863,7 +18935,7 @@
       "label": ".addSession()",
       "_callable": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".addsession()",
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
@@ -19325,7 +19397,7 @@
       "label": ".medium()",
       "_callable": true,
       "_origin": "ast",
-      "community": 15,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".medium()",
       "source_file": "iOS/LookMax/Extensions/Theme.swift",
@@ -19501,7 +19573,7 @@
       "label": ".save()",
       "_callable": true,
       "_origin": "ast",
-      "community": 205,
+      "community": 17,
       "file_type": "code",
       "norm_label": ".save()",
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
@@ -19534,7 +19606,7 @@
       "label": ".enrollProfile()",
       "_callable": true,
       "_origin": "ast",
-      "community": 205,
+      "community": 17,
       "file_type": "code",
       "norm_label": ".enrollprofile()",
       "source_file": "iOS/LookMax/Views/Onboarding/ProfileOnboardingView.swift",
@@ -19886,7 +19958,7 @@
       "label": ".zoomButton()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 37,
       "file_type": "code",
       "norm_label": ".zoombutton()",
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
@@ -20315,7 +20387,7 @@
       "label": ".init()",
       "_callable": true,
       "_origin": "ast",
-      "community": 181,
+      "community": 17,
       "file_type": "code",
       "norm_label": ".init()",
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
@@ -20326,7 +20398,7 @@
       "label": ".saveImage()",
       "_callable": true,
       "_origin": "ast",
-      "community": 107,
+      "community": 12,
       "file_type": "code",
       "norm_label": ".saveimage()",
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
@@ -20337,7 +20409,7 @@
       "label": ".analyzeAndAddLook()",
       "_callable": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 6,
       "file_type": "code",
       "norm_label": ".analyzeandaddlook()",
       "source_file": "iOS/LookMax/Views/Sessions/SessionDetailView.swift",
@@ -20359,7 +20431,7 @@
       "label": "build_task_contexts()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "build_task_contexts()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20370,7 +20442,7 @@
       "label": "_call_gemini()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "_call_gemini()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20381,7 +20453,7 @@
       "label": "_gemini_client()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "_gemini_client()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20392,7 +20464,7 @@
       "label": "main()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "main()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20403,7 +20475,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": ".__init__()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20414,7 +20486,7 @@
       "label": ".wait()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": ".wait()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20425,7 +20497,7 @@
       "label": "run_dry_run()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "run_dry_run()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20436,7 +20508,7 @@
       "label": "run_generation()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "run_generation()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -20447,7 +20519,7 @@
       "label": "_validate_response()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "_validate_response()",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -21118,7 +21190,7 @@
       "label": ".load()",
       "_callable": true,
       "_origin": "ast",
-      "community": 205,
+      "community": 32,
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
@@ -21261,7 +21333,7 @@
       "label": ".success()",
       "_callable": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".success()",
       "source_file": "iOS/LookMax/Extensions/Theme.swift",
@@ -21272,7 +21344,7 @@
       "label": ".createSession()",
       "_callable": true,
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".createsession()",
       "source_file": "iOS/LookMax/Views/Sessions/CreateSessionSheet.swift",
@@ -21283,7 +21355,7 @@
       "label": ".similarity()",
       "_callable": true,
       "_origin": "ast",
-      "community": 37,
+      "community": 17,
       "file_type": "code",
       "norm_label": ".similarity()",
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
@@ -21316,7 +21388,7 @@
       "label": ".buildPrompt()",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 82,
       "file_type": "code",
       "norm_label": ".buildprompt()",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -21327,7 +21399,7 @@
       "label": ".buildRequestBody()",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 204,
       "file_type": "code",
       "norm_label": ".buildrequestbody()",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -21338,7 +21410,7 @@
       "label": ".compressImage()",
       "_callable": true,
       "_origin": "ast",
-      "community": 204,
+      "community": 82,
       "file_type": "code",
       "norm_label": ".compressimage()",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -21349,7 +21421,7 @@
       "label": ".evaluate()",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 82,
       "file_type": "code",
       "norm_label": ".evaluate()",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -21360,7 +21432,7 @@
       "label": ".init()",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 82,
       "file_type": "code",
       "norm_label": ".init()",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -21371,7 +21443,7 @@
       "label": ".parseResponse()",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 82,
       "file_type": "code",
       "norm_label": ".parseresponse()",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -21426,7 +21498,7 @@
       "label": ".makeUIView()",
       "_callable": true,
       "_origin": "ast",
-      "community": 82,
+      "community": 2,
       "file_type": "code",
       "norm_label": ".makeuiview()",
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
@@ -21437,7 +21509,7 @@
       "label": ".updateUIView()",
       "_callable": true,
       "_origin": "ast",
-      "community": 82,
+      "community": 2,
       "file_type": "code",
       "norm_label": ".updateuiview()",
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
@@ -21700,7 +21772,7 @@
     {
       "label": "Theme.swift",
       "_origin": "ast",
-      "community": 176,
+      "community": 29,
       "file_type": "code",
       "norm_label": "theme.swift",
       "source_file": "iOS/LookMax/Extensions/Theme.swift",
@@ -21830,7 +21902,7 @@
     {
       "label": ".body",
       "_origin": "ast",
-      "community": 96,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".body",
       "source_file": "iOS/LookMax/Views/Components/LookDetailCard.swift",
@@ -22130,7 +22202,7 @@
     {
       "label": "finetune.py",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "finetune.py",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -22140,7 +22212,7 @@
     {
       "label": "remap_tokenizer.py",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "remap_tokenizer.py",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -22150,7 +22222,7 @@
     {
       "label": "stylist_llm/smoke_test.py",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "code",
       "norm_label": "stylist_llm/smoke_test.py",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -22160,7 +22232,7 @@
     {
       "label": "finetune.py -- supervised fine-tuning on the QA-passed synthetic dataset. FULL\u2026",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "rationale",
       "norm_label": "finetune.py -- supervised fine-tuning on the qa-passed synthetic dataset. full...",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -22170,7 +22242,7 @@
     {
       "label": "Returns a list of {\"input_ids\": [...], \"labels\": [...]} -- labels match\u2026",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "rationale",
       "norm_label": "returns a list of {\"input_ids\": [...], \"labels\": [...]} -- labels match...",
       "source_file": "ML/stylist_llm/finetune.py",
@@ -22180,7 +22252,7 @@
     {
       "label": "remap_tokenizer.py -- wraps the ORIGINAL (unpruned) tokenizer plus\u2026",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "rationale",
       "norm_label": "remap_tokenizer.py -- wraps the original (unpruned) tokenizer plus...",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -22190,7 +22262,7 @@
     {
       "label": "Uses the base tokenizer's chat template (ChatML) to build the prompt STRING,\u2026",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "rationale",
       "norm_label": "uses the base tokenizer's chat template (chatml) to build the prompt string,...",
       "source_file": "ML/stylist_llm/remap_tokenizer.py",
@@ -22200,7 +22272,7 @@
     {
       "label": "smoke_test.py -- generate a handful of real prompts and eyeball the output,\u2026",
       "_origin": "ast",
-      "community": 26,
+      "community": 9,
       "file_type": "rationale",
       "norm_label": "smoke_test.py -- generate a handful of real prompts and eyeball the output,...",
       "source_file": "ML/stylist_llm/smoke_test.py",
@@ -22210,7 +22282,7 @@
     {
       "label": ".body",
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".body",
       "source_file": "iOS/LookMax/ContentView.swift",
@@ -22230,7 +22302,7 @@
     {
       "label": ".averageScore",
       "_origin": "ast",
-      "community": 87,
+      "community": 104,
       "file_type": "code",
       "norm_label": ".averagescore",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -22240,7 +22312,7 @@
     {
       "label": ".bestLook",
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": ".bestlook",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -22250,7 +22322,7 @@
     {
       "label": ".firstLook",
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": ".firstlook",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -22260,7 +22332,7 @@
     {
       "label": ".formattedDate",
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": ".formatteddate",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -22270,7 +22342,7 @@
     {
       "label": ".latestLook",
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": ".latestlook",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -22280,7 +22352,7 @@
     {
       "label": ".tagsFormatted",
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": ".tagsformatted",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -22410,7 +22482,7 @@
     {
       "label": ".hudPrompt",
       "_origin": "ast",
-      "community": 176,
+      "community": 37,
       "file_type": "code",
       "norm_label": ".hudprompt",
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
@@ -22440,7 +22512,7 @@
     {
       "label": "DashboardComponents.swift",
       "_origin": "ast",
-      "community": 15,
+      "community": 176,
       "file_type": "code",
       "norm_label": "dashboardcomponents.swift",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -22450,7 +22522,7 @@
     {
       "label": ".body",
       "_origin": "ast",
-      "community": 15,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".body",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -22480,7 +22552,7 @@
     {
       "label": ".sessionMeta",
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".sessionmeta",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -22490,7 +22562,7 @@
     {
       "label": ".body",
       "_origin": "ast",
-      "community": 15,
+      "community": 176,
       "file_type": "code",
       "norm_label": ".body",
       "source_file": "iOS/LookMax/Views/Components/DashboardComponents.swift",
@@ -22890,7 +22962,7 @@
     {
       "label": ".countdownView",
       "_origin": "ast",
-      "community": 176,
+      "community": 37,
       "file_type": "code",
       "norm_label": ".countdownview",
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
@@ -22900,7 +22972,7 @@
     {
       "label": ".flashIcon",
       "_origin": "ast",
-      "community": 2,
+      "community": 37,
       "file_type": "code",
       "norm_label": ".flashicon",
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
@@ -22930,7 +23002,7 @@
     {
       "label": ".zoomRings",
       "_origin": "ast",
-      "community": 2,
+      "community": 37,
       "file_type": "code",
       "norm_label": ".zoomrings",
       "source_file": "iOS/LookMax/Views/Camera/CustomCameraView.swift",
@@ -23220,7 +23292,7 @@
     {
       "label": "generate_synthetic_dataset.py",
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "code",
       "norm_label": "generate_synthetic_dataset.py",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -23230,7 +23302,7 @@
     {
       "label": "generate_synthetic_dataset.py -- generates the 3,500-5,000 instruction pairs\u2026",
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "rationale",
       "norm_label": "generate_synthetic_dataset.py -- generates the 3,500-5,000 instruction pairs...",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -23240,7 +23312,7 @@
     {
       "label": "Minimal local rate limiter -- deliberately not importing real_data_pipeline's\u2026",
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "rationale",
       "norm_label": "minimal local rate limiter -- deliberately not importing real_data_pipeline's...",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -23250,7 +23322,7 @@
     {
       "label": "Deterministic: `count` (category, tier, occasion, row) contexts, in a fixed\u2026",
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "rationale",
       "norm_label": "deterministic: `count` (category, tier, occasion, row) contexts, in a fixed...",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -23260,7 +23332,7 @@
     {
       "label": "Returns (ok, reason). Enforced here, not just left for qa_review.py -- catching\u2026",
       "_origin": "ast",
-      "community": 9,
+      "community": 26,
       "file_type": "rationale",
       "norm_label": "returns (ok, reason). enforced here, not just left for qa_review.py -- catching...",
       "source_file": "ML/stylist_llm/generate_synthetic_dataset.py",
@@ -23700,7 +23772,7 @@
     {
       "label": "ContentView.swift",
       "_origin": "ast",
-      "community": 12,
+      "community": 32,
       "file_type": "code",
       "norm_label": "contentview.swift",
       "source_file": "iOS/LookMax/ContentView.swift",
@@ -23800,7 +23872,7 @@
     {
       "label": "CreateSessionSheet.swift",
       "_origin": "ast",
-      "community": 12,
+      "community": 176,
       "file_type": "code",
       "norm_label": "createsessionsheet.swift",
       "source_file": "iOS/LookMax/Views/Sessions/CreateSessionSheet.swift",
@@ -24060,7 +24132,7 @@
     {
       "label": ".apiKey",
       "_origin": "ast",
-      "community": 4,
+      "community": 82,
       "file_type": "code",
       "norm_label": ".apikey",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -24247,7 +24319,7 @@
     {
       "label": "Combine",
       "_origin": "ast",
-      "community": 181,
+      "community": 5,
       "file_type": "code",
       "norm_label": "combine",
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
@@ -24269,7 +24341,7 @@
     {
       "label": "Foundation",
       "_origin": "ast",
-      "community": 181,
+      "community": 5,
       "file_type": "code",
       "norm_label": "foundation",
       "source_file": "iOS/LookMax/Services/GeminiVisionService.swift",
@@ -24280,7 +24352,7 @@
     {
       "label": "ImageIO",
       "_origin": "ast",
-      "community": 181,
+      "community": 17,
       "file_type": "code",
       "norm_label": "imageio",
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
@@ -24291,7 +24363,7 @@
     {
       "label": "CGImagePropertyOrientation+Helper.swift",
       "_origin": "ast",
-      "community": 181,
+      "community": 17,
       "file_type": "code",
       "norm_label": "cgimagepropertyorientation+helper.swift",
       "source_file": "iOS/LookMax/Extensions/CGImagePropertyOrientation+Helper.swift",
@@ -24311,7 +24383,7 @@
     {
       "label": "LookMaxApp.swift",
       "_origin": "ast",
-      "community": 117,
+      "community": 32,
       "file_type": "code",
       "norm_label": "lookmaxapp.swift",
       "source_file": "iOS/LookMax/LookMaxApp.swift",
@@ -24321,7 +24393,7 @@
     {
       "label": ".body",
       "_origin": "ast",
-      "community": 117,
+      "community": 32,
       "file_type": "code",
       "norm_label": ".body",
       "source_file": "iOS/LookMax/LookMaxApp.swift",
@@ -24331,7 +24403,7 @@
     {
       "label": "CameraController.swift",
       "_origin": "ast",
-      "community": 181,
+      "community": 5,
       "file_type": "code",
       "norm_label": "cameracontroller.swift",
       "source_file": "iOS/LookMax/Managers/CameraController.swift",
@@ -24351,7 +24423,7 @@
     {
       "label": "SessionStorageManager.swift",
       "_origin": "ast",
-      "community": 181,
+      "community": 5,
       "file_type": "code",
       "norm_label": "sessionstoragemanager.swift",
       "source_file": "iOS/LookMax/Managers/SessionStorageManager.swift",
@@ -24361,7 +24433,7 @@
     {
       "label": "FaceBiometricSignature.swift",
       "_origin": "ast",
-      "community": 37,
+      "community": 17,
       "file_type": "code",
       "norm_label": "facebiometricsignature.swift",
       "source_file": "iOS/LookMax/Models/FaceBiometricSignature.swift",
@@ -24371,7 +24443,7 @@
     {
       "label": "LookItem.swift",
       "_origin": "ast",
-      "community": 87,
+      "community": 5,
       "file_type": "code",
       "norm_label": "lookitem.swift",
       "source_file": "iOS/LookMax/Models/LookItem.swift",
@@ -24381,7 +24453,7 @@
     {
       "label": "LookSession.swift",
       "_origin": "ast",
-      "community": 12,
+      "community": 104,
       "file_type": "code",
       "norm_label": "looksession.swift",
       "source_file": "iOS/LookMax/Models/LookSession.swift",
@@ -24411,7 +24483,7 @@
     {
       "label": "UserProfile.swift",
       "_origin": "ast",
-      "community": 181,
+      "community": 17,
       "file_type": "code",
       "norm_label": "userprofile.swift",
       "source_file": "iOS/LookMax/Models/UserProfile.swift",
@@ -24441,7 +24513,7 @@
     {
       "label": ".layerClass",
       "_origin": "ast",
-      "community": 82,
+      "community": 2,
       "file_type": "code",
       "norm_label": ".layerclass",
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
@@ -24451,7 +24523,7 @@
     {
       "label": ".previewLayer",
       "_origin": "ast",
-      "community": 82,
+      "community": 2,
       "file_type": "code",
       "norm_label": ".previewlayer",
       "source_file": "iOS/LookMax/Views/Camera/CameraPreviewView.swift",
@@ -24481,7 +24553,7 @@
     {
       "label": "ImagePicker.swift",
       "_origin": "ast",
-      "community": 181,
+      "community": 23,
       "file_type": "code",
       "norm_label": "imagepicker.swift",
       "source_file": "iOS/LookMax/Views/Components/ImagePicker.swift",
@@ -24522,7 +24594,7 @@
     {
       "label": "UIKit",
       "_origin": "ast",
-      "community": 181,
+      "community": 5,
       "file_type": "code",
       "norm_label": "uikit",
       "source_file": "iOS/LookMax/Views/Components/ImagePicker.swift",
@@ -40265,6 +40337,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L206",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_206",
+      "target": "dataset_synthetic_fleet_monitor_sync_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
       "source_location": "L224",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -40297,6 +40379,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_213",
+      "target": "dataset_synthetic_fleet_monitor_is_host_reachable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
       "source_location": "L231",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -40324,6 +40416,16 @@
       "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_monitor_pull_images_from_host",
       "target": "ml_vision_dataset_synthetic_fleet_monitor_py_path"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L227",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_227",
+      "target": "dataset_synthetic_fleet_monitor_pull_images_from_host",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -40383,6 +40485,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L279",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_279",
+      "target": "dataset_synthetic_fleet_monitor_is_filename_in_host_slice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
       "source_location": "L297",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -40399,6 +40511,16 @@
       "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_monitor_push_markers_to_host",
       "target": "dataset_synthetic_fleet_monitor_save_state"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L296",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_296",
+      "target": "dataset_synthetic_fleet_monitor_push_markers_to_host",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -40431,6 +40553,16 @@
       "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_monitor_main",
       "target": "dataset_synthetic_fleet_monitor_sync_markers"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L355",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_355",
+      "target": "dataset_synthetic_fleet_monitor_sync_markers",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -40490,6 +40622,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L417",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_417",
+      "target": "dataset_synthetic_fleet_monitor_run_sync_loop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
       "source_location": "L435",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -40539,6 +40681,16 @@
       "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_monitor_print_local_summary",
       "target": "dataset_synthetic_fleet_monitor_get_local_dataset_summary"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ML/vision/dataset_synthetic/fleet_monitor.py",
+      "source_location": "L479",
+      "weight": 1.0,
+      "source": "dataset_synthetic_fleet_monitor_rationale_479",
+      "target": "dataset_synthetic_fleet_monitor_get_local_dataset_summary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -54308,9 +54460,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture"
     },
     {
       "relation": "contains",
@@ -54318,9 +54470,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_components",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_components"
     },
     {
       "relation": "contains",
@@ -54328,9 +54480,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_cross_machine_sync_zero_byte_marker_coordination",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_cross_machine_sync_zero_byte_marker_coordination"
     },
     {
       "relation": "contains",
@@ -54338,9 +54490,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_health_monitoring_auto_destroy",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_health_monitoring_auto_destroy"
     },
     {
       "relation": "contains",
@@ -54348,9 +54500,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_known_issues_found_during_this_review",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_known_issues_found_during_this_review"
     },
     {
       "relation": "contains",
@@ -54358,9 +54510,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_provisioning_a_new_machine",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_provisioning_a_new_machine"
     },
     {
       "relation": "contains",
@@ -54368,9 +54520,9 @@
       "source_file": "ML/vision/dataset_synthetic/FLEET_ARCHITECTURE.md",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dataset_synthetic_fleet_architecture_lookmax_synthetic_dataset_fleet_architecture",
-      "target": "dataset_synthetic_fleet_architecture_task_partitioning",
-      "confidence_score": 1.0
+      "target": "dataset_synthetic_fleet_architecture_task_partitioning"
     },
     {
       "relation": "contains",
@@ -69180,5 +69332,5 @@
       "source_file": "AGENTS.md"
     }
   ],
-  "built_at_commit": "eb1632ef5fec1ab13c1a0e44c17743bc28796a03"
+  "built_at_commit": "4e7206ad9ed8e75f18c322a706a817a6614d7574"
 }

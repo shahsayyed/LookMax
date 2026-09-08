@@ -43,6 +43,7 @@ rsync -avz --progress \
     --exclude=".DS_Store" \
     --exclude="*.tmp" \
     --exclude="*.pyc" \
+    --exclude=".vast_api_key" \
     -e "$RSYNC_RSH" \
     "$SCRIPT_DIR/" \
     "$DEST/"

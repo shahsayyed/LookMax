@@ -144465,13 +144465,13 @@
     "semantic_hash": ""
   },
   "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/fleet_monitor.py": {
-    "mtime": 1788822364.9717326,
-    "ast_hash": "c2d97059b663006f05a246dd478fd93a",
+    "mtime": 1788904400.4309082,
+    "ast_hash": "562b01324546ae50a1746a774c1db2dc",
     "semantic_hash": ""
   },
   "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/fleet_state.json": {
-    "mtime": 1788856517.1069808,
-    "ast_hash": "c413c98ce56a7d29e39bb28bae2c2f65",
+    "mtime": 1788905553.2482216,
+    "ast_hash": "b163692bcf090a750ea9f5c076a28514",
     "semantic_hash": ""
   },
   "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/monitor_fleet.sh": {
@@ -144485,8 +144485,8 @@
     "semantic_hash": ""
   },
   "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/remote_deploy.sh": {
-    "mtime": 1788666956.7913525,
-    "ast_hash": "9d5a9ea899fa99a2b5cd1bad136e60e2",
+    "mtime": 1788904418.2079947,
+    "ast_hash": "276caf559d9b5f07bac4462e926591a4",
     "semantic_hash": ""
   },
   "/Users/sayyed/development/repos/LookMax/ML/vision/dataset_synthetic/run.sh": {
@@ -335832,6 +335832,816 @@
   "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/27997_Women_Outfit_polished.png": {
     "mtime": 1788835654.0,
     "ast_hash": "13881efd5ac4de2e91031d0128a724c4",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/00026_Men_Grooming_flaw_severe.png": {
+    "mtime": 1788858096.0,
+    "ast_hash": "62b504cbf4a2f0801ad988ae8d996213",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/00277_Men_Grooming_flaw_severe.png": {
+    "mtime": 1788856022.0,
+    "ast_hash": "8e8abf27f61d63ce1e206c71ee55aea3",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/00445_Men_Grooming_flaw_severe.png": {
+    "mtime": 1788856503.0,
+    "ast_hash": "cf77d37b45ae0d0fea10b8c7816b2452",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01091_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788856076.0,
+    "ast_hash": "2fd1c2eb00e6ad95012f64209a3e546f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01202_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788856892.0,
+    "ast_hash": "b47d04b5f328b5f2045495c37c350659",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01211_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788855670.0,
+    "ast_hash": "b5c43dc9ae4af57003e31ffee1d6d74e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01317_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788855963.0,
+    "ast_hash": "58aa5f0d873f75be1a3c73e373ba6578",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01690_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788855984.0,
+    "ast_hash": "434108c47031ea3d75ed6bfb3b9bd103",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01819_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788857697.0,
+    "ast_hash": "71c84bea20d952d3047eda0ad89bd58a",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/01935_Men_Grooming_flaw_mild.png": {
+    "mtime": 1788856930.0,
+    "ast_hash": "1ec1b7c81a32d03be8a23e757db861a0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02088_Men_Grooming_average.png": {
+    "mtime": 1788855610.0,
+    "ast_hash": "dacc6591b88b6d8e048d3d55348eb2c7",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02133_Men_Grooming_average.png": {
+    "mtime": 1788856281.0,
+    "ast_hash": "81649fca5b201667b1903b45822be254",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02559_Men_Grooming_average.png": {
+    "mtime": 1788856578.0,
+    "ast_hash": "6f0034d893be90d1f4c7f4fb1bc7b40e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02593_Men_Grooming_average.png": {
+    "mtime": 1788856443.0,
+    "ast_hash": "41908bb72111122cf552a80b615644d1",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02703_Men_Grooming_average.png": {
+    "mtime": 1788856600.0,
+    "ast_hash": "13248b85d79f133bfc6d1dd51c022fa3",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02719_Men_Grooming_average.png": {
+    "mtime": 1788856778.0,
+    "ast_hash": "b6f57b8ac843dfa47c0910a7d9649edf",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02975_Men_Grooming_average.png": {
+    "mtime": 1788855714.0,
+    "ast_hash": "1b827336e26c2767775220e2f7f92ea8",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/02999_Men_Grooming_average.png": {
+    "mtime": 1788857151.0,
+    "ast_hash": "c4f486a09d9d50c05bc43f06aa1277d6",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/03126_Men_Grooming_average.png": {
+    "mtime": 1788855757.0,
+    "ast_hash": "188a2fd9692c5ad25d340d8ddd602b44",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/03199_Men_Grooming_average.png": {
+    "mtime": 1788858139.0,
+    "ast_hash": "c99a5a256492dc35b6232569750f7526",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/03597_Men_Grooming_average.png": {
+    "mtime": 1788857297.0,
+    "ast_hash": "a2faf2a610efc76b2dcb36450bd372d0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/03771_Men_Grooming_average.png": {
+    "mtime": 1788858231.0,
+    "ast_hash": "06378eda23a3a49b41ec9081b3bcb234",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/03916_Men_Grooming_average.png": {
+    "mtime": 1788858269.0,
+    "ast_hash": "cfeeda3281d2f3d7d99a5d8378b16471",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/03985_Men_Grooming_average.png": {
+    "mtime": 1788856638.0,
+    "ast_hash": "ed5ec2265076f46e3e837cafbbeaa6d1",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04113_Men_Grooming_polished.png": {
+    "mtime": 1788857470.0,
+    "ast_hash": "b9af11f92a40ecc5556333ad3dc6e364",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04151_Men_Grooming_polished.png": {
+    "mtime": 1788857718.0,
+    "ast_hash": "c82b5dcfcc5f02f4223ca9a2d2406bad",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04169_Men_Grooming_polished.png": {
+    "mtime": 1788858523.0,
+    "ast_hash": "55e5d8c1d98fdc2bc9a24fc1861b3bd9",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04304_Men_Grooming_polished.png": {
+    "mtime": 1788857091.0,
+    "ast_hash": "e78ae89dfa5ef108c2f4447e9fd12c6e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04471_Men_Grooming_polished.png": {
+    "mtime": 1788857173.0,
+    "ast_hash": "78bd8febc3be28c02a91f808f261a505",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04633_Men_Grooming_polished.png": {
+    "mtime": 1788858329.0,
+    "ast_hash": "84e3eaf2a4efc6344dececea6cc37668",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04741_Men_Grooming_polished.png": {
+    "mtime": 1788857875.0,
+    "ast_hash": "80f86c0f9833a0ec6ed26f3996e2403b",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/04908_Men_Grooming_polished.png": {
+    "mtime": 1788856524.0,
+    "ast_hash": "3ae84e01f828fb45bfd4a095f985b276",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/05026_Men_Grooming_polished.png": {
+    "mtime": 1788857227.0,
+    "ast_hash": "d71d88a2c8f9c04711b66faa44d7c74c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/05470_Men_Grooming_polished.png": {
+    "mtime": 1788857896.0,
+    "ast_hash": "7fdc473854cbb820f0a2c7ac144501ea",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/05519_Men_Grooming_polished.png": {
+    "mtime": 1788857405.0,
+    "ast_hash": "ecc5ca45ddf1a0f1a64e26237bb57f6a",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/05539_Men_Grooming_polished.png": {
+    "mtime": 1788857318.0,
+    "ast_hash": "cf06ac0423331246c6af9b17a7251b9f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/05647_Men_Grooming_polished.png": {
+    "mtime": 1788857037.0,
+    "ast_hash": "9d9b740f267b0f50fd41029c4a169e96",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06189_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788855903.0,
+    "ast_hash": "dabdaa7101a36ccf0e4e4be004b25c30",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06202_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788857113.0,
+    "ast_hash": "28afeb04b679134cb677e6d9cdad4b12",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06480_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788855941.0,
+    "ast_hash": "b1f168ab3b58c7fbfd6d09f08b04558e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06569_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788855557.0,
+    "ast_hash": "018e22fa810167ef33697c17b84dccfc",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06576_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788856816.0,
+    "ast_hash": "dcfbdfabce0f5f4e6bd4e6b6d6f979d9",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06663_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788858448.0,
+    "ast_hash": "164c0b7f4a4d7f1682098696c72b5d2e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/06765_Women_Grooming_flaw_severe.png": {
+    "mtime": 1788857653.0,
+    "ast_hash": "204d73c0f218c6f3cd009a92f485f119",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/07241_Women_Grooming_flaw_mild.png": {
+    "mtime": 1788855648.0,
+    "ast_hash": "1471852b8af8de114fbf22eda0c32f0e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/07366_Women_Grooming_flaw_mild.png": {
+    "mtime": 1788855692.0,
+    "ast_hash": "378ce536bfb00333e11fd8b97b935404",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/07649_Women_Grooming_flaw_mild.png": {
+    "mtime": 1788857966.0,
+    "ast_hash": "553c523067d57cf241f3b648055b8712",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08147_Women_Grooming_average.png": {
+    "mtime": 1788857507.0,
+    "ast_hash": "be0704416a511b9e10319dc5a97c5577",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08445_Women_Grooming_average.png": {
+    "mtime": 1788857594.0,
+    "ast_hash": "97c5118b6799934d9424dd511267919d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08461_Women_Grooming_average.png": {
+    "mtime": 1788858074.0,
+    "ast_hash": "f59359e5e43fdef1b4e099bab6b63492",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08472_Women_Grooming_average.png": {
+    "mtime": 1788858404.0,
+    "ast_hash": "820fbdb98618a60bbf7bb81de535bddb",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08791_Women_Grooming_average.png": {
+    "mtime": 1788857426.0,
+    "ast_hash": "0b633b0b8e05b541c9103ba6685f68ba",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08893_Women_Grooming_average.png": {
+    "mtime": 1788856465.0,
+    "ast_hash": "10c013d079fa8aa33797fcc9ed42fa5a",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08917_Women_Grooming_average.png": {
+    "mtime": 1788855849.0,
+    "ast_hash": "5c98b15eceb4af07514e4dedcc0f412a",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/08999_Women_Grooming_average.png": {
+    "mtime": 1788855735.0,
+    "ast_hash": "27553346ea24e50b9a412142694b3483",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/09181_Women_Grooming_average.png": {
+    "mtime": 1788858383.0,
+    "ast_hash": "fedc60862e01f9998511532f80053ad5",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/09408_Women_Grooming_average.png": {
+    "mtime": 1788857448.0,
+    "ast_hash": "a0c3cb5c3e1fbb23329dd03166f17bad",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/09538_Women_Grooming_average.png": {
+    "mtime": 1788856303.0,
+    "ast_hash": "8bf44611dcf976f2603f9964a77a50d8",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/09608_Women_Grooming_average.png": {
+    "mtime": 1788857631.0,
+    "ast_hash": "7874bd39742586f87b998ac5ea6ac1dd",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/09613_Women_Grooming_average.png": {
+    "mtime": 1788858177.0,
+    "ast_hash": "b2112bdbe9c1ee12a4f24fada4df73ca",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/09659_Women_Grooming_average.png": {
+    "mtime": 1788855811.0,
+    "ast_hash": "f43855b53846c4995ef9bedb6356eb4e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10030_Women_Grooming_polished.png": {
+    "mtime": 1788857804.0,
+    "ast_hash": "3f0e70ce4bc9ac09541ab86a04f43483",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10073_Women_Grooming_polished.png": {
+    "mtime": 1788858426.0,
+    "ast_hash": "4e896beb169c0b9489575e9b775739f7",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10126_Women_Grooming_polished.png": {
+    "mtime": 1788858307.0,
+    "ast_hash": "27bee4d3511df000635e99deca9f7624",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10138_Women_Grooming_polished.png": {
+    "mtime": 1788856195.0,
+    "ast_hash": "76890071f58e0082c35501439926c7a1",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10374_Women_Grooming_polished.png": {
+    "mtime": 1788858469.0,
+    "ast_hash": "e636caff8cda5c9f9162834d46997b7c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10419_Women_Grooming_polished.png": {
+    "mtime": 1788856724.0,
+    "ast_hash": "1aeffbb3a73e321353c5b52485724156",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10492_Women_Grooming_polished.png": {
+    "mtime": 1788857988.0,
+    "ast_hash": "801d924a681a936edb3f3de92fc761e0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10741_Women_Grooming_polished.png": {
+    "mtime": 1788858118.0,
+    "ast_hash": "6c26df92919b6ee9bed0cef02c883639",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/10932_Women_Grooming_polished.png": {
+    "mtime": 1788857016.0,
+    "ast_hash": "1e909a90c3151c4ade9dc0747fa18ba9",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/11225_Women_Grooming_polished.png": {
+    "mtime": 1788856854.0,
+    "ast_hash": "268c714fd51bb711e8ba18ca8f1f97ce",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/11624_Women_Grooming_polished.png": {
+    "mtime": 1788857675.0,
+    "ast_hash": "529b9573108a9fc0e3649f4874695991",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/11960_Women_Grooming_polished.png": {
+    "mtime": 1788856325.0,
+    "ast_hash": "7e8dbe21b9ef04aa3f507b7a1e3e2c8c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/12141_Men_Outfit_flaw_severe.png": {
+    "mtime": 1788857486.0,
+    "ast_hash": "88359908e0fea1737a8ae579114bfca0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/12157_Men_Outfit_flaw_severe.png": {
+    "mtime": 1788856039.0,
+    "ast_hash": "55bb880f394afc89fc0736ffcb2fa712",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/12512_Men_Outfit_flaw_severe.png": {
+    "mtime": 1788856703.0,
+    "ast_hash": "1def5edeefe9ee54405f562ed9c89be5",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/12521_Men_Outfit_flaw_severe.png": {
+    "mtime": 1788857259.0,
+    "ast_hash": "71f86aa0a7679e5752e055470c3c055d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/12713_Men_Outfit_flaw_severe.png": {
+    "mtime": 1788857821.0,
+    "ast_hash": "2a5b562e170513ff0e8a8c3a944fef7e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/12718_Men_Outfit_flaw_severe.png": {
+    "mtime": 1788856125.0,
+    "ast_hash": "7ebc1f0ae8248d5c9ff9f6da78b792b6",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/13563_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788855627.0,
+    "ast_hash": "e232b7e6168087bb9976e5b45839c287",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/13631_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788856686.0,
+    "ast_hash": "a7b92c739fc63d211a68c3a208468a7f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/13821_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788857275.0,
+    "ast_hash": "c0d16aeffed1c84e4b308d315c46d9cf",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/13899_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788857734.0,
+    "ast_hash": "973847f2e25aff341cc9e91c85c33033",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/13917_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788857928.0,
+    "ast_hash": "1f4bd8ce476d21097f22033c1360a24c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14117_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788856405.0,
+    "ast_hash": "838855eeed09dbc214eba1e889ada040",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14224_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788856962.0,
+    "ast_hash": "4b03a0d3c80225765bb3882452b7574c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14278_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788858486.0,
+    "ast_hash": "31b3e41710dbe1be337f15fa120ec344",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14347_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788858285.0,
+    "ast_hash": "902d9022d47c8d9ea038c17002344f0f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14553_Men_Outfit_flaw_mild.png": {
+    "mtime": 1788857945.0,
+    "ast_hash": "9c473210ec3e7158893fcecb2b3ac046",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14748_Men_Outfit_average.png": {
+    "mtime": 1788857853.0,
+    "ast_hash": "d002fcaa4447942bfaa0b4fc166a74a3",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14824_Men_Outfit_average.png": {
+    "mtime": 1788856616.0,
+    "ast_hash": "999cbc4de882d2c78967ca2cb57be911",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/14841_Men_Outfit_average.png": {
+    "mtime": 1788856157.0,
+    "ast_hash": "6ef1fe92451f990353540c71926966d2",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/15123_Men_Outfit_average.png": {
+    "mtime": 1788856093.0,
+    "ast_hash": "30964922dd458e2134e19dc8b1fd095c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/15176_Men_Outfit_average.png": {
+    "mtime": 1788858053.0,
+    "ast_hash": "38574e91abcbaf11c3947bd7a8fc39b9",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/15905_Men_Outfit_average.png": {
+    "mtime": 1788858036.0,
+    "ast_hash": "4ceb7e0af526925b490b1fad3a7a62c0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16108_Men_Outfit_average.png": {
+    "mtime": 1788856481.0,
+    "ast_hash": "e755b0bb5f3e4ee8335bb514901c0682",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16239_Men_Outfit_average.png": {
+    "mtime": 1788856109.0,
+    "ast_hash": "b9dae37d12ffb73e58144ffd35bb80a7",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16256_Men_Outfit_average.png": {
+    "mtime": 1788855919.0,
+    "ast_hash": "d03b8e2ef9a220bcc8f164beae85f06f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16320_Men_Outfit_average.png": {
+    "mtime": 1788858247.0,
+    "ast_hash": "57aafabcddc4a796f09ace0de925bc43",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16492_Men_Outfit_average.png": {
+    "mtime": 1788856994.0,
+    "ast_hash": "5adb9d764ae3be4ba9b2d06aede2e47e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16516_Men_Outfit_average.png": {
+    "mtime": 1788856870.0,
+    "ast_hash": "d0fc268e5b5465011f65c9e573cd5ad0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16542_Men_Outfit_average.png": {
+    "mtime": 1788856341.0,
+    "ast_hash": "6fffdbc6a8f9d4f9f1653394e3fe2963",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/16783_Men_Outfit_average.png": {
+    "mtime": 1788856259.0,
+    "ast_hash": "f1f27656189e54af43661287102a4e87",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/17177_Men_Outfit_average.png": {
+    "mtime": 1788856421.0,
+    "ast_hash": "e62d65abdbb1076de70f4057cfb2978c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/17182_Men_Outfit_average.png": {
+    "mtime": 1788858361.0,
+    "ast_hash": "f47c540a653b3743fe4a9d934fb38b12",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/17246_Men_Outfit_average.png": {
+    "mtime": 1788857383.0,
+    "ast_hash": "23cb7acfe88e7154032f40ddd7f70a2d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/17377_Men_Outfit_polished.png": {
+    "mtime": 1788856540.0,
+    "ast_hash": "e7f079faa0760cc6a6dd7b4b2bb481c7",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/17535_Men_Outfit_polished.png": {
+    "mtime": 1788856227.0,
+    "ast_hash": "0acf52e38dd95e293deb8862ee8ff33d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/17601_Men_Outfit_polished.png": {
+    "mtime": 1788856173.0,
+    "ast_hash": "44c78b0f689882c7ffedd8c3343700a0",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/18018_Men_Outfit_polished.png": {
+    "mtime": 1788855519.0,
+    "ast_hash": "51dda5d02a9f379c4ebac7505e488867",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/18308_Men_Outfit_polished.png": {
+    "mtime": 1788855827.0,
+    "ast_hash": "37b15b7fee5c87295846beb02ea7bca5",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/18310_Men_Outfit_polished.png": {
+    "mtime": 1788856389.0,
+    "ast_hash": "3f8d9775b92d966814b58ecd53b8bca6",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/18698_Men_Outfit_polished.png": {
+    "mtime": 1788858345.0,
+    "ast_hash": "f4287ec6188a35f6d40e8b7d4075b5c3",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/18792_Men_Outfit_polished.png": {
+    "mtime": 1788855881.0,
+    "ast_hash": "2bb2808961c29071f2236e0e249d1a46",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/18965_Men_Outfit_polished.png": {
+    "mtime": 1788857556.0,
+    "ast_hash": "3134fcb12a93d7435b7340e403029f8a",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19158_Men_Outfit_polished.png": {
+    "mtime": 1788857767.0,
+    "ast_hash": "03f52ddd5e90ad190ff9dd5c4ecceb45",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19180_Men_Outfit_polished.png": {
+    "mtime": 1788857129.0,
+    "ast_hash": "18275097ce0f3bc876090a1e74cff1b1",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19255_Men_Outfit_polished.png": {
+    "mtime": 1788856832.0,
+    "ast_hash": "027c8c68b0a2ad9dcb307cc77d046dce",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19499_Men_Outfit_polished.png": {
+    "mtime": 1788856055.0,
+    "ast_hash": "c3f403051b9fc7d1f3904322bbe2121c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19611_Men_Outfit_polished.png": {
+    "mtime": 1788857783.0,
+    "ast_hash": "487d6da1f279abce6b4c84587d59f10d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19726_Men_Outfit_polished.png": {
+    "mtime": 1788857189.0,
+    "ast_hash": "462dabf88db8223fa5cd9b810f30abc8",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/19853_Men_Outfit_polished.png": {
+    "mtime": 1788856001.0,
+    "ast_hash": "67974b9cb53614ae8e90aec0d8e591f3",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/20066_Women_Outfit_flaw_severe.png": {
+    "mtime": 1788855865.0,
+    "ast_hash": "944a51eaa5ee71f2ba1a808ca8148fec",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/20145_Women_Outfit_flaw_severe.png": {
+    "mtime": 1788856978.0,
+    "ast_hash": "dd7fa74600d08055f757465985327976",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/20356_Women_Outfit_flaw_severe.png": {
+    "mtime": 1788858209.0,
+    "ast_hash": "6760a066d4db84b7655dd1ca3d80a60d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/20694_Women_Outfit_flaw_severe.png": {
+    "mtime": 1788858020.0,
+    "ast_hash": "7bfc86f46ee55fd44c4fbcbdfd71b803",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/20703_Women_Outfit_flaw_severe.png": {
+    "mtime": 1788855789.0,
+    "ast_hash": "d1b6b890afc54fafdb3cbce6121bebec",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/20981_Women_Outfit_flaw_severe.png": {
+    "mtime": 1788858004.0,
+    "ast_hash": "6841c8988ab66ec69c84f6f3ab89b356",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/21596_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788856654.0,
+    "ast_hash": "98a21899b50407520d35e5e43ea42e6f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/21690_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788857610.0,
+    "ast_hash": "198cbad299201818604d6e4a67a8a84e",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/21827_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788857750.0,
+    "ast_hash": "073410565d2cbbf7e49f7f1a725ab0e5",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/22039_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788857524.0,
+    "ast_hash": "e085c1bc0673b7dc096fd5d1f9df53ff",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/22167_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788857334.0,
+    "ast_hash": "3b8f128b76c81a66352da876f340eb57",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/22442_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788856756.0,
+    "ast_hash": "0d4255bf7b6148e9e7eede2a49317d50",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/22485_Women_Outfit_flaw_mild.png": {
+    "mtime": 1788857912.0,
+    "ast_hash": "7cba7546b2ffd4133cd804bd31ce3520",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/23097_Women_Outfit_average.png": {
+    "mtime": 1788855773.0,
+    "ast_hash": "7292e7031e3ffd544afeed62d82dd1c4",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/23231_Women_Outfit_average.png": {
+    "mtime": 1788856794.0,
+    "ast_hash": "069dbd7f3a7c3d831e451530c859b729",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/23494_Women_Outfit_average.png": {
+    "mtime": 1788857351.0,
+    "ast_hash": "067762734b1a2be35e2104d07f08e451",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/23568_Women_Outfit_average.png": {
+    "mtime": 1788855573.0,
+    "ast_hash": "b80977f4d6cc07d307f1c4708b5735d4",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/23756_Women_Outfit_average.png": {
+    "mtime": 1788856357.0,
+    "ast_hash": "e5c646abbd113a6fbc5b5bda39b3ecee",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/24250_Women_Outfit_average.png": {
+    "mtime": 1788857572.0,
+    "ast_hash": "11461221df086777b98db3d05012190d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/24517_Women_Outfit_average.png": {
+    "mtime": 1788857243.0,
+    "ast_hash": "c99e9eec350de90c4c6ae5d766651685",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/24778_Women_Outfit_average.png": {
+    "mtime": 1788856908.0,
+    "ast_hash": "85e0bf477745ddec9fbbda7917fc6e38",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25079_Women_Outfit_average.png": {
+    "mtime": 1788856670.0,
+    "ast_hash": "17c4fc1705f0585fc2820d7fd42d4a64",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25082_Women_Outfit_average.png": {
+    "mtime": 1788856557.0,
+    "ast_hash": "23212b12d89c39bd7e1bec5d2e8dd3f3",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25202_Women_Outfit_average.png": {
+    "mtime": 1788855535.0,
+    "ast_hash": "0ba2561ef6d623aae6fab9dcf1f8229f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25400_Women_Outfit_polished.png": {
+    "mtime": 1788857367.0,
+    "ast_hash": "c67d6b5759bb5a80a6ba53e985f7765f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25625_Women_Outfit_polished.png": {
+    "mtime": 1788857205.0,
+    "ast_hash": "dca40ca54d77cc6859bf151345e8ef56",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25783_Women_Outfit_polished.png": {
+    "mtime": 1788858502.0,
+    "ast_hash": "8edec2f944388fc7dfe4d8344c06259f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/25790_Women_Outfit_polished.png": {
+    "mtime": 1788856243.0,
+    "ast_hash": "07d3b874cc4e677b1b6fbe2eace65f7d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26069_Women_Outfit_polished.png": {
+    "mtime": 1788856740.0,
+    "ast_hash": "db8f733d22e55cccfa26b96170242fc1",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26203_Women_Outfit_polished.png": {
+    "mtime": 1788858155.0,
+    "ast_hash": "8489c717905a7eac1e127ca09a26ae43",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26220_Women_Outfit_polished.png": {
+    "mtime": 1788856946.0,
+    "ast_hash": "ec4f81af0385aaee081e5c0747e2a52d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26393_Women_Outfit_polished.png": {
+    "mtime": 1788856373.0,
+    "ast_hash": "c45337d5528f869f1c772e4bc6ee6b2c",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26458_Women_Outfit_polished.png": {
+    "mtime": 1788857837.0,
+    "ast_hash": "64698e39f7d7256e6746371ed206ff2f",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26517_Women_Outfit_polished.png": {
+    "mtime": 1788856211.0,
+    "ast_hash": "69c4965b27aa23060694e3a17d155b2a",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26572_Women_Outfit_polished.png": {
+    "mtime": 1788855589.0,
+    "ast_hash": "f444600a4a4319421671f82689f9c2a6",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26662_Women_Outfit_polished.png": {
+    "mtime": 1788857070.0,
+    "ast_hash": "6afc71a499feb559438a6456857eb5f1",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/26758_Women_Outfit_polished.png": {
+    "mtime": 1788856141.0,
+    "ast_hash": "2abe40e780bab2b2a988c207e1ce594d",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/27066_Women_Outfit_polished.png": {
+    "mtime": 1788858193.0,
+    "ast_hash": "5280845521898caeca580ced84b3d8d9",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/27335_Women_Outfit_polished.png": {
+    "mtime": 1788857540.0,
+    "ast_hash": "27fef384fe445e80b579b58f4e922d53",
+    "semantic_hash": ""
+  },
+  "/Users/sayyed/development/repos/LookMax/ML/data/vision_synthetic/raw_generated/images/27509_Women_Outfit_polished.png": {
+    "mtime": 1788857054.0,
+    "ast_hash": "1bd6df87955f5d15103c90a392c66270",
     "semantic_hash": ""
   }
 }

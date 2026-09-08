@@ -58,28 +58,10 @@ MARKERS_DIR = LOCAL_DEST_DIR / ".markers"
 
 HOSTS = {
     "vast1": {
-        "slice": "4810:10000",
-        "target": 5190,
-        "instance_id": 50209314,
-        "desc": "2x H100 SXM5 (80GB)"
-    },
-    "vast2": {
-        "slice": "16000:28000",
-        "target": 12000,
-        "instance_id": 50210080,
-        "desc": "2x H100 SXM5 (80GB)"
-    },
-    "vast3": {
-        "slice": "13000:16000",
-        "target": 3000,
-        "instance_id": 50199060,
-        "desc": "1x H100 SXM5 (80GB)"
-    },
-    "vast4": {
-        "slice": "10000:13000",
-        "target": 3000,
-        "instance_id": 50197596,
-        "desc": "1x H100 NVL (96GB)"
+        "slice": "0:28000",
+        "target": 2236,
+        "instance_id": 50316397,
+        "desc": "1x H100 SXM (80GB)"
     }
 }
 

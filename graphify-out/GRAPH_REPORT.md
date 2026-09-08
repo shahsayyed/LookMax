@@ -1,16 +1,16 @@
 # Graph Report - LookMax  (2026-09-08)
 
 ## Corpus Check
-- 162 files · ~1,359,092,261 words
+- 162 files · ~1,365,526,187 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2666 nodes · 4034 edges · 210 communities (180 shown, 30 thin omitted)
+- 2674 nodes · 4042 edges · 206 communities (176 shown, 30 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 183 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `eb1632ef`
+- Built from commit: `4e7206ad`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -126,7 +126,6 @@
 - [[_COMMUNITY_Community 114|Community 114]]
 - [[_COMMUNITY_Community 115|Community 115]]
 - [[_COMMUNITY_Community 116|Community 116]]
-- [[_COMMUNITY_Community 117|Community 117]]
 - [[_COMMUNITY_Community 118|Community 118]]
 - [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 120|Community 120]]
@@ -169,7 +168,6 @@
 - [[_COMMUNITY_Community 178|Community 178]]
 - [[_COMMUNITY_Community 179|Community 179]]
 - [[_COMMUNITY_Community 180|Community 180]]
-- [[_COMMUNITY_Community 181|Community 181]]
 - [[_COMMUNITY_Community 182|Community 182]]
 - [[_COMMUNITY_Community 183|Community 183]]
 - [[_COMMUNITY_Community 184|Community 184]]
@@ -180,7 +178,6 @@
 - [[_COMMUNITY_Community 189|Community 189]]
 - [[_COMMUNITY_Community 190|Community 190]]
 - [[_COMMUNITY_Community 191|Community 191]]
-- [[_COMMUNITY_Community 192|Community 192]]
 - [[_COMMUNITY_Community 193|Community 193]]
 - [[_COMMUNITY_Community 194|Community 194]]
 - [[_COMMUNITY_Community 195|Community 195]]
@@ -189,7 +186,6 @@
 - [[_COMMUNITY_Community 198|Community 198]]
 - [[_COMMUNITY_Community 203|Community 203]]
 - [[_COMMUNITY_Community 204|Community 204]]
-- [[_COMMUNITY_Community 205|Community 205]]
 - [[_COMMUNITY_Community 206|Community 206]]
 - [[_COMMUNITY_Community 207|Community 207]]
 - [[_COMMUNITY_Community 208|Community 208]]
@@ -214,10 +210,10 @@
   AGENTS.md → README.md
 - `Effort-Based Styling Evaluation Rubric` --semantically_similar_to--> `Effort vs Genetics Product Philosophy`  [INFERRED] [semantically similar]
   README.md → AGENTS.md
+- `.averageScore` --references--> `LookItem`  [INFERRED]
+  iOS/LookMax/Models/LookSession.swift → iOS/LookMax/Models/LookItem.swift
 - `.selectedLook` --references--> `LookSession`  [INFERRED]
   iOS/LookMax/Views/Sessions/SessionDetailView.swift → iOS/LookMax/Models/LookSession.swift
-- `.body` --calls--> `ContentView`  [INFERRED]
-  iOS/LookMax/LookMaxApp.swift → iOS/LookMax/ContentView.swift
 
 ## Import Cycles
 - None detected.
@@ -227,34 +223,34 @@
 - **Dual-Model On-Device Execution Pipeline** — readme_dual_on_device_pipeline, ml_readme_vision_model_pipeline, ml_readme_stylist_llm_pipeline, ml_readme_tag_vocabulary_contract [EXTRACTED 1.00]
 - **Effort-vs-Genetics Alignment Architecture** — agents_effort_vs_genetics_philosophy, readme_effort_based_scoring_rubric, ml_vision_dataset_synthetic_plan_clause_structured_prompts, ml_stylist_llm_plan_smollm2_135m_pipeline [EXTRACTED 1.00]
 
-## Communities (210 total, 30 thin omitted)
+## Communities (206 total, 30 thin omitted)
 
 ### Community 0 - "SwiftUI UI Components and Theme"
 Cohesion: 0.18
-Nodes (16): BeforeAfterComparisonView, View, BeforeAfterComparisonView, .microMetricsSection, .performanceInsightsCard, .scoreBadge, .scoreDiff, Bool (+8 more)
+Nodes (15): BeforeAfterComparisonView, BeforeAfterComparisonView, .microMetricsSection, .performanceInsightsCard, .scoreBadge, .scoreDiff, Bool, CGFloat (+7 more)
 
 ### Community 1 - "Real-World Fine-Tuning Pipeline"
 Cohesion: 0.10
 Nodes (29): finetune_category(), main(), LookMax ML Pipeline — Phase 5 (Phase B: Real-World Fine-Tune)…, --checkpoint may be a single .pt file (only valid for one category) or a…, resolve_checkpoint(), build_backbone(), compute_losses(), discover_real_samples() (+21 more)
 
 ### Community 2 - "iOS Camera and AVFoundation"
-Cohesion: 0.06
-Nodes (42): AVCaptureConnection, AVCaptureDevice, AVCaptureDeviceInput, AVCaptureOutput, AVCapturePhoto, AVCapturePhotoCaptureDelegate, AVCapturePhotoOutput, AVCaptureVideoDataOutputSampleBufferDelegate (+34 more)
+Cohesion: 0.05
+Nodes (42): AnyClass, AVCaptureConnection, AVCaptureDevice, AVCaptureDeviceInput, AVCaptureOutput, AVCapturePhoto, AVCapturePhotoCaptureDelegate, AVCapturePhotoOutput (+34 more)
 
 ### Community 3 - "VLM Image Classification and Heuristics"
 Cohesion: 0.11
 Nodes (33): append_annotation_record(), classify_with_gemini(), classify_with_mlx_vlm(), classify_with_ollama(), _get_gemini_client(), heuristic_filter(), image_to_base64(), load_processed_files() (+25 more)
 
 ### Community 4 - "Cloud Gemini Vision Integration"
-Cohesion: 0.24
-Nodes (10): Codable, GeminiTweak, GeminiLookEvaluation, GeminiTweak, GeminiVisionService, .apiKey, Double, String (+2 more)
+Cohesion: 0.36
+Nodes (7): Codable, GeminiTweak, GeminiLookEvaluation, GeminiTweak, Double, GeminiLookEvaluation, GeminiTweak
 
 ### Community 5 - "iOS Frameworks and System Imports"
-Cohesion: 0.18
-Nodes (7): AVFoundation, CameraGridView, CoreImage, CameraGridView, .body, SwiftUI, Vision
+Cohesion: 0.11
+Nodes (13): AVFoundation, ARBiometricOverlayView, CameraGridView, Combine, CoreImage, Foundation, CameraController, OccasionCategory (+5 more)
 
 ### Community 6 - "LookMax Styling Analysis Engine"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (22): CGImage, GeminiLookEvaluation, LookAnalysisEngine, OccasionProfile, CGRect, Color, Double, OccasionCategory (+14 more)
 
 ### Community 7 - "Core Architecture and Product Principles"
@@ -267,7 +263,7 @@ Nodes (18): CodingKeys, badPoints, detectedFaceShape, detectedOutfitColor, fitNo
 
 ### Community 9 - "Stylist LLM Vocabulary Pruning"
 Cohesion: 0.07
-Nodes (35): build_task_contexts(), _call_gemini(), _gemini_client(), main(), _PacedRateLimiter, generate_synthetic_dataset.py -- generates the 3,500-5,000 instruction pairs…, Minimal local rate limiter -- deliberately not importing real_data_pipeline's…, Deterministic: `count` (category, tier, occasion, row) contexts, in a fixed… (+27 more)
+Nodes (40): _build_dataset(), _load_examples(), main(), finetune.py -- supervised fine-tuning on the QA-passed synthetic dataset. FULL…, Returns a list of {"input_ids": [...], "labels": [...]} -- labels match…, run_dry_run(), run_finetune(), dataset_token_ids() (+32 more)
 
 ### Community 10 - "Image Web Scraping Engine"
 Cohesion: 0.10
@@ -278,8 +274,8 @@ Cohesion: 0.06
 Nodes (35): For --cluster-only, For git commit hook, For /graphify add, For /graphify explain, For /graphify path, For /graphify query, For native CLAUDE.md integration, For --update (incremental re-extraction) (+27 more)
 
 ### Community 12 - "Session Storage and Data Persistence"
-Cohesion: 0.11
-Nodes (16): ContentView, .body, SessionStorageManager, .documentsDir, LookSession, .bestLook, .firstLook, .formattedDate (+8 more)
+Cohesion: 0.22
+Nodes (5): SessionStorageManager, .documentsDir, String, UIImage, ObservableObject
 
 ### Community 13 - "Reddit Image URL Parser"
 Cohesion: 0.10
@@ -290,16 +286,16 @@ Cohesion: 0.26
 Nodes (13): already_done_indices(), build_full_task_list(), check_disk_space(), group_by_resolution(), labels_csv_path(), main(), output_paths(), full_run.py -- the 28,000-image production run (Qwen-Image-2512). Only ever… (+5 more)
 
 ### Community 15 - "Haptic Feedback and UI Theme"
-Cohesion: 0.14
-Nodes (14): EmptySessionsView, ProfileHeaderBanner, SessionCardView, StartSessionCTA, EmptySessionsView, .body, StartSessionCTA, .body (+6 more)
+Cohesion: 0.20
+Nodes (10): EmptySessionsView, ProfileHeaderBanner, SessionCardView, StartSessionCTA, Bool, Color, LookSession, String (+2 more)
 
 ### Community 16 - "Qwen Sampling Taxonomy Schema"
 Cohesion: 0.10
 Nodes (27): build_eyebrows(), build_facial_hair(), build_hair(), build_makeup(), build_outfit_condition(), build_skin(), _formality_bucket_pick(), formality_tier() (+19 more)
 
 ### Community 17 - "User Profile and Onboarding Flow"
-Cohesion: 0.18
-Nodes (13): ProfileOnboardingView, .body, .canSave, Bool, CGPoint, CGRect, Double, FaceBiometricSignature (+5 more)
+Cohesion: 0.07
+Nodes (27): Equatable, CGImagePropertyOrientation, ImageIO, CGImagePropertyOrientation, UIImage, FaceBiometricSignature, Double, Data (+19 more)
 
 ### Community 18 - "Qwen Pipeline Loader and Utilities"
 Cohesion: 0.15
@@ -322,8 +318,8 @@ Cohesion: 0.21
 Nodes (16): color_harmony(), _crop_fraction(), _lazy_imports(), _load_face_cascade(), main(), measured_dominant_color(), _palette_lab(), process() (+8 more)
 
 ### Community 23 - "Image Picker and UIKit Coordinator"
-Cohesion: 0.15
-Nodes (12): Coordinator, ImagePicker, Coordinator, Coordinator, ImagePicker, Any, Context, UIImage (+4 more)
+Cohesion: 0.14
+Nodes (13): Coordinator, ImagePicker, Coordinator, Coordinator, ImagePicker, Any, Context, UIImage (+5 more)
 
 ### Community 24 - "CelebA-HQ Dataset Ingestion Engine"
 Cohesion: 0.12
@@ -334,8 +330,8 @@ Cohesion: 0.21
 Nodes (10): SessionDetailView, .body, .selectedLook, LookItem, LookSession, String, UIImage, UserProfile (+2 more)
 
 ### Community 26 - "Synthetic Dataset Generation with Gemini"
-Cohesion: 0.15
-Nodes (17): _build_dataset(), _load_examples(), main(), finetune.py -- supervised fine-tuning on the QA-passed synthetic dataset. FULL…, Returns a list of {"input_ids": [...], "labels": [...]} -- labels match…, run_dry_run(), run_finetune(), remap_tokenizer.py -- wraps the ORIGINAL (unpruned) tokenizer plus… (+9 more)
+Cohesion: 0.21
+Nodes (12): build_task_contexts(), _call_gemini(), _gemini_client(), main(), _PacedRateLimiter, generate_synthetic_dataset.py -- generates the 3,500-5,000 instruction pairs…, Minimal local rate limiter -- deliberately not importing real_data_pipeline's…, Deterministic: `count` (category, tier, occasion, row) contexts, in a fixed… (+4 more)
 
 ### Community 27 - "Synthetic Prompt Builder and Taxonomy Clauses"
 Cohesion: 0.22
@@ -347,7 +343,7 @@ Nodes (12): check_dependencies(), check_system(), create_directory_structure(), 
 
 ### Community 29 - "Grooming and Outfit Condition Builders"
 Cohesion: 0.15
-Nodes (13): Content, GlassCardModifier, NeonGlowModifier, Theme, View, Color, GlassCardModifier, NeonGlowModifier (+5 more)
+Nodes (14): Content, GlassCardModifier, NeonGlowModifier, Theme, View, Color, GlassCardModifier, NeonGlowModifier (+6 more)
 
 ### Community 30 - "Scraper Rate Limiter and Request Tracker"
 Cohesion: 0.25
@@ -358,8 +354,8 @@ Cohesion: 0.39
 Nodes (7): build_variation_tasks(), check_disk_space(), main(), variation_test.py -- broader diversity/quality check than smoke_test.py's…, Deterministic: samples_per_cell tasks per (category, tier), in a fixed order,…, run_dry_run(), run_generation()
 
 ### Community 32 - "LookMax Main Content and Tab Navigation"
-Cohesion: 0.23
-Nodes (7): Binding, .bottomTabBar, Int, LookSession, String, UserProfile, ContentView
+Cohesion: 0.12
+Nodes (13): App, Binding, ContentView, .bottomTabBar, Int, LookSession, String, UserProfile (+5 more)
 
 ### Community 33 - "Stylist Advice QA Review Gate"
 Cohesion: 0.48
@@ -374,12 +370,12 @@ Cohesion: 0.53
 Nodes (5): _build_stateful_wrapper(), main(), export_coreml.py -- converts the fine-tuned, pruned model to a CoreML…, run_dry_run(), run_export()
 
 ### Community 36 - "Session Creation UI Flow"
-Cohesion: 0.50
-Nodes (3): LookSession, OccasionCategory, CreateSessionSheet
+Cohesion: 0.40
+Nodes (4): LookSession, OccasionCategory, Void, CreateSessionSheet
 
 ### Community 37 - "Face Biometric Signature Matching"
-Cohesion: 0.36
-Nodes (4): Equatable, FaceBiometricSignature, Double, FaceBiometricSignature
+Cohesion: 0.26
+Nodes (12): CustomCameraView, CustomCameraView, .countdownView, .flashIcon, .hudPrompt, .zoomRings, Bool, CGFloat (+4 more)
 
 ### Community 38 - "Qwen Hardware Sanity Check"
 Cohesion: 0.67
@@ -486,8 +482,8 @@ Cohesion: 0.16
 Nodes (14): fetch_json(), normalize_categories(), RateLimitTracker, Scrape image URLs across multiple categories with rate-limiting controls,     in, Navigate to a Reddit .json URL using an authenticated Playwright page and parse, Tracks page requests and enforces human browsing pauses., Call after each request. Executes randomized delay and batch cooldowns., Call after finishing a category before moving to the next. (+6 more)
 
 ### Community 82 - "Community 82"
-Cohesion: 0.18
-Nodes (13): AnyClass, AVCaptureVideoPreviewLayer, CameraPreviewUIView, CameraPreviewView, CameraPreviewUIView, CameraPreviewUIView, .layerClass, .previewLayer (+5 more)
+Cohesion: 0.29
+Nodes (6): CGSize, GeminiVisionService, .apiKey, Data, Int, UIImage
 
 ### Community 83 - "Community 83"
 Cohesion: 0.21
@@ -506,8 +502,8 @@ Cohesion: 0.21
 Nodes (12): append_annotation_record(), image_to_base64(), load_processed_files(), main(), print_dataset_distribution(), LookMax ML Pipeline — Phase 3 ============================== 03_classify_and_sor, Encode image file to base64 string., Load set of already processed file names to allow automatic resumption:       1. (+4 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.25
-Nodes (14): LookItem, .formattedDate, .formattedTime, .image, Date, Decoder, Double, Int (+6 more)
+Cohesion: 0.28
+Nodes (14): Identifiable, LookItem, .formattedDate, .formattedTime, .image, Date, Decoder, Double (+6 more)
 
 ### Community 88 - "Community 88"
 Cohesion: 0.12
@@ -534,16 +530,16 @@ Cohesion: 0.13
 Nodes (14): add_prefix_space, backend, bos_token, clean_up_tokenization_spaces, eos_token, errors, extra_special_tokens, is_local (+6 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.10
-Nodes (49): destroy_vast_instance(), evaluate_fleet(), get_filename_to_pos_map(), get_local_dataset_summary(), get_vast_api_key(), is_filename_in_host_slice(), is_host_reachable(), load_state() (+41 more)
+Cohesion: 0.08
+Nodes (57): destroy_vast_instance(), evaluate_fleet(), get_filename_to_pos_map(), get_local_dataset_summary(), get_vast_api_key(), is_filename_in_host_slice(), is_host_reachable(), load_state() (+49 more)
 
 ### Community 95 - "Community 95"
 Cohesion: 0.13
 Nodes (14): add_prefix_space, backend, bos_token, clean_up_tokenization_spaces, eos_token, errors, extra_special_tokens, is_local (+6 more)
 
 ### Community 96 - "Community 96"
-Cohesion: 0.20
-Nodes (10): LookDetailCard, SuggestionRow, LookDetailCard, .body, SuggestionRow, .body, Bool, LookItem (+2 more)
+Cohesion: 0.22
+Nodes (9): LookDetailCard, SuggestionRow, LookDetailCard, .body, SuggestionRow, Bool, LookItem, StyleSuggestion (+1 more)
 
 ### Community 97 - "Community 97"
 Cohesion: 0.34
@@ -574,8 +570,8 @@ Cohesion: 0.24
 Nodes (7): ScoreComparisonBar, ScoreComparisonBar, CGFloat, Double, LookItem, UUID, Void
 
 ### Community 104 - "Community 104"
-Cohesion: 0.40
-Nodes (7): Date, Decoder, LookItem, OccasionCategory, String, UUID, LookSession
+Cohesion: 0.19
+Nodes (15): LookSession, .averageScore, .bestLook, .firstLook, .formattedDate, .latestLook, .tagsFormatted, Date (+7 more)
 
 ### Community 105 - "Community 105"
 Cohesion: 0.06
@@ -586,8 +582,8 @@ Cohesion: 0.15
 Nodes (12): chunked(), generate(), load_pipeline(), qwen_pipeline.py -- single shared model-loading + generation entry point for Qwe, tasks: list of dicts each with 'prompt' and 'resolution' (w, h) --     all tasks, Best-effort GPU memory release -- not required for correctness (the     driving, Best-effort GPU memory release -- not required for correctness (the     driving, Returns (pipe, can_batch). can_batch is True only when the full     pipeline is (+4 more)
 
 ### Community 107 - "Community 107"
-Cohesion: 0.25
-Nodes (5): LookItem, LookSession, String, UIImage, SessionStorageManager
+Cohesion: 0.35
+Nodes (4): LookItem, LookSession, SessionStorageManager, URL
 
 ### Community 108 - "Community 108"
 Cohesion: 0.20
@@ -625,10 +621,6 @@ Nodes (7): Core Philosophy, Dual On-Device CoreML Pipeline, Getting Started, iOS
 Cohesion: 0.46
 Nodes (7): _build_dataset(), _load_examples(), main(), finetune.py -- supervised fine-tuning on the QA-passed synthetic dataset.  FULL, Returns a list of {"input_ids": [...], "labels": [...]} -- labels     match inpu, run_dry_run(), run_finetune()
 
-### Community 117 - "Community 117"
-Cohesion: 0.33
-Nodes (5): App, LookMaxApp, .body, LookMaxApp, Scene
-
 ### Community 118 - "Community 118"
 Cohesion: 0.29
 Nodes (6): LookCarouselView, LookCarouselView, .body, LookItem, UUID, Void
@@ -642,8 +634,8 @@ Cohesion: 0.39
 Nodes (7): iter_smoke_tasks(), main(), smoke_test.py -- cheap sanity checks before spending any GPU time.    --dry-run, Deterministic: one task per (category, tier), in a fixed order., Deterministic: one task per (category, tier), in a fixed order., run_dry_run(), run_per_tier()
 
 ### Community 121 - "Community 121"
-Cohesion: 0.13
-Nodes (15): Error, GeminiServiceError, .errorDescription, imageTooLarge, missingAPIKey, networkError, parsingError, rateLimited (+7 more)
+Cohesion: 0.25
+Nodes (8): Error, GeminiServiceError, .errorDescription, imageTooLarge, missingAPIKey, networkError, parsingError, rateLimited
 
 ### Community 122 - "Community 122"
 Cohesion: 0.39
@@ -738,8 +730,8 @@ Cohesion: 0.07
 Nodes (28): should_epoch_stop, should_evaluate, should_log, should_save, should_training_stop, best_global_step, best_metric, best_model_checkpoint (+20 more)
 
 ### Community 176 - "Community 176"
-Cohesion: 0.17
-Nodes (11): HapticManager, Theme, .countdownView, .hudPrompt, .body, .interactiveCurtain, ProfileHeaderBanner, .body (+3 more)
+Cohesion: 0.12
+Nodes (18): .body, HapticManager, Theme, .body, .interactiveCurtain, EmptySessionsView, .body, ProfileHeaderBanner (+10 more)
 
 ### Community 177 - "Community 177"
 Cohesion: 0.13
@@ -756,10 +748,6 @@ Nodes (14): add_prefix_space, backend, bos_token, clean_up_tokenization_spaces, 
 ### Community 180 - "Community 180"
 Cohesion: 0.18
 Nodes (6): Dataset, Wraps a flat list of (image_path, tier) samples pooled across all age-…, RealWorldScoreDataset, Wraps a flat list of (image_path, tier) samples pooled across all     age-demogr, Wraps a flat list of (image_path, tier) samples pooled across all     age-demogr, RealWorldScoreDataset
-
-### Community 181 - "Community 181"
-Cohesion: 0.16
-Nodes (7): Combine, CGImagePropertyOrientation, Foundation, ImageIO, CGImagePropertyOrientation, UIImage, UIKit
 
 ### Community 182 - "Community 182"
 Cohesion: 0.22
@@ -801,21 +789,13 @@ Nodes (4): cleanup_stale_mux(), detect_remote_range(), is_host_reachable(), sync
 Cohesion: 0.50
 Nodes (4): main(), test_vertex_connection.py -- Self-check script to verify Google Cloud Vertex AI, Validates response against LookMax quality rules and effort-vs-genetics guardrai, validate_stylist_response()
 
-### Community 192 - "Community 192"
-Cohesion: 0.50
-Nodes (3): ARBiometricOverlayView, CameraController, OccasionCategory
-
 ### Community 203 - "Community 203"
-Cohesion: 0.29
-Nodes (10): Identifiable, StyleSuggestion, .iconColor, Bool, Color, Decoder, Double, String (+2 more)
+Cohesion: 0.32
+Nodes (9): StyleSuggestion, .iconColor, Bool, Color, Decoder, Double, String, UUID (+1 more)
 
 ### Community 204 - "Community 204"
-Cohesion: 0.27
-Nodes (6): Any, Data, Int, OccasionCategory, UIImage, GeminiVisionService
-
-### Community 205 - "Community 205"
-Cohesion: 0.21
-Nodes (6): Data, Date, FaceBiometricSignature, String, UserProfile, UserProfile
+Cohesion: 0.18
+Nodes (11): Any, OccasionCategory, String, LocalizedError, GeminiServiceError, imageTooLarge, missingAPIKey, networkError (+3 more)
 
 ### Community 206 - "Community 206"
 Cohesion: 0.18
@@ -834,11 +814,11 @@ Nodes (7): Components, Cross-machine sync (zero-byte marker coordination), Healt
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ThreadPoolExecutor` connect `Image Web Scraping Engine` to `VLM Image Classification and Heuristics`, `Community 70`, `Community 81`, `Reddit Playwright Scraper Engine`, `Community 84`, `Unsplash Dataset Ingestion Engine`, `Community 86`, `CelebA-HQ Dataset Ingestion Engine`?**
-  _High betweenness centrality (0.054) - this node is a cross-community bridge._
-- **Why does `classify_with_mlx_vlm()` connect `VLM Image Classification and Heuristics` to `Synthetic Dataset Generation with Gemini`, `Community 109`, `Community 74`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+  _High betweenness centrality (0.052) - this node is a cross-community bridge._
+- **Why does `classify_with_mlx_vlm()` connect `VLM Image Classification and Heuristics` to `Stylist LLM Vocabulary Pruning`, `Community 74`, `Community 109`?**
+  _High betweenness centrality (0.035) - this node is a cross-community bridge._
 - **Why does `generate()` connect `Community 109` to `VLM Image Classification and Heuristics`?**
-  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **Are the 3 inferred relationships involving `CameraController` (e.g. with `.body` and `CustomCameraView`) actually correct?**
   _`CameraController` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `LookSession` (e.g. with `.analyzeAndAddLook()` and `.selectedLook`) actually correct?**
@@ -846,4 +826,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 4 inferred relationships involving `LookItem` (e.g. with `.averageScore` and `.body`) actually correct?**
   _`LookItem` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `PreToolUse`, `allow`, `sweetpad.build.xcodeWorkspacePath` to the rest of the system?**
-  _1258 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1266 weakly-connected nodes found - possible documentation gaps or missing edges._
