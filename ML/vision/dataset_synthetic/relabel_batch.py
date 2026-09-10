@@ -271,6 +271,13 @@ CATEGORY_PROMPTS = {
     "skin_condition": SKIN_CONDITION_SYSTEM_PROMPT,
     "makeup": MAKEUP_SYSTEM_PROMPT,
     "clean_shaven_salvage": CLEAN_SHAVEN_SALVAGE_SYSTEM_PROMPT,
+    # Same style+tier classification as clean_shaven_salvage, reused for the
+    # residual failures left AFTER regeneration+reverify (2026-09-10):
+    # post-regen, the clean_shaven class is no longer critically depleted
+    # (75.1% correct at that point), so these get relabeled in place instead
+    # of another salvage+regen round -- see build_corrections' handling of
+    # this category (shares the facial_hair_style_miss branch).
+    "clean_shaven_residual": CLEAN_SHAVEN_SALVAGE_SYSTEM_PROMPT,
     "pattern_solid_bleed": PATTERN_SOLID_BLEED_SYSTEM_PROMPT,
     "hair_length_grooming": HAIR_LENGTH_SYSTEM_PROMPT,
     "facial_hair_style_miss": FACIAL_HAIR_STYLE_SYSTEM_PROMPT,
@@ -344,6 +351,10 @@ BUCKET_FILTERS = {
     "clean_shaven_salvage": {
         "item_check": lambda item: item["task"]["row"].get("facial_hair_style") == "clean_shaven",
         "keywords": ["stubble", "beard", "mustache", "shadow", "unshaven", "facial hair"],
+    },
+    "clean_shaven_residual": {
+        "item_check": lambda item: item["task"]["row"].get("facial_hair_style") == "clean_shaven",
+        "keywords": ["stubble", "beard", "mustache", "moustache", "shadow", "unshaven", "facial hair"],
     },
     # --- second wave, found by clustering the "unclassified" residual ---
     "pattern_solid_bleed": {
@@ -580,7 +591,7 @@ def build_corrections(category, classification_path):
                 skipped += 1
                 continue
             corrections[fn] = {csv_col: val}
-        elif category == "facial_hair_style_miss":
+        elif category in ("facial_hair_style_miss", "clean_shaven_residual"):
             style = r.get("actual_style")
             tier = r.get("actual_tier")
             if style not in VALID_FACIAL_HAIR_STYLES:

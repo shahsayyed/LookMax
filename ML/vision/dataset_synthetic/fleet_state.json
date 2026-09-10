@@ -25460,12 +25460,12 @@
       "destroyed": false
     },
     "vast1": {
-      "last_count": 0,
-      "last_progress_iso": "2026-09-09T09:20:01.124736+00:00",
-      "stalled_since_iso": "2026-09-09T09:30:01.305268+00:00",
-      "stalled_hours": 24.33,
+      "last_count": 1455,
+      "last_progress_iso": "2026-09-10T16:30:00.730043+00:00",
+      "stalled_since_iso": "2026-09-10T16:40:01.222660+00:00",
+      "stalled_hours": 0.83,
       "last_status": "UNREACHABLE",
-      "completed": false,
+      "completed": true,
       "destroyed": false,
       "pushed_markers": [],
       "instance_id": 50360011

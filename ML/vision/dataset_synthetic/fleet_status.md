@@ -1,14 +1,14 @@
 # LookMax Synthetic Dataset Generation -- Fleet Status
 
-*Last Checked: 2026-09-10 10:50:00* | *Vast.ai API Key: Configured (Auto-Destroy Active)*
+*Last Checked: 2026-09-10 18:30:01* | *Vast.ai API Key: Configured (Auto-Destroy Active)*
 
 > [!CAUTION]
-> 🚨 vast1 has been UNREACHABLE for 24.3 hours! Error: ssh: connect to host 117.18.102.50 port 34259: Connection refused
+> 🚨 vast1 has been UNREACHABLE for 0.8 hours! Error: ssh: connect to host 117.18.102.50 port 33973: Connection refused
 
 | Host | Instance ID | Slice Target | Completed | Progress | GPUs | Stalled Time | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **vast1** | `50360011` | 0:28000 (202) | **0** | 0.0% | N/A | 24.3h | 🔴 UNREACHABLE |
-| **TOTAL** | - | **202** | **0** | **0.0%** | - | - | - |
+| **vast1** | `50360011` | 0:28000 (202) | **1455** | 0.0% | N/A | 0.8h | 🔴 UNREACHABLE |
+| **TOTAL** | - | **202** | **1455** | **720.3%** | - | - | - |
 
 ### Local Storage Progress (Offline-Safe)
 
@@ -45,14 +45,14 @@
 
 ### Recent Hourly Health Log
 ```
-[2026-09-10 09:20:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 22.8h]
-[2026-09-10 09:30:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 23.0h]
-[2026-09-10 09:40:01] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 23.2h]
-[2026-09-10 09:50:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 23.3h]
-[2026-09-10 10:00:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 23.5h]
-[2026-09-10 10:10:01] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 23.7h]
-[2026-09-10 10:20:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 23.8h]
-[2026-09-10 10:30:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 24.0h]
-[2026-09-10 10:40:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 24.2h]
-[2026-09-10 10:50:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 24.3h]
+[2026-09-10 17:00:00] | vast1: 1311/202 (649.0%) [STOPPED] GPUs: 100%/100% (Δ+47, stalled=0.0h)
+[2026-09-10 17:10:01] | vast1: 1359/202 (672.8%) [STOPPED] GPUs: 100%/100% (Δ+48, stalled=0.0h)
+[2026-09-10 17:20:04] | vast1: 1407/202 (696.5%) [STOPPED] GPUs: 100%/100% (Δ+48, stalled=0.0h)
+[2026-09-10 17:30:00] | vast1: 1455/202 (720.3%) [STOPPED] GPUs: 100%/100% (Δ+48, stalled=0.0h)
+[2026-09-10 17:40:01] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 0.0h]
+[2026-09-10 17:50:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 0.2h]
+[2026-09-10 18:00:01] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 0.3h]
+[2026-09-10 18:10:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 0.5h]
+[2026-09-10 18:20:00] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 0.7h]
+[2026-09-10 18:30:01] | vast1: UNREACHABLE (SSH failed: ssh: connect to host 117.18.102.50 port ) [Stalled: 0.8h]
 ```
