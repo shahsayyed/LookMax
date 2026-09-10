@@ -55,8 +55,12 @@ def run_dry_run():
         print(f"--- {category} / {tier}  (resolution {task['resolution']}, score={row['score']}) ---")
         print(task["prompt"])
         print(f"LABELS: {json.dumps({k: v for k, v in row.items() if k not in ('filename', 'category', 'tier')})}")
+        neg = task.get("negative_prompt", tx.NEGATIVE_PROMPT)
+        if neg != tx.NEGATIVE_PROMPT:
+            extra = neg[len(tx.NEGATIVE_PROMPT):].lstrip(", ")
+            print(f"NEGATIVE_PROMPT: baseline + {extra}")
         print()
-    print(f"NEGATIVE_PROMPT (shared): {tx.NEGATIVE_PROMPT}\n")
+    print(f"NEGATIVE_PROMPT (baseline, per-task extras shown above when present): {tx.NEGATIVE_PROMPT}\n")
     print("Dry run complete. Read every prompt above before running --per-tier or any GPU script.")
 
 

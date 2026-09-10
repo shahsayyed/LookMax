@@ -1,0 +1,140 @@
+{
+  "positive_only_97000_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old South Asian man, average build, strong square jaw, deep set eyes, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: light stubble, growing in patchy, uneven clumps with bare skin gaps between patches, unkempt.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing against a plain neutral-colored wall, bright even studio lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 97000,
+    "row": {
+      "score": 1.6,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "stubble",
+      "facial_hair_untidy": 2,
+      "facial_hair_groomed": 0,
+      "requested_background": "plain_wall",
+      "requested_lighting": "studio_lighting",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "positive_only_97001_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 28-year-old Caucasian man, average build, narrow face, pointed chin, facing the camera directly, looking at the camera.\nHair: very short buzzed hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: light stubble, growing in patchy, uneven clumps with bare skin gaps between patches, unkempt.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing against a plain neutral-colored wall, warm overhead indoor lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 97001,
+    "row": {
+      "score": 1.1,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "buzz_cut",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "stubble",
+      "facial_hair_untidy": 2,
+      "facial_hair_groomed": 0,
+      "requested_background": "plain_wall",
+      "requested_lighting": "warm_overhead",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "positive_only_97002_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 35-year-old Black man, very skinny, oval face, high cheekbones, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in a plain apartment hallway, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 97002,
+    "row": {
+      "score": 1.3,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "medium",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "hallway",
+      "requested_lighting": "window_light",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "positive_only_97003_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old South Asian man, average build, oval face, high cheekbones, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: a short beard, growing in patchy, uneven clumps with bare skin gaps between patches, unkempt.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, dim, slightly underexposed indoor lighting, centered in frame, straight-on eye-level angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 97003,
+    "row": {
+      "score": 2.0,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "short_beard",
+      "facial_hair_untidy": 2,
+      "facial_hair_groomed": 0,
+      "requested_background": "bathroom_mirror",
+      "requested_lighting": "dim",
+      "requested_framing": "centered"
+    }
+  },
+  "positive_only_97004_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 35-year-old Caucasian man, very skinny, round face, double chin, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: a short beard, growing in patchy, uneven clumps with bare skin gaps between patches, unkempt.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in a living room with a sofa visible behind them, soft overcast daylight, centered in frame, slightly high camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 97004,
+    "row": {
+      "score": 1.4,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "medium",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "short_beard",
+      "facial_hair_untidy": 2,
+      "facial_hair_groomed": 0,
+      "requested_background": "living_room",
+      "requested_lighting": "overcast",
+      "requested_framing": "slightly_high_angle"
+    }
+  },
+  "positive_only_97005_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 35-year-old South Asian man, average build, oval face, high cheekbones, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: a moustache, growing in patchy, uneven clumps with bare skin gaps between patches, unkempt.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing against a seamless studio backdrop, soft overcast daylight, centered in frame, slightly high camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 97005,
+    "row": {
+      "score": 2.0,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "moustache",
+      "facial_hair_untidy": 2,
+      "facial_hair_groomed": 0,
+      "requested_background": "studio",
+      "requested_lighting": "overcast",
+      "requested_framing": "slightly_high_angle"
+    }
+  }
+}

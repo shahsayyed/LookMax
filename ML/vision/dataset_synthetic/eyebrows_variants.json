@@ -1,0 +1,12 @@
+{
+  "positive_only": {
+    "prompt_append": "The eyebrows are thick and grow together above the nose bridge, forming a connected unibrow with no visible gap between them."
+  },
+  "negative_only": {
+    "extra_negative": "separated eyebrows, gap between eyebrows, plucked eyebrows, groomed eyebrows, arched eyebrows, tweezed eyebrows"
+  },
+  "combined": {
+    "prompt_append": "The eyebrows are thick and grow together above the nose bridge, forming a connected unibrow with no visible gap between them.",
+    "extra_negative": "separated eyebrows, gap between eyebrows, plucked eyebrows, groomed eyebrows, arched eyebrows, tweezed eyebrows"
+  }
+}

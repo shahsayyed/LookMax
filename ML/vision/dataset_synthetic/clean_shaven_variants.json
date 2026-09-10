@@ -1,0 +1,21 @@
+{
+  "positive_only": {
+    "prompt_append": "The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip."
+  },
+  "negative_only": {
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven"
+  },
+  "combined": {
+    "prompt_append": "The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.",
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven"
+  },
+  "short_direct": {
+    "prompt_append": "Freshly shaved, not a trace of stubble anywhere on the face."
+  },
+  "technical_precise": {
+    "prompt_append": "The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz."
+  },
+  "directive_caps": {
+    "prompt_append": "IMPORTANT: the face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five oclock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks, as if shaved moments ago with a fresh razor."
+  }
+}

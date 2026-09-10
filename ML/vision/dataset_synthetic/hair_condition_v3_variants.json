@@ -1,0 +1,16 @@
+{
+  "baseline_controlled": {
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven"
+  },
+  "positive_only": {
+    "prompt_append": "The hair is visibly greasy and unwashed, with strands clumped together in an oily sheen, flattened against the scalp -- unmistakably not clean.",
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven"
+  },
+  "negative_only": {
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven, clean hair, freshly washed hair, voluminous hair, shiny healthy hair, styled hair, dry hair"
+  },
+  "combined": {
+    "prompt_append": "The hair is visibly greasy and unwashed, with strands clumped together in an oily sheen, flattened against the scalp -- unmistakably not clean.",
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven, clean hair, freshly washed hair, voluminous hair, shiny healthy hair, styled hair, dry hair"
+  }
+}

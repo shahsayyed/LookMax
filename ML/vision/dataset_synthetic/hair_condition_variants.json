@@ -1,0 +1,12 @@
+{
+  "positive_only": {
+    "prompt_append": "The hair is visibly greasy and unwashed, with strands clumped together in an oily sheen, flattened against the scalp -- unmistakably not clean."
+  },
+  "negative_only": {
+    "extra_negative": "clean hair, freshly washed hair, voluminous hair, shiny healthy hair, styled hair, dry hair"
+  },
+  "combined": {
+    "prompt_append": "The hair is visibly greasy and unwashed, with strands clumped together in an oily sheen, flattened against the scalp -- unmistakably not clean.",
+    "extra_negative": "clean hair, freshly washed hair, voluminous hair, shiny healthy hair, styled hair, dry hair"
+  }
+}

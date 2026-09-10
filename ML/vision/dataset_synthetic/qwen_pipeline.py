@@ -102,7 +102,10 @@ def chunked(seq, size):
 def generate(pipe, tasks, seeds, num_inference_steps=None):
     """tasks: list of dicts each with 'prompt' and 'resolution' (w, h) --
     all tasks in one call MUST share the same resolution (the model can't
-    mix sizes in one batched forward pass). seeds: list of ints, same
+    mix sizes in one batched forward pass). A task may optionally carry its
+    own 'negative_prompt' string to override taxonomy.NEGATIVE_PROMPT for
+    just that image (used by prompt_experiment.py's A/B tests) -- omit it
+    and production behavior is unchanged. seeds: list of ints, same
     length as tasks, one per-image deterministic seed (see full_run.py's
     task-list seeding for why these must be stable across runs for resume
     to work). Returns a list of PIL Images, same order as tasks.
@@ -125,7 +128,7 @@ def generate(pipe, tasks, seeds, num_inference_steps=None):
 
     result = pipe(
         prompt=[t["prompt"] for t in tasks],
-        negative_prompt=tx.NEGATIVE_PROMPT,
+        negative_prompt=[t.get("negative_prompt", tx.NEGATIVE_PROMPT) for t in tasks],
         height=height,
         width=width,
         num_inference_steps=steps,

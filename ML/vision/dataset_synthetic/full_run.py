@@ -70,7 +70,8 @@ SHUFFLE_SEED = 43
 # check_disk_space() actually checking whatever directory is in play,
 # not by hardcoding one path that only exists on one specific host.
 DEFAULT_DATA_DIR = Path(os.environ.get("LOOKMAX_DATA_DIR", str(Path(__file__).resolve().parent / "output")))
-MIN_FREE_GB = 60  # ~35GB for 28,000 PNGs + logs and headroom
+MIN_FREE_GB = 15  # ~35GB for 28,000 PNGs + logs and headroom; scaled down since
+# this deployment only fills a ~2,000-image gap, not the full 28,000-image set.
 DEFAULT_GEN_BATCH_SIZE = 1
 MAX_CONSECUTIVE_FAILURES = 50
 

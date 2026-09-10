@@ -1,0 +1,140 @@
+{
+  "technical_precise_90005_Men_Grooming_average.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "average",
+    "seed": 90005,
+    "row": {
+      "score": 5.1,
+      "hair_untidy": 0,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 0,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 0,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "plain_wall",
+      "requested_lighting": "slightly_harsh",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "technical_precise_90019_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 90019,
+    "row": {
+      "score": 1.4,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "medium",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "bathroom_mirror",
+      "requested_lighting": "window_light",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "technical_precise_90020_Men_Grooming_polished.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 35-year-old Hispanic man, very skinny, oval face, high cheekbones, facing the camera directly, looking at the camera.\nHair: short hair, neatly styled with a touch of product, clean and intentional.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: smooth, evenly hydrated skin with a healthy natural glow.\nEyebrows: neatly shaped with clean, defined edges.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly high camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "polished",
+    "seed": 90020,
+    "row": {
+      "score": 8.1,
+      "hair_untidy": 0,
+      "hair_styled": 1,
+      "hair_length": "short",
+      "skin_neglected": 0,
+      "skin_healthy": 1,
+      "eyebrows_unkempt": 0,
+      "eyebrows_groomed": 1,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "bathroom_mirror",
+      "requested_lighting": "window_light",
+      "requested_framing": "slightly_high_angle"
+    }
+  },
+  "technical_precise_90023_Men_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 45-year-old South Asian man, athletic, narrow face, pointed chin, facing the camera directly, looking at the camera.\nHair: very short buzzed hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing outdoors on a city sidewalk with buildings in the background, dim, slightly underexposed indoor lighting, centered in frame, slightly high camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_severe",
+    "seed": 90023,
+    "row": {
+      "score": 1.4,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "buzz_cut",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "outdoors",
+      "requested_lighting": "dim",
+      "requested_framing": "slightly_high_angle"
+    }
+  },
+  "technical_precise_90026_Men_Grooming_flaw_mild.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 22-year-old East Asian man, heavy set, strong square jaw, deep set eyes, facing the camera directly, looking at the camera.\nHair: very short buzzed hair, flat and unbrushed with no styling, clearly not styled today.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: a dull, uneven skin tone with visible tiredness under the eyes.\nEyebrows: a few stray long hairs among otherwise ordinary eyebrows.\nSetting: standing in a bedroom with a bed and dresser visible behind them, soft overcast daylight, centered in frame, slightly high camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "flaw_mild",
+    "seed": 90026,
+    "row": {
+      "score": 2.4,
+      "hair_untidy": 1,
+      "hair_styled": 0,
+      "hair_length": "buzz_cut",
+      "skin_neglected": 1,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 1,
+      "eyebrows_groomed": 0,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "bedroom",
+      "requested_lighting": "overcast",
+      "requested_framing": "slightly_high_angle"
+    }
+  },
+  "technical_precise_90044_Men_Grooming_polished.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 45-year-old South Asian man, muscular, oval face, high cheekbones, facing the camera directly, looking at the camera.\nHair: short hair, neatly styled with a touch of product, clean and intentional.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: smooth, evenly hydrated skin with a healthy natural glow.\nEyebrows: neatly shaped with clean, defined edges.\nSetting: standing against a seamless studio backdrop, slightly harsh direct on-camera flash lighting, centered in frame, straight-on eye-level angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.\nThe jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five oclock shadow, no peach fuzz.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions",
+    "category": "Men_Grooming",
+    "tier": "polished",
+    "seed": 90044,
+    "row": {
+      "score": 7.2,
+      "hair_untidy": 0,
+      "hair_styled": 1,
+      "hair_length": "short",
+      "skin_neglected": 0,
+      "skin_healthy": 1,
+      "eyebrows_unkempt": 0,
+      "eyebrows_groomed": 1,
+      "facial_hair_style": "clean_shaven",
+      "facial_hair_untidy": 0,
+      "facial_hair_groomed": 0,
+      "requested_background": "studio",
+      "requested_lighting": "slightly_harsh",
+      "requested_framing": "centered"
+    }
+  }
+}

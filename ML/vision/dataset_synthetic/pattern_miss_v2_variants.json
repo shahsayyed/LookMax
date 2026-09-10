@@ -1,0 +1,8 @@
+{
+  "positive_strong": {
+    "prompt_append": "CRITICAL DETAIL: this garment has a bold, unmistakable printed pattern covering its surface -- a clear repeating graphic design, not a plain surface. The pattern must be immediately visible at a glance."
+  },
+  "positive_repeated": {
+    "prompt_append": "The fabric shows a printed pattern. This is a printed garment with a visible print design across the entire surface, patterned fabric, not solid, not plain."
+  }
+}

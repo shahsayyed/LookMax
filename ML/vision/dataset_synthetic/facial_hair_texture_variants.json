@@ -1,0 +1,12 @@
+{
+  "positive_only": {
+    "prompt_append": "The facial hair grows in unmistakably patchy, uneven clumps with clearly visible bare skin gaps between the patches -- not a full, even growth."
+  },
+  "negative_only": {
+    "extra_negative": "full beard, dense beard, even facial hair growth, thick moustache, uniform facial hair, well-grown facial hair"
+  },
+  "combined": {
+    "prompt_append": "The facial hair grows in unmistakably patchy, uneven clumps with clearly visible bare skin gaps between the patches -- not a full, even growth.",
+    "extra_negative": "full beard, dense beard, even facial hair growth, thick moustache, uniform facial hair, well-grown facial hair"
+  }
+}

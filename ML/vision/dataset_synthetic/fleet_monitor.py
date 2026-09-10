@@ -59,9 +59,9 @@ MARKERS_DIR = LOCAL_DEST_DIR / ".markers"
 HOSTS = {
     "vast1": {
         "slice": "0:28000",
-        "target": 2236,
-        "instance_id": 50316397,
-        "desc": "1x H100 SXM (80GB)"
+        "target": 202,
+        "instance_id": 50360011,
+        "desc": "2x H100 PCIE"
     }
 }
 

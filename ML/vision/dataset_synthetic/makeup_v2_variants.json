@@ -1,0 +1,8 @@
+{
+  "positive_strong": {
+    "prompt_append": "CRITICAL DETAIL: the makeup is a visible styling mistake -- two distinct eyeshadow or lipstick colors that visibly clash and do not match, applied unevenly. This is an obvious makeup application error, clearly visible at a glance, not subtle."
+  },
+  "positive_repeated": {
+    "prompt_append": "The makeup shows two clashing colors. Two mismatched, non-complementary makeup colors are visibly applied together -- a color clash, badly coordinated makeup colors, uneven smudged application."
+  }
+}

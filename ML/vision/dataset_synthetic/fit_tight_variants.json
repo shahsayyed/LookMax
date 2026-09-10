@@ -1,0 +1,12 @@
+{
+  "positive_only": {
+    "prompt_append": "The clothing is uncomfortably tight, visibly straining across the body -- clearly a size too small, pulling snugly against the skin."
+  },
+  "negative_only": {
+    "extra_negative": "loose fit, baggy, oversized, roomy fit, relaxed fit, loose-fitting"
+  },
+  "combined": {
+    "prompt_append": "The clothing is uncomfortably tight, visibly straining across the body -- clearly a size too small, pulling snugly against the skin.",
+    "extra_negative": "loose fit, baggy, oversized, roomy fit, relaxed fit, loose-fitting"
+  }
+}

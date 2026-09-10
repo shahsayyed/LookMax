@@ -1,0 +1,16 @@
+{
+  "baseline_controlled": {
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven"
+  },
+  "positive_only": {
+    "prompt_append": "The skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven"
+  },
+  "negative_only": {
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven, smooth skin, healthy glowing skin, clear skin, hydrated skin, flawless skin, even skin tone"
+  },
+  "combined": {
+    "prompt_append": "The skin is visibly dry with clear flaking and rough, textured patches on the forehead and around the nose -- unmistakable dry-skin flaking, not smooth or healthy.",
+    "extra_negative": "stubble, beard, mustache, five oclock shadow, facial hair, goatee, sideburns, unshaven, smooth skin, healthy glowing skin, clear skin, hydrated skin, flawless skin, even skin tone"
+  }
+}

@@ -651,6 +651,37 @@ NEGATIVE_PROMPT = (
     "text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, "
     "blurry, low quality, distorted proportions"
 )
+
+# ==========================================================================
+# TARGETED PROMPT-ENGINEERING FIXES -- validated via A/B testing on an
+# isolated instance against 28k-image Vertex-AI VLM audit findings
+# (2026-09). Each addresses one confirmed on-target failure mode; the
+# mechanism differs per attribute (suppress-an-unwanted-element attributes
+# respond to negative-prompt reinforcement, elicit-a-specific-detail
+# attributes need repeated/emphatic positive phrasing -- the two are not
+# interchangeable). prompt_builder.py wires these in per-task.
+# ==========================================================================
+CLEAN_SHAVEN_EXTRA_NEGATIVE = (
+    "stubble, beard, mustache, five oclock shadow, facial hair, goatee, "
+    "sideburns, unshaven"
+)
+SOLID_PATTERN_EXTRA_NEGATIVE = (
+    "striped pattern, checked pattern, plaid, printed pattern, patterned "
+    "fabric, print design, graphic print"
+)
+MAKEUP_SEVERE_EXTRA_POSITIVE = (
+    "The makeup shows two clashing colors. Two mismatched, non-complementary "
+    "makeup colors are visibly applied together -- a color clash, badly "
+    "coordinated makeup colors, uneven smudged application."
+)
+EYEBROWS_SEVERE_EXTRA_POSITIVE = (
+    "The eyebrows are thick and grow together above the nose bridge, "
+    "forming a connected unibrow with no visible gap between them."
+)
+SKIN_SEVERE_EXTRA_NEGATIVE = (
+    "smooth skin, healthy glowing skin, clear skin, hydrated skin, "
+    "flawless skin, even skin tone"
+)
 TRUE_CFG_SCALE = 4.0
 NUM_INFERENCE_STEPS_FULL = 40
 NUM_INFERENCE_STEPS_TEST = 28

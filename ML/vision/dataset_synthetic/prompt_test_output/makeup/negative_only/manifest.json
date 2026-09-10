@@ -1,0 +1,140 @@
+{
+  "negative_only_94000_Women_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 45-year-old Caucasian woman, athletic, high cheekbones, visible age lines, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, an oily sheen at the roots, strands clumped and flattened.\nMakeup: a full face of makeup, applied unevenly with two clashing colors and visibly smudged edges.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, bright even studio lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions, harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application",
+    "category": "Women_Grooming",
+    "tier": "flaw_severe",
+    "seed": 94000,
+    "row": {
+      "score": 1.7,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "makeup_style": "full",
+      "makeup_uneven": 2,
+      "makeup_flawless": 0,
+      "requested_background": "bathroom_mirror",
+      "requested_lighting": "studio_lighting",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "negative_only_94001_Women_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 35-year-old East Asian woman, average build, long narrow face, prominent cheekbones, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, an oily sheen at the roots, strands clumped and flattened.\nMakeup: everyday makeup, applied unevenly with two clashing colors and visibly smudged edges.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing against a seamless studio backdrop, slightly harsh direct on-camera flash lighting, centered in frame, straight-on eye-level angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions, harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application",
+    "category": "Women_Grooming",
+    "tier": "flaw_severe",
+    "seed": 94001,
+    "row": {
+      "score": 1.2,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "medium",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "makeup_style": "everyday",
+      "makeup_uneven": 2,
+      "makeup_flawless": 0,
+      "requested_background": "studio",
+      "requested_lighting": "slightly_harsh",
+      "requested_framing": "centered"
+    }
+  },
+  "negative_only_94002_Women_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Caucasian woman, plus size, round soft face shape, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, an oily sheen at the roots, strands clumped and flattened.\nMakeup: a full face of makeup, applied unevenly with two clashing colors and visibly smudged edges.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in a plain apartment hallway, soft overcast daylight, centered in frame, slightly high camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions, harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application",
+    "category": "Women_Grooming",
+    "tier": "flaw_severe",
+    "seed": 94002,
+    "row": {
+      "score": 1.5,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "makeup_style": "full",
+      "makeup_uneven": 2,
+      "makeup_flawless": 0,
+      "requested_background": "hallway",
+      "requested_lighting": "overcast",
+      "requested_framing": "slightly_high_angle"
+    }
+  },
+  "negative_only_94004_Women_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 45-year-old Hispanic woman, curvy, heart-shaped face, facing the camera directly, looking at the camera.\nHair: short hair, visibly greasy and unwashed, an oily sheen at the roots, strands clumped and flattened.\nMakeup: everyday makeup, applied unevenly with two clashing colors and visibly smudged edges.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in a plain apartment hallway, warm evening lamp lighting, centered in frame, straight-on eye-level angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions, harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application",
+    "category": "Women_Grooming",
+    "tier": "flaw_severe",
+    "seed": 94004,
+    "row": {
+      "score": 1.6,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "short",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "makeup_style": "everyday",
+      "makeup_uneven": 2,
+      "makeup_flawless": 0,
+      "requested_background": "hallway",
+      "requested_lighting": "evening_lamp",
+      "requested_framing": "centered"
+    }
+  },
+  "negative_only_94005_Women_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 28-year-old Hispanic woman, average build, square jaw, full cheeks, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, an oily sheen at the roots, strands clumped and flattened.\nMakeup: minimal makeup, applied unevenly with two clashing colors and visibly smudged edges.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing outdoors on a city sidewalk with buildings in the background, warm evening lamp lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions, harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application",
+    "category": "Women_Grooming",
+    "tier": "flaw_severe",
+    "seed": 94005,
+    "row": {
+      "score": 1.1,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "makeup_style": "minimal",
+      "makeup_uneven": 2,
+      "makeup_flawless": 0,
+      "requested_background": "outdoors",
+      "requested_lighting": "evening_lamp",
+      "requested_framing": "slightly_low_angle"
+    }
+  },
+  "negative_only_94006_Women_Grooming_flaw_severe.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Caucasian woman, slim, heart-shaped face, facing the camera directly, looking at the camera.\nHair: long hair, visibly greasy and unwashed, an oily sheen at the roots, strands clumped and flattened.\nMakeup: minimal makeup, applied unevenly with two clashing colors and visibly smudged edges.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing against a plain neutral-colored wall, warm evening lamp lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "negative_prompt": "deformed hands, extra fingers, fused fingers, extra limbs, missing limbs, multiple people, cropped head, cropped feet, out of frame, text, watermark, logo, signature, cartoon, 3d render, plastic skin, airbrushed skin, blurry, low quality, distorted proportions, harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application",
+    "category": "Women_Grooming",
+    "tier": "flaw_severe",
+    "seed": 94006,
+    "row": {
+      "score": 1.1,
+      "hair_untidy": 2,
+      "hair_styled": 0,
+      "hair_length": "long",
+      "skin_neglected": 2,
+      "skin_healthy": 0,
+      "eyebrows_unkempt": 2,
+      "eyebrows_groomed": 0,
+      "makeup_style": "minimal",
+      "makeup_uneven": 2,
+      "makeup_flawless": 0,
+      "requested_background": "plain_wall",
+      "requested_lighting": "evening_lamp",
+      "requested_framing": "slightly_low_angle"
+    }
+  }
+}

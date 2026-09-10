@@ -1,0 +1,296 @@
+{
+  "90005_baseline_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "baseline"
+  },
+  "90005_baseline_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "baseline"
+  },
+  "90005_baseline_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "baseline"
+  },
+  "90005_positive_only_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "positive_only"
+  },
+  "90005_positive_only_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "positive_only"
+  },
+  "90005_positive_only_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "positive_only"
+  },
+  "90005_negative_only_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "negative_only"
+  },
+  "90005_negative_only_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "negative_only"
+  },
+  "90005_negative_only_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "negative_only"
+  },
+  "90005_combined_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "combined"
+  },
+  "90005_combined_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "combined"
+  },
+  "90005_combined_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "combined"
+  },
+  "90005_short_direct_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: freshly shaved, not a trace of stubble anywhere on the face.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "short_direct"
+  },
+  "90005_short_direct_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: freshly shaved, not a trace of stubble anywhere on the face.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "short_direct"
+  },
+  "90005_short_direct_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: freshly shaved, not a trace of stubble anywhere on the face.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "short_direct"
+  },
+  "90005_technical_precise_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five o'clock shadow, no peach fuzz.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "technical_precise"
+  },
+  "90005_technical_precise_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five o'clock shadow, no peach fuzz.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "technical_precise"
+  },
+  "90005_technical_precise_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five o'clock shadow, no peach fuzz.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "technical_precise"
+  },
+  "90005_directive_caps_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: IMPORTANT: the man's face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five o'clock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks -- as if shaved moments ago with a fresh razor.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "directive_caps"
+  },
+  "90005_directive_caps_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: IMPORTANT: the man's face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five o'clock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks -- as if shaved moments ago with a fresh razor.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "directive_caps"
+  },
+  "90005_directive_caps_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 55-year-old Hispanic man, heavy set, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: long hair, lying naturally with no product, neither messy nor styled.\nFacial hair: IMPORTANT: the man's face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five o'clock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks -- as if shaved moments ago with a fresh razor.\nSkin: ordinary skin texture with a few small visible pores.\nEyebrows: natural and unshaped, neither groomed nor unkempt.\nSetting: standing against a plain neutral-colored wall, slightly harsh direct on-camera flash lighting, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90005",
+    "variant": "directive_caps"
+  },
+  "90019_baseline_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "baseline"
+  },
+  "90019_baseline_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "baseline"
+  },
+  "90019_baseline_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "baseline"
+  },
+  "90019_positive_only_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "positive_only"
+  },
+  "90019_positive_only_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "positive_only"
+  },
+  "90019_positive_only_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "positive_only"
+  },
+  "90019_negative_only_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "negative_only"
+  },
+  "90019_negative_only_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "negative_only"
+  },
+  "90019_negative_only_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "negative_only"
+  },
+  "90019_combined_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "combined"
+  },
+  "90019_combined_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "combined"
+  },
+  "90019_combined_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: completely clean-shaven with smooth, even skin. The face is completely bare with zero facial hair of any kind, freshly shaved, smooth jawline and smooth upper lip. Avoid: stubble, beard, mustache, five o'clock shadow, facial hair, goatee, sideburns, unshaven look.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "combined"
+  },
+  "90019_short_direct_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: freshly shaved, not a trace of stubble anywhere on the face.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "short_direct"
+  },
+  "90019_short_direct_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: freshly shaved, not a trace of stubble anywhere on the face.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "short_direct"
+  },
+  "90019_short_direct_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: freshly shaved, not a trace of stubble anywhere on the face.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "short_direct"
+  },
+  "90019_technical_precise_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five o'clock shadow, no peach fuzz.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "technical_precise"
+  },
+  "90019_technical_precise_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five o'clock shadow, no peach fuzz.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "technical_precise"
+  },
+  "90019_technical_precise_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: The jaw, chin, cheeks, and upper lip are entirely free of any facial hair growth, indistinguishable from a state immediately after shaving, no stubble shadow, no five o'clock shadow, no peach fuzz.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "technical_precise"
+  },
+  "90019_directive_caps_1.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: IMPORTANT: the man's face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five o'clock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks -- as if shaved moments ago with a fresh razor.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "directive_caps"
+  },
+  "90019_directive_caps_2.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: IMPORTANT: the man's face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five o'clock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks -- as if shaved moments ago with a fresh razor.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "directive_caps"
+  },
+  "90019_directive_caps_3.png": {
+    "prompt": "A head-and-shoulders portrait photograph of a 19-year-old Black man, slim, sharp angular face, prominent nose, facing the camera directly, looking at the camera.\nHair: medium-length hair, visibly greasy and unwashed, strands clumped together with an oily sheen, flattened against the scalp.\nFacial hair: IMPORTANT: the man's face MUST be perfectly smooth with ABSOLUTELY NO facial hair. No stubble. No five o'clock shadow. No beard. No mustache. Completely hairless jaw, chin, and cheeks -- as if shaved moments ago with a fresh razor.\nSkin: dry, visibly flaking skin with rough patches on the forehead and around the nose.\nEyebrows: thick and completely unshaped, growing together above the nose.\nSetting: standing in front of a bathroom mirror, a faint reflection visible, soft natural window light from the side, centered in frame, slightly low camera angle.\nPhotorealistic candid photograph, natural skin texture, sharp focus, 85mm lens, head and shoulders in frame.",
+    "category": "Men_Grooming",
+    "tier": "n/a",
+    "base_id": "90019",
+    "variant": "directive_caps"
+  }
+}

@@ -129,6 +129,7 @@ ML/models/*.mlmodel
 *.pt
 *.onnx
 *.bin
+*.png
 
 # Python Environments & Caches
 .venv/

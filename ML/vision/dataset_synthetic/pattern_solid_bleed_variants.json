@@ -1,0 +1,12 @@
+{
+  "positive_only": {
+    "prompt_append": "The garment is a solid, plain, single uniform color throughout, with absolutely no pattern, no print, no stripes, and no checks anywhere on the fabric."
+  },
+  "negative_only": {
+    "extra_negative": "striped pattern, checked pattern, plaid, printed pattern, patterned fabric, print design, graphic print"
+  },
+  "combined": {
+    "prompt_append": "The garment is a solid, plain, single uniform color throughout, with absolutely no pattern, no print, no stripes, and no checks anywhere on the fabric.",
+    "extra_negative": "striped pattern, checked pattern, plaid, printed pattern, patterned fabric, print design, graphic print"
+  }
+}

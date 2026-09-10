@@ -84,6 +84,13 @@ def build_grooming_task(category, tier, rng):
     skin_phrase, skin_labels = tx.build_skin(tier, rng)
     brow_phrase, brow_labels = tx.build_eyebrows(tier, rng)
 
+    # Targeted reinforcement for confirmed on-target render failures --
+    # see taxonomy.py's "TARGETED PROMPT-ENGINEERING FIXES" section.
+    extra_negative = []
+    if tier == "flaw_severe":
+        extra_negative.append(tx.SKIN_SEVERE_EXTRA_NEGATIVE)
+        brow_phrase = f"{brow_phrase} {tx.EYEBROWS_SEVERE_EXTRA_POSITIVE}"
+
     row = {"score": tx.sample_score(tier, rng)}
     row.update(hair_labels)
     row.update(skin_labels)
@@ -93,9 +100,13 @@ def build_grooming_task(category, tier, rng):
         facial_phrase, facial_labels = tx.build_facial_hair(tier, rng)
         row.update(facial_labels)
         third_clause = f"Facial hair: {facial_phrase}."
+        if facial_labels["facial_hair_style"] == "clean_shaven":
+            extra_negative.append(tx.CLEAN_SHAVEN_EXTRA_NEGATIVE)
     else:
         makeup_phrase, makeup_labels = tx.build_makeup(tier, rng)
         row.update(makeup_labels)
+        if tier == "flaw_severe" and makeup_labels["makeup_style"] != "none":
+            makeup_phrase = f"{makeup_phrase} {tx.MAKEUP_SEVERE_EXTRA_POSITIVE}"
         third_clause = f"Makeup: {makeup_phrase}."
 
     row.update({
@@ -115,7 +126,13 @@ def build_grooming_task(category, tier, rng):
         f"Photorealistic candid photograph, natural skin texture, sharp focus, "
         f"85mm lens, head and shoulders in frame."
     )
-    return {"prompt": prompt, "resolution": tx.GROOMING_RESOLUTION, "row": row}
+    negative_prompt = tx.NEGATIVE_PROMPT
+    if extra_negative:
+        negative_prompt = negative_prompt + ", " + ", ".join(extra_negative)
+    return {
+        "prompt": prompt, "resolution": tx.GROOMING_RESOLUTION, "row": row,
+        "negative_prompt": negative_prompt,
+    }
 
 
 # --------------------------------------------------------------------------
@@ -151,6 +168,12 @@ def build_outfit_task(category, tier, rng):
         "requested_hair_desc": hair_desc,
     })
 
+    # Targeted reinforcement for confirmed on-target render failures --
+    # see taxonomy.py's "TARGETED PROMPT-ENGINEERING FIXES" section.
+    extra_negative = []
+    if outfit["upper_pattern"] == "solid" or outfit["lower_pattern"] == "solid":
+        extra_negative.append(tx.SOLID_PATTERN_EXTRA_NEGATIVE)
+
     body_lock = BODY_LOCK.format(build=identity["build"])
     upper_clause = _garment_clause(outfit["upper_pattern"], outfit["upper_color"], outfit["upper"][1])
 
@@ -177,7 +200,13 @@ def build_outfit_task(category, tier, rng):
         "85mm lens, full body in frame."
     )
     prompt = "\n".join(lines)
-    return {"prompt": prompt, "resolution": tx.OUTFIT_RESOLUTION, "row": row}
+    negative_prompt = tx.NEGATIVE_PROMPT
+    if extra_negative:
+        negative_prompt = negative_prompt + ", " + ", ".join(extra_negative)
+    return {
+        "prompt": prompt, "resolution": tx.OUTFIT_RESOLUTION, "row": row,
+        "negative_prompt": negative_prompt,
+    }
 
 
 # --------------------------------------------------------------------------

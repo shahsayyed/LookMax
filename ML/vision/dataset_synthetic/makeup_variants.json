@@ -1,0 +1,12 @@
+{
+  "positive_only": {
+    "prompt_append": "The makeup clearly uses two visibly clashing, mismatched colors that do not complement each other, applied unevenly with visibly smudged edges."
+  },
+  "negative_only": {
+    "extra_negative": "harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application"
+  },
+  "combined": {
+    "prompt_append": "The makeup clearly uses two visibly clashing, mismatched colors that do not complement each other, applied unevenly with visibly smudged edges.",
+    "extra_negative": "harmonious makeup colors, well-blended makeup, matching color palette, subtle natural makeup, clean makeup application"
+  }
+}
