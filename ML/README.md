@@ -35,22 +35,34 @@ ML/
 │   │   ├── validation_sweep.py       ← Coverage simulation & binding gate
 │   │   ├── full_run.py               ← 28,000-image production generator
 │   │   ├── merge_shards.py           ← Merges shard CSVs
-│   │   ├── extract_measured_labels.py← Pixel-measured color & QA filters
+│   │   ├── extract_measured_labels.py← Pixel-measured color & QA filters — final qa_pass gate
+│   │   ├── rebuild_label_csvs.py     ← Deterministic label-CSV reconstruction (recovers lost/missing rows)
+│   │   ├── verify_dataset_vertex.py  ← Synchronous VLM semantic audit (Gemini via Vertex)
+│   │   ├── verify_batch.py           ← Same audit, Vertex Batch Prediction (hundreds+ images)
+│   │   ├── prompt_experiment.py      ← A/B prompt-wording test harness (isolated GPU box)
+│   │   ├── relabel_batch.py          ← Classify-then-correct labels in place, or salvage+copy before regen
+│   │   ├── regenerate_targeted.py    ← Regenerates an explicit filename whitelist only
+│   │   ├── pull_regenerated.py       ← Downloads regenerated images back, checksum-verified
+│   │   ├── fleet_monitor.py          ← Multi-machine sync/health monitoring during generation
 │   │   ├── install.sh                ← Remote GPU setup script
-│   │   └── PLAN.md                   ← Execution guide for image generation
+│   │   ├── PLAN.md                   ← Execution guide for image generation
+│   │   └── QA_AND_RELABELING.md      ← Post-generation audit/fix pipeline — read before touching label CSVs
 │   ├── dataset_real/                 ← Real photos: scraping & VLM classification
 │   │   ├── 01_setup_environment.py   ← Verifies environment & dependencies
 │   │   ├── 02_scrape_images.py       ← Scrapes Unsplash, Pexels, Pixabay
 │   │   ├── 03_classify_and_sort.py   ← VLM classification into aesthetic tiers (14,079 images)
-│   │   ├── reddit_scraper.py         ← Reddit Playwright scraper
+│   │   ├── reddit_scraper.py         ← Reddit Playwright scraper (rate-limited, human-like delays)
+│   │   ├── generate_face_queries.py  ← Search-query generation (good-face buckets)
+│   │   ├── generate_bad_face_queries.py ← Search-query generation ("needs improvement" buckets)
 │   │   ├── load_celeba_dataset.py    ← CelebA-HQ ingestion
 │   │   ├── load_fairface_dataset.py  ← FairFace demographic ingestion
 │   │   ├── load_unsplash_dataset.py  ← Unsplash research dataset ingestion
-│   │   └── reddit_*.json             ← Search query catalogs
+│   │   └── reddit_*.json             ← Search query catalogs (face/outfit/bad-face/general)
 │   ├── training/                     ← Multi-Head PyTorch Training & CoreML Export
 │   │   ├── pretrain_synthetic.py     ← Phase A: Multi-head synthetic pretraining
 │   │   ├── finetune_real_world.py    ← Phase B: Real-world fine-tuning + synthetic replay + CoreML export
-│   │   └── multihead_common.py       ← Shared MultiHeadModel architecture, dataset, & CoreML export
+│   │   ├── multihead_common.py       ← Shared MultiHeadModel architecture, dataset, & CoreML export
+│   │   └── inspect_phaseA.py         ← Post-training diagnostics: confusion patterns, score-tier calibration
 │   ├── config.py                     ← Centralized vision settings & paths
 │   └── requirements.txt              ← Vision pipeline dependencies
 ├── stylist_llm/                      ← On-Device Stylist LLM (SmolLM2-135M)
@@ -79,6 +91,9 @@ ML/
 │       ├── qa_reviewed/              ← Filtered dataset passing all QA gates
 │       └── pruned_vocab/             ← Tokenizer mapping artifacts
 ├── models/                           ← Exported CoreML .mlpackage artifacts for Xcode
+│                                        (all 5 populated as of 2026-09-11: 4x LookMax_<Category>.mlpackage
+│                                        + StylistEngine.mlpackage/StylistEngine_INT8.mlpackage, plus
+│                                        the .pt checkpoints and *_metrics.json each phase produced)
 └── archive/                          ← Deprecated iterations (FLUX v7, etc.)
 ```
 
@@ -93,6 +108,23 @@ The vision pipeline trains **4 models** (consolidated across age brackets to max
 * `LookMax_Women_Grooming.mlpackage`
 * `LookMax_Men_Outfit.mlpackage`
 * `LookMax_Women_Outfit.mlpackage`
+
+**Status (2026-09-11): both phases complete, all 4 `.mlpackage` files exported to `ML/models/`.**
+28,000 synthetic images generated, audited, corrected, and grown to 29,436
+training-ready images post-QA (see `ML/vision/dataset_synthetic/QA_AND_RELABELING.md`
+for the full audit/relabel/regeneration story — this is not a small footnote,
+it's most of what made the dataset actually trainable). Phase A ran
+12-19 epochs per category (early-stopped, 25 max) with 90.6-97.4% average
+per-head validation accuracy. Phase B ran the full 10 epochs per category
+with no forgetting of Phase A's attribute heads (96-98.2% retained). One
+known, measured issue: `Women_Outfit`'s real "needs improvement" bucket is
+thin (137 of 14,079 real photos) and the fine-tuned model is measurably
+too generous on real bad outfits in that category (predicted mean 6.34 vs.
+true annotated mean 4.09 on that bucket) — flagged as a real-data scraping
+gap, not a bug, not yet fixed. See `ML/models/LookMax_<Category>_metrics.json`
+for full per-category numbers and `inspect_phaseA.py` for the diagnostic
+methodology (score-tier calibration, per-class confusion — not just
+aggregate accuracy) used to find it.
 
 #### Model Architecture
 Backbone: `mobilenet_v3_large` (or `fastvit_t8`).

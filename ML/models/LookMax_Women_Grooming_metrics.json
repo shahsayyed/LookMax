@@ -1,0 +1,106 @@
+{
+  "category": "Women_Grooming",
+  "status": "exported",
+  "real_images": 3695,
+  "real_train": 2956,
+  "real_val": 739,
+  "synthetic_replay_rows": 6318,
+  "replay_ratio": 0.3,
+  "best_real_val_loss": 0.4643,
+  "epochs_trained": 10,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.9224,
+      "real_val_loss": 0.6362,
+      "real_val_score_mae": 1.0164,
+      "real_val_score_rmse": 1.3832
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6818,
+      "real_val_loss": 0.546,
+      "real_val_score_mae": 0.9087,
+      "real_val_score_rmse": 1.263
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6187,
+      "real_val_loss": 0.5004,
+      "real_val_score_mae": 0.8584,
+      "real_val_score_rmse": 1.1945
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5898,
+      "real_val_loss": 0.4795,
+      "real_val_score_mae": 0.8308,
+      "real_val_score_rmse": 1.1697
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5536,
+      "real_val_loss": 0.4761,
+      "real_val_score_mae": 0.8255,
+      "real_val_score_rmse": 1.1661
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5419,
+      "real_val_loss": 0.4663,
+      "real_val_score_mae": 0.8156,
+      "real_val_score_rmse": 1.1482
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5235,
+      "real_val_loss": 0.4734,
+      "real_val_score_mae": 0.8193,
+      "real_val_score_rmse": 1.1654
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5144,
+      "real_val_loss": 0.4655,
+      "real_val_score_mae": 0.8126,
+      "real_val_score_rmse": 1.1496
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5023,
+      "real_val_loss": 0.4643,
+      "real_val_score_mae": 0.812,
+      "real_val_score_rmse": 1.1489
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5139,
+      "real_val_loss": 0.4652,
+      "real_val_score_mae": 0.812,
+      "real_val_score_rmse": 1.1519
+    }
+  ],
+  "final_score_mae": 0.8119621230075098,
+  "final_score_rmse": 1.1488673536882739,
+  "replay_head_accuracy": {
+    "hair_untidy": 1.0,
+    "hair_styled": 1.0,
+    "hair_length": 0.9865506329113924,
+    "skin_neglected": 0.9968354430379747,
+    "skin_healthy": 1.0,
+    "eyebrows_unkempt": 0.9746835443037974,
+    "eyebrows_groomed": 1.0,
+    "makeup_style": 0.8140822784810127,
+    "makeup_uneven": 0.9833860759493671,
+    "makeup_flawless": 0.9960443037974683
+  },
+  "checkpoint_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Women_Grooming_final.pt",
+  "model_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Women_Grooming.mlpackage",
+  "model_size_mb": 8.2,
+  "export_error": null,
+  "backbone": "mobilenet_v3_large",
+  "image_size": [
+    384,
+    384
+  ]
+}

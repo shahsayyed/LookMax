@@ -1,5 +1,16 @@
 # LookMax Synthetic Dataset — Fleet Architecture
 
+**Status (2026-09-11): the 28,000-image generation run this fleet was built
+for is complete, and every Vast.ai instance listed below has been
+destroyed** — `fleet_monitor.py --test-api-key` confirms 0 active
+instances. This document is kept as an architectural reference for how
+multi-machine generation worked (relevant again if a future dataset
+expansion needs the same approach), not as a description of anything
+currently running. If `fleet_status.md` still shows a stale "unreachable"
+alert, that's a leftover `crontab` entry still polling a destroyed host —
+harmless, and fixed by removing the cron entry (see `PLAN.md`), not a sign
+anything is actually wrong.
+
 How the multi-machine Vast.ai generation fleet is provisioned, coordinated, and
 monitored. Companion to [PLAN.md](PLAN.md), which covers the single-machine
 generation pipeline itself (prompts, batching, output layout). This document

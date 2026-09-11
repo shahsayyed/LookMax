@@ -185,9 +185,13 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
             image_size = (int(parts[0]), int(parts[1]))
         else:
             image_size = (int(args.image_size), int(args.image_size))
-    elif "image_size" in ckpt:
+    elif ckpt.get("image_size") is not None:
         image_size = ckpt["image_size"]
     else:
+        # Phase A saves args.image_size verbatim, which is None whenever it
+        # ran with the auto-default (get_image_size(category)) rather than
+        # an explicit --image-size override -- fall back to the same
+        # category auto-default here rather than passing None through.
         image_size = get_image_size(category)
     size_str = f"{image_size[0]}×{image_size[1]}" if isinstance(image_size, tuple) else f"{image_size}×{image_size}"
     print(f"  Loaded Phase A checkpoint: backbone={backbone_name}, image_size={size_str}, "

@@ -1,0 +1,114 @@
+{
+  "category": "Men_Grooming",
+  "status": "trained",
+  "total_rows": 7137,
+  "usable_rows": 7136,
+  "train_size": 5708,
+  "val_size": 1428,
+  "best_val_loss": 0.4458,
+  "epochs_trained": 12,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.5993,
+      "val_loss": 1.1005,
+      "score_mae": 0.9182,
+      "score_rmse": 1.1174
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6763,
+      "val_loss": 0.7402,
+      "score_mae": 0.6723,
+      "score_rmse": 0.8581
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.5957,
+      "val_loss": 0.6139,
+      "score_mae": 0.5908,
+      "score_rmse": 0.7734
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5008,
+      "val_loss": 0.5373,
+      "score_mae": 0.565,
+      "score_rmse": 0.7391
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.4666,
+      "val_loss": 0.5324,
+      "score_mae": 0.5788,
+      "score_rmse": 0.7474
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.4192,
+      "val_loss": 0.5416,
+      "score_mae": 0.606,
+      "score_rmse": 0.7707
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.3985,
+      "val_loss": 0.4458,
+      "score_mae": 0.5374,
+      "score_rmse": 0.6764
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.3709,
+      "val_loss": 0.4482,
+      "score_mae": 0.5281,
+      "score_rmse": 0.6767
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.3442,
+      "val_loss": 0.4959,
+      "score_mae": 0.5685,
+      "score_rmse": 0.7551
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.3319,
+      "val_loss": 0.4928,
+      "score_mae": 0.5703,
+      "score_rmse": 0.749
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.2843,
+      "val_loss": 0.4989,
+      "score_mae": 0.5489,
+      "score_rmse": 0.7232
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.2568,
+      "val_loss": 0.482,
+      "score_mae": 0.5354,
+      "score_rmse": 0.6987
+    }
+  ],
+  "final_score_mae": 0.5373667006899997,
+  "final_score_rmse": 0.6763935983074706,
+  "final_head_accuracy": {
+    "hair_untidy": 1.0,
+    "hair_styled": 0.9992997198879552,
+    "hair_length": 0.927170868347339,
+    "skin_neglected": 0.9866946778711485,
+    "skin_healthy": 0.9992997198879552,
+    "eyebrows_unkempt": 0.9803921568627451,
+    "eyebrows_groomed": 0.9992997198879552,
+    "facial_hair_style": 0.9341736694677871,
+    "facial_hair_untidy": 0.9446778711484594,
+    "facial_hair_groomed": 0.9705882352941176
+  },
+  "checkpoint_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Men_Grooming_phaseA.pt",
+  "backbone": "mobilenet_v3_large",
+  "image_size": null,
+  "source": "qa_processed"
+}

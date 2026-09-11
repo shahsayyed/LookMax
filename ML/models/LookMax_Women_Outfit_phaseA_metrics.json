@@ -1,0 +1,169 @@
+{
+  "category": "Women_Outfit",
+  "status": "trained",
+  "total_rows": 8000,
+  "usable_rows": 7991,
+  "train_size": 6392,
+  "val_size": 1599,
+  "best_val_loss": 1.5491,
+  "epochs_trained": 19,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 5.2412,
+      "val_loss": 3.9659,
+      "score_mae": 1.3389,
+      "score_rmse": 1.6458
+    },
+    {
+      "epoch": 2,
+      "train_loss": 3.0114,
+      "val_loss": 2.9273,
+      "score_mae": 1.405,
+      "score_rmse": 1.7308
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.1907,
+      "val_loss": 2.1473,
+      "score_mae": 1.0887,
+      "score_rmse": 1.4577
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.8281,
+      "val_loss": 1.8373,
+      "score_mae": 0.9992,
+      "score_rmse": 1.347
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.5631,
+      "val_loss": 1.8691,
+      "score_mae": 1.0441,
+      "score_rmse": 1.3862
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.356,
+      "val_loss": 1.7331,
+      "score_mae": 0.9739,
+      "score_rmse": 1.3724
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.1916,
+      "val_loss": 1.8227,
+      "score_mae": 0.9963,
+      "score_rmse": 1.3648
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.0681,
+      "val_loss": 1.7108,
+      "score_mae": 0.9364,
+      "score_rmse": 1.2931
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.9528,
+      "val_loss": 1.7422,
+      "score_mae": 0.9165,
+      "score_rmse": 1.2933
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.8459,
+      "val_loss": 1.6025,
+      "score_mae": 0.9052,
+      "score_rmse": 1.2564
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.7305,
+      "val_loss": 1.7512,
+      "score_mae": 0.9134,
+      "score_rmse": 1.3136
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.6409,
+      "val_loss": 1.9054,
+      "score_mae": 0.95,
+      "score_rmse": 1.3159
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.574,
+      "val_loss": 1.5587,
+      "score_mae": 0.8924,
+      "score_rmse": 1.2292
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.5294,
+      "val_loss": 1.5491,
+      "score_mae": 0.866,
+      "score_rmse": 1.2279
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.4978,
+      "val_loss": 1.6508,
+      "score_mae": 0.875,
+      "score_rmse": 1.2509
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.4232,
+      "val_loss": 1.5966,
+      "score_mae": 0.8997,
+      "score_rmse": 1.2346
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.3846,
+      "val_loss": 1.6666,
+      "score_mae": 0.8903,
+      "score_rmse": 1.241
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.3517,
+      "val_loss": 1.6344,
+      "score_mae": 0.8746,
+      "score_rmse": 1.24
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.33,
+      "val_loss": 1.5943,
+      "score_mae": 0.8671,
+      "score_rmse": 1.2229
+    }
+  ],
+  "final_score_mae": 0.8659928445148051,
+  "final_score_rmse": 1.2278926083270074,
+  "final_head_accuracy": {
+    "upper_type": 0.8724202626641651,
+    "upper_pattern": 0.9599749843652282,
+    "mid_type": 0.9881175734834271,
+    "lower_type": 0.9243277048155097,
+    "lower_pattern": 0.9737335834896811,
+    "footwear_type": 0.9806128830519074,
+    "formality": 0.8330206378986866,
+    "fit_baggy": 0.9118198874296435,
+    "fit_tight": 0.9136960600375235,
+    "fit_tailored": 0.892432770481551,
+    "fabric_wrinkled": 0.9824890556597874,
+    "fabric_crisp": 0.8911819887429644,
+    "footwear_worn": 0.9937460913070669,
+    "footwear_polished": 0.8930581613508443,
+    "styling_sloppy": 0.9924953095684803,
+    "styling_sharp": 0.8936835522201376
+  },
+  "checkpoint_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Women_Outfit_phaseA.pt",
+  "backbone": "mobilenet_v3_large",
+  "image_size": null,
+  "source": "qa_processed"
+}

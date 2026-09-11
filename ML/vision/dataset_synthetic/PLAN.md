@@ -15,6 +15,13 @@ it before changing anything here. It contains real, hard-won operational
 fixes this pipeline depends on (see "Lessons carried forward" below), not
 just historical clutter.
 
+**This document covers generating the dataset. Everything that happened
+after the 28,000-image run finished — a critical label-loss bug and its
+fix, the VLM-based semantic audit, A/B prompt-fix experiments, relabeling,
+and targeted regeneration — is a separate, later phase documented in
+[`QA_AND_RELABELING.md`](QA_AND_RELABELING.md). Read that before touching
+`raw_generated/` or `qa_processed/`'s CSVs.**
+
 ---
 
 ## Scripts
@@ -32,6 +39,13 @@ just historical clutter.
 | `merge_shards.py` | Combines per-shard label CSVs into one CSV per category; warns (doesn't silently double-count) on duplicate filenames. |
 | `extract_measured_labels.py` | Bucket C: post-generation pixel-measured colour/QA columns, added without deleting rows. |
 | `install.sh` | Remote GPU box setup — disk-safety check, torch-presence check, dependency install. |
+| `fleet_monitor.py` | Multi-machine fleet sync/health monitoring during generation (auto-pull, auto-destroy on completion, `--cron` mode). Generation is complete as of 2026-09-11 and the fleet has been decommissioned — see `fleet_status.md`'s note if it still shows a stale "unreachable" alert; that means the old `--cron` crontab entry needs manual removal (`crontab -l \| grep -v "fleet_monitor.py --cron" \| crontab -`), not that anything is actually wrong. |
+
+Post-generation QA/audit/relabel/regeneration tooling (`rebuild_label_csvs.py`,
+`verify_dataset_vertex.py`, `verify_batch.py`, `prompt_experiment.py`,
+`tokenizer_probe.py`, `relabel_batch.py`, `regenerate_targeted.py`,
+`pull_regenerated.py`) is documented in
+[`QA_AND_RELABELING.md`](QA_AND_RELABELING.md), not here.
 
 ---
 
@@ -317,6 +331,12 @@ Warns loudly (rather than silently double-counting) if two workers were
 accidentally given the same `--shard` value.
 
 ### 11. Measure pixel-level labels (Bucket C)
+**In practice this ran locally, after step 12 (sync back) AND after the
+full correction pipeline in [`QA_AND_RELABELING.md`](QA_AND_RELABELING.md)
+— not on the remote box right after merging shards.** Running it before the
+label CSVs are known-correct just means re-running it afterward; it's safe
+either way (never deletes rows), but running it last avoids the wasted
+pass. The command itself is unchanged:
 ```bash
 python3 extract_measured_labels.py \
     /data/qwen_dataset_output/labels_Men_Outfit.csv \
