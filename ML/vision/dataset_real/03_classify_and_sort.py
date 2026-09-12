@@ -135,7 +135,16 @@ Required JSON schema:
   "overall_score": <float 1.0 to 10.0>,
   "aesthetic_tier": <"1_Needs_Improvement", "2_Average", or "3_Polished">,
   "confidence": <float 0.0 to 1.0>,
-  "summary_critique": "<one clear sentence explaining the rating>"
+  "summary_critique": "<one clear sentence explaining the rating>",
+  "upper_type": <string or null>,
+  "mid_type": <string or null>,
+  "lower_type": <string or null>,
+  "footwear_type": <string or null>,
+  "formality": <string or null>,
+  "hair_styled": <"0" or "1" or null>,
+  "hair_length": <string or null>,
+  "facial_hair_style": <string or null>,
+  "makeup_style": <string or null>
 }
 
 CRITICAL RULES:
@@ -154,10 +163,30 @@ CRITICAL RULES:
      • "1_Needs_Improvement" (1.0 to 4.9): Messy unstyled bedhead hair, overgrown/patchy untrimmed beard, severe redness/tired eyes, unflattering camera angle/lighting.
      • "2_Average" (5.0 to 7.4): Clean daily grooming baseline, standard neat haircut, natural everyday shave, neutral daily lighting.
      • "3_Polished" (7.5 to 10.0): Crisp styled hair/fade, sharp beard lines, glowing skin clarity, harmonious facial presentation.
-4. age_bracket:
+4. CORE RATING PHILOSOPHY (Effort & Execution ONLY):
+   - Rate styling, fit, and grooming execution ONLY.
+   - Strictly FORBIDDEN to penalize or grade based on: body weight/size, facial symmetry/features, age, or medical skin conditions (acne).
+5. AVOID LENIENCY BIAS (Crucial for dataset balance):
+   - Do NOT default to "2_Average" or "3_Polished" out of politeness.
+   - If an outfit has poorly proportioned silhouettes, dragging hems, wrinkled/sloppy fabric, bunching or pulling seams, or uncoordinated garments, you MUST assign "1_Needs_Improvement" (1.0 to 4.9).
+   - Accurate style coaching requires unflinching, objective assessment of tailoring and fit execution.
+6. age_bracket:
    - "under_35" for young adults, college students, 20s to early 30s.
    - "35_to_50" for 30s to 40s.
    - "over_50" for mature adults and seniors.
+7. ATTRIBUTE CLASSIFICATION (Crucial for garment/grooming recognition):
+   If focus_type is "outfit":
+   - "upper_type": choose exact match from ["tank_top", "graphic_tee", "plain_crewneck_tee", "casual_camisole", "henley", "polo_shirt", "flannel_shirt", "casual_blouse", "wrap_top", "silk_blouse", "fitted_sweater", "crewneck_sweater", "turtleneck_sweater", "oxford_button_down", "tailored_blouse", "dress_shirt", "dress"] (or null if obscured).
+   - "mid_type": choose exact match from ["none", "hoodie", "denim_jacket", "bomber_jacket", "cardigan", "blazer", "cropped_jacket"].
+   - "lower_type": choose exact match from ["sweatpants", "athletic_shorts", "cargo_shorts", "leggings", "denim_shorts", "denim_jeans", "joggers", "cargo_pants", "chino_pants", "corduroy_pants", "casual_skirt", "wide_leg_trousers", "midi_skirt", "tailored_trousers", "pencil_skirt", "dress_pants", "none"].
+   - "footwear_type": choose exact match from ["slides", "flip_flops", "canvas_sneakers", "running_shoes", "leather_sneakers", "sneakers", "ballet_flats", "ankle_boots", "block_heels", "pointed_flats", "heeled_pumps", "suede_desert_boots", "leather_dress_shoes", "oxford_shoes"] (or null if feet out of frame).
+   - "formality": choose from ["casual", "smart_casual", "business_casual", "formal"].
+   If focus_type is "face_grooming":
+   - "hair_styled": "1" if styled/neat/pomade/fade/intentional, "0" if messy/bedhead/unkempt.
+   - "hair_length": choose from ["buzz_cut", "short", "medium", "long"].
+   - "facial_hair_style": for men, choose from ["clean_shaven", "stubble", "short_beard", "full_beard", "moustache"] (or null for women).
+   - "makeup_style": for women, choose from ["none", "minimal", "everyday", "full"] (or null for men).
+   Set non-applicable attributes to null.
 """
 
 
@@ -246,19 +275,91 @@ def parse_vlm_json(raw: str) -> Optional[Dict[str, Any]]:
         return None
 
     json_str = match.group(0)
+    data = None
     try:
         data = json.loads(json_str)
-        if isinstance(data, dict):
-            return data
     except json.JSONDecodeError:
-        pass
+        # Fallback cleanup for trailing commas or single quotes
+        try:
+            fixed = re.sub(r",\s*([}\]])", r"\1", json_str)
+            data = json.loads(fixed)
+        except Exception:
+            return None
 
-    # Fallback cleanup for trailing commas or single quotes
-    try:
-        fixed = re.sub(r",\s*([}\]])", r"\1", json_str)
-        return json.loads(fixed)
-    except Exception:
-        return None
+    if isinstance(data, dict):
+        return normalize_vlm_attributes(data)
+    return None
+
+
+def normalize_vlm_attributes(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Normalize VLM attribute outputs to match LookMax schema class vocabularies."""
+    if not isinstance(data, dict):
+        return data
+
+    # 1. Upper type normalization
+    upper = str(data.get("upper_type") or "").lower().strip()
+    if upper in ["suit_jacket", "blazer", "suit"]:
+        if not data.get("mid_type") or data.get("mid_type") == "none":
+            data["mid_type"] = "blazer"
+        data["upper_type"] = "dress_shirt"
+    elif upper in ["t-shirt", "tee", "tshirt"]:
+        data["upper_type"] = "plain_crewneck_tee"
+    elif upper in ["button_down", "button_up", "oxford"]:
+        data["upper_type"] = "oxford_button_down"
+    elif upper in ["blouse"]:
+        data["upper_type"] = "casual_blouse"
+
+    # 2. Mid type normalization
+    mid = str(data.get("mid_type") or "").lower().strip()
+    if mid in ["suit_pants", "pants", "trousers"]:
+        if not data.get("lower_type"):
+            data["lower_type"] = "tailored_trousers"
+        data["mid_type"] = "none"
+    elif mid in ["suit_jacket", "suit_coat", "sport_coat"]:
+        data["mid_type"] = "blazer"
+
+    # 3. Lower type normalization
+    lower = str(data.get("lower_type") or "").lower().strip()
+    if lower in ["suit_pants", "dress_pants", "slacks", "tailored_pants", "trouser", "trousers"]:
+        data["lower_type"] = "tailored_trousers"
+    elif lower in ["jeans", "blue_jeans"]:
+        data["lower_type"] = "denim_jeans"
+    elif lower in ["shorts"]:
+        data["lower_type"] = "athletic_shorts"
+    elif lower in ["chinos", "khakis"]:
+        data["lower_type"] = "chino_pants"
+    elif lower in ["skirt"]:
+        data["lower_type"] = "casual_skirt"
+
+    # 4. Footwear normalization
+    footwear = str(data.get("footwear_type") or "").lower().strip()
+    if footwear in ["dress_shoes", "loafers", "monk_straps", "derbies", "oxfords"]:
+        data["footwear_type"] = "leather_dress_shoes"
+    elif footwear in ["sneakers", "tennis_shoes", "trainers"]:
+        data["footwear_type"] = "canvas_sneakers"
+    elif footwear in ["heels", "pumps", "high_heels"]:
+        data["footwear_type"] = "heeled_pumps"
+    elif footwear in ["boots"]:
+        data["footwear_type"] = "ankle_boots"
+    elif footwear in ["flats"]:
+        data["footwear_type"] = "ballet_flats"
+
+    # 5. Grooming normalization
+    styled = data.get("hair_styled")
+    if styled is True or styled == "true" or styled == "1" or styled == 1:
+        data["hair_styled"] = "1"
+    elif styled is False or styled == "false" or styled == "0" or styled == 0:
+        data["hair_styled"] = "0"
+
+    facial = str(data.get("facial_hair_style") or "").lower().strip()
+    if "shaven" in facial or "clean" in facial or facial == "none":
+        data["facial_hair_style"] = "clean_shaven"
+    elif "stubble" in facial:
+        data["facial_hair_style"] = "stubble"
+    elif "beard" in facial:
+        data["facial_hair_style"] = "short_beard" if "short" in facial else "full_beard"
+
+    return data
 
 
 def classify_with_ollama(
@@ -449,12 +550,22 @@ def classify_with_mlx_vlm(
             user_content,
             num_images=1,
         )
+
+        # Downscale image to max 512px to prevent token explosion on multi-megapixel Reddit photos
+        if HAS_PIL:
+            with PILImage.open(image_path) as img:
+                img = img.convert("RGB")
+                img.thumbnail((512, 512), PILImage.Resampling.LANCZOS)
+                input_img = img.copy()
+        else:
+            input_img = str(image_path)
+
         result = generate(
             mlx_model,
             mlx_processor,
-            image=str(image_path),
+            image=input_img,
             prompt=formatted_prompt,
-            max_tokens=400,
+            max_tokens=450,
             temperature=0.1,
             verbose=False,
         )

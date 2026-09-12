@@ -1,97 +1,97 @@
 {
   "category": "Women_Grooming",
   "status": "exported",
-  "real_images": 3695,
-  "real_train": 2956,
-  "real_val": 739,
+  "real_images": 4243,
+  "real_train": 3394,
+  "real_val": 849,
   "synthetic_replay_rows": 6318,
   "replay_ratio": 0.3,
-  "best_real_val_loss": 0.4643,
+  "best_real_val_loss": 1.0362,
   "epochs_trained": 10,
   "history": [
     {
       "epoch": 1,
-      "train_loss": 0.9224,
-      "real_val_loss": 0.6362,
-      "real_val_score_mae": 1.0164,
-      "real_val_score_rmse": 1.3832
+      "train_loss": 1.6156,
+      "real_val_loss": 1.3632,
+      "real_val_score_mae": 0.8858,
+      "real_val_score_rmse": 1.1406
     },
     {
       "epoch": 2,
-      "train_loss": 0.6818,
-      "real_val_loss": 0.546,
-      "real_val_score_mae": 0.9087,
-      "real_val_score_rmse": 1.263
+      "train_loss": 1.1831,
+      "real_val_loss": 1.195,
+      "real_val_score_mae": 0.8046,
+      "real_val_score_rmse": 1.0495
     },
     {
       "epoch": 3,
-      "train_loss": 0.6187,
-      "real_val_loss": 0.5004,
-      "real_val_score_mae": 0.8584,
-      "real_val_score_rmse": 1.1945
+      "train_loss": 1.0599,
+      "real_val_loss": 1.1258,
+      "real_val_score_mae": 0.7687,
+      "real_val_score_rmse": 1.0088
     },
     {
       "epoch": 4,
-      "train_loss": 0.5898,
-      "real_val_loss": 0.4795,
-      "real_val_score_mae": 0.8308,
-      "real_val_score_rmse": 1.1697
+      "train_loss": 0.9928,
+      "real_val_loss": 1.0959,
+      "real_val_score_mae": 0.7634,
+      "real_val_score_rmse": 1.0007
     },
     {
       "epoch": 5,
-      "train_loss": 0.5536,
-      "real_val_loss": 0.4761,
-      "real_val_score_mae": 0.8255,
-      "real_val_score_rmse": 1.1661
+      "train_loss": 0.933,
+      "real_val_loss": 1.061,
+      "real_val_score_mae": 0.7386,
+      "real_val_score_rmse": 0.9726
     },
     {
       "epoch": 6,
-      "train_loss": 0.5419,
-      "real_val_loss": 0.4663,
-      "real_val_score_mae": 0.8156,
-      "real_val_score_rmse": 1.1482
+      "train_loss": 0.8984,
+      "real_val_loss": 1.054,
+      "real_val_score_mae": 0.7376,
+      "real_val_score_rmse": 0.9724
     },
     {
       "epoch": 7,
-      "train_loss": 0.5235,
-      "real_val_loss": 0.4734,
-      "real_val_score_mae": 0.8193,
-      "real_val_score_rmse": 1.1654
+      "train_loss": 0.8744,
+      "real_val_loss": 1.0445,
+      "real_val_score_mae": 0.7357,
+      "real_val_score_rmse": 0.9689
     },
     {
       "epoch": 8,
-      "train_loss": 0.5144,
-      "real_val_loss": 0.4655,
-      "real_val_score_mae": 0.8126,
-      "real_val_score_rmse": 1.1496
+      "train_loss": 0.8546,
+      "real_val_loss": 1.0392,
+      "real_val_score_mae": 0.7301,
+      "real_val_score_rmse": 0.9636
     },
     {
       "epoch": 9,
-      "train_loss": 0.5023,
-      "real_val_loss": 0.4643,
-      "real_val_score_mae": 0.812,
-      "real_val_score_rmse": 1.1489
+      "train_loss": 0.8423,
+      "real_val_loss": 1.0374,
+      "real_val_score_mae": 0.7296,
+      "real_val_score_rmse": 0.9632
     },
     {
       "epoch": 10,
-      "train_loss": 0.5139,
-      "real_val_loss": 0.4652,
-      "real_val_score_mae": 0.812,
-      "real_val_score_rmse": 1.1519
+      "train_loss": 0.8521,
+      "real_val_loss": 1.0362,
+      "real_val_score_mae": 0.7288,
+      "real_val_score_rmse": 0.9621
     }
   ],
-  "final_score_mae": 0.8119621230075098,
-  "final_score_rmse": 1.1488673536882739,
+  "final_score_mae": 0.728757815029652,
+  "final_score_rmse": 0.9621379618153797,
   "replay_head_accuracy": {
     "hair_untidy": 1.0,
     "hair_styled": 1.0,
-    "hair_length": 0.9865506329113924,
-    "skin_neglected": 0.9968354430379747,
+    "hair_length": 0.9857594936708861,
+    "skin_neglected": 0.9944620253164557,
     "skin_healthy": 1.0,
-    "eyebrows_unkempt": 0.9746835443037974,
+    "eyebrows_unkempt": 0.9738924050632911,
     "eyebrows_groomed": 1.0,
-    "makeup_style": 0.8140822784810127,
-    "makeup_uneven": 0.9833860759493671,
+    "makeup_style": 0.7832278481012658,
+    "makeup_uneven": 0.9786392405063291,
     "makeup_flawless": 0.9960443037974683
   },
   "checkpoint_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Women_Grooming_final.pt",

@@ -4,7 +4,7 @@ import AVFoundation
 struct CustomCameraView: View {
     @Binding var isPresented: Bool
     var occasion: OccasionCategory = .casualEveryday
-    var onPhotoCaptured: (UIImage) -> Void
+    var onPhotoCaptured: (UIImage, ScanMode) -> Void
 
     @StateObject private var camera = CameraController()
     @State private var showingLibraryPicker = false
@@ -29,6 +29,9 @@ struct CustomCameraView: View {
                     // Real-time AR overlay
                     ARBiometricOverlayView(camera: camera, occasion: occasion)
 
+                    // Alignment Reticle Guide (Grooming Oval vs Outfit Silhouette)
+                    AlignmentGuideOverlayView(camera: camera)
+
                     // Grid overlay
                     if camera.isGridVisible { CameraGridView() }
 
@@ -51,9 +54,13 @@ struct CustomCameraView: View {
                 topBar
                     .padding(.top, 52)
 
-                // ── Contextual HUD Prompt ──
+                // ── Scan Mode Selector (Grooming vs Full Outfit) ──
+                scanModePicker
+                    .padding(.top, 8)
+
+                // ── Contextual Smart Quality HUD Prompt ──
                 hudPrompt
-                    .padding(.top, 12)
+                    .padding(.top, 8)
 
                 Spacer()
 
@@ -64,7 +71,7 @@ struct CustomCameraView: View {
 
                 // ── Native Zoom Rings ──
                 zoomRings
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 16)
 
                 // ── Bottom Shutter Bar ──
                 shutterBar
@@ -77,7 +84,7 @@ struct CustomCameraView: View {
                 lastCapturedThumb = photo
                 camera.stopCamera()
                 isPresented = false
-                onPhotoCaptured(photo)
+                onPhotoCaptured(photo, camera.scanMode)
             }
             camera.setupCamera()
         }
@@ -88,7 +95,7 @@ struct CustomCameraView: View {
                     if let img = pickerImage {
                         camera.stopCamera()
                         isPresented = false
-                        onPhotoCaptured(img)
+                        onPhotoCaptured(img, camera.scanMode)
                     }
                 }
         }
@@ -159,19 +166,33 @@ struct CustomCameraView: View {
         .padding(.horizontal, 20)
     }
 
-    // MARK: - Contextual HUD Prompt — matches design: cyan text, frosted pill
-    private var hudPrompt: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "figure.stand")
-                .foregroundColor(Theme.neonCyan)
-                .font(.system(size: 16, weight: .semibold))
-
-            Text("Align posture for \(occasion.rawValue)")
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(Theme.neonCyan)
+    // MARK: - Scan Mode Picker (Grooming vs Full Outfit)
+    private var scanModePicker: some View {
+        HStack(spacing: 0) {
+            ForEach(ScanMode.allCases) { mode in
+                Button(action: {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+                        camera.scanMode = mode
+                        HapticManager.selection()
+                    }
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: mode.icon)
+                            .font(.system(size: 13, weight: .semibold))
+                        Text(mode.rawValue)
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    }
+                    .foregroundColor(camera.scanMode == mode ? .black : .white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(camera.scanMode == mode ? Theme.neonCyan : Color.clear)
+                    )
+                }
+            }
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 10)
+        .padding(4)
         .background(
             Capsule()
                 .fill(Color.black.opacity(0.55))
@@ -179,9 +200,38 @@ struct CustomCameraView: View {
         )
         .overlay(
             Capsule()
-                .stroke(Theme.neonCyan.opacity(0.55), lineWidth: 1.5)
+                .stroke(Color.white.opacity(0.18), lineWidth: 1)
         )
-        .shadow(color: Theme.neonCyan.opacity(0.3), radius: 8)
+    }
+
+    // MARK: - Contextual Smart Quality HUD Prompt
+    private var hudPrompt: some View {
+        let isMatched = camera.isFramingMatched && camera.isLightingAdequate
+        let statusColor = isMatched ? Theme.emerald : (camera.isLightingAdequate ? Theme.neonCyan : Theme.warmAmber)
+
+        return HStack(spacing: 8) {
+            Image(systemName: isMatched ? "checkmark.circle.fill" : (camera.isLightingAdequate ? "viewfinder" : "sun.max.trianglebadge.exclamationmark.fill"))
+                .foregroundColor(statusColor)
+                .font(.system(size: 15, weight: .semibold))
+
+            Text(camera.guidanceMessage)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundColor(statusColor)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 10)
+        .background(
+            Capsule()
+                .fill(Color.black.opacity(0.65))
+                .background(Capsule().fill(.ultraThinMaterial))
+        )
+        .overlay(
+            Capsule()
+                .stroke(statusColor.opacity(0.6), lineWidth: 1.5)
+        )
+        .neonGlow(color: isMatched ? Theme.emerald : Color.clear, radius: 8)
+        .animation(.easeInOut(duration: 0.2), value: camera.isFramingMatched)
+        .animation(.easeInOut(duration: 0.2), value: camera.guidanceMessage)
     }
 
     // MARK: - Countdown overlay
@@ -244,7 +294,7 @@ struct CustomCameraView: View {
         .opacity(isAvailable ? 1.0 : 0.35)
     }
 
-    // MARK: - Shutter Bar: thumbnail (bottom-left) | large shutter | camera rotate (bottom-right)
+    // MARK: - Shutter Bar: thumbnail | auto-capture toggle | large shutter | camera rotate
     private var shutterBar: some View {
         HStack(alignment: .center) {
             // Last captured thumbnail (bottom-left corner per design)
@@ -253,19 +303,35 @@ struct CustomCameraView: View {
                     Image(uiImage: thumb)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 52, height: 52)
+                        .frame(width: 46, height: 46)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth: 1.5))
                 } else {
                     Image(systemName: "photo.on.rectangle")
-                        .font(.system(size: 22))
+                        .font(.system(size: 20))
                         .foregroundColor(.white)
-                        .frame(width: 52, height: 52)
+                        .frame(width: 46, height: 46)
                         .background(Circle().fill(Color.white.opacity(0.15)))
                 }
             }
 
             Spacer()
+
+            // Hands-Free Auto-Capture Toggle Button
+            Button(action: { camera.toggleAutoCapture() }) {
+                VStack(spacing: 2) {
+                    Image(systemName: camera.isAutoCaptureEnabled ? "sparkles.rectangle.stack.fill" : "sparkles.rectangle.stack")
+                        .font(.system(size: 16, weight: .semibold))
+                    Text(camera.isAutoCaptureEnabled ? "AUTO" : "AUTO")
+                        .font(.system(size: 8, weight: .heavy, design: .rounded))
+                }
+                .foregroundColor(camera.isAutoCaptureEnabled ? .black : .white)
+                .frame(width: 46, height: 46)
+                .background(Circle().fill(camera.isAutoCaptureEnabled ? Theme.emerald : Color.white.opacity(0.18)))
+                .overlay(Circle().stroke(camera.isAutoCaptureEnabled ? Theme.emerald : Color.clear, lineWidth: 1.5))
+                .neonGlow(color: camera.isAutoCaptureEnabled ? Theme.emerald : Color.clear, radius: 8)
+            }
+            .padding(.trailing, 8)
 
             // Large white shutter + thick Neon Cyan ring (exact design match)
             Button(action: { camera.triggerCapture() }) {
@@ -273,13 +339,13 @@ struct CustomCameraView: View {
                     // Outer thick neon ring
                     Circle()
                         .stroke(Theme.neonCyan, lineWidth: 5)
-                        .frame(width: 84, height: 84)
+                        .frame(width: 80, height: 80)
                         .shadow(color: Theme.neonCyan.opacity(0.7), radius: 10)
 
                     // Solid white inner circle
                     Circle()
                         .fill(camera.isCountdownActive ? Theme.warmAmber : Color.white)
-                        .frame(width: 68, height: 68)
+                        .frame(width: 64, height: 64)
                         .scaleEffect(camera.isCountdownActive ? 0.85 : 1.0)
                         .animation(.spring(response: 0.25, dampingFraction: 0.6), value: camera.isCountdownActive)
                 }
@@ -290,9 +356,9 @@ struct CustomCameraView: View {
             // Camera rotation icon (bottom-right per design)
             Button(action: { camera.switchCamera() }) {
                 Image(systemName: "camera.on.rectangle")
-                    .font(.system(size: 22))
+                    .font(.system(size: 20))
                     .foregroundColor(.white)
-                    .frame(width: 52, height: 52)
+                    .frame(width: 46, height: 46)
                     .background(Circle().fill(Color.white.opacity(0.15)))
             }
         }

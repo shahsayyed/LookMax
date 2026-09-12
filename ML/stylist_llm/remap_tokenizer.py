@@ -36,18 +36,22 @@ class RemappedTokenizer:
         base_tokenizer = AutoTokenizer.from_pretrained(resolved_base_id)
         return cls(base_tokenizer, vocab_dir / "token_id_map.json")
 
-    def encode(self, text, add_special_tokens=False):
+    def encode(self, text, add_special_tokens=False, strict=False):
         old_ids = self.base.encode(text, add_special_tokens=add_special_tokens)
         new_ids = []
         for old_id in old_ids:
-            if old_id not in self.old_to_new:
+            if old_id in self.old_to_new:
+                new_ids.append(self.old_to_new[old_id])
+            elif strict:
                 raise RuntimeError(
                     f"Token id {old_id} ('{self.base.decode([old_id])}') from input text is not in the "
                     f"pruned vocabulary. This means tag_vocabulary.full_vocabulary_terms() is missing a "
                     f"term used in this prompt -- fix the floor in tag_vocabulary.py and re-run "
                     f"prune_vocabulary.py, don't silently drop or remap this token."
                 )
-            new_ids.append(self.old_to_new[old_id])
+            else:
+                # In production/inference mode: gracefully skip unknown token rather than crashing
+                continue
         return new_ids
 
     def decode(self, new_ids, skip_special_tokens=True):

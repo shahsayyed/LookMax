@@ -4,6 +4,19 @@ import UIKit
 import Combine
 import Vision
 
+enum ScanMode: String, CaseIterable, Identifiable {
+    case grooming = "Grooming"
+    case outfit = "Full Outfit"
+    var id: String { rawValue }
+
+    var icon: String {
+        switch self {
+        case .grooming: return "face.dashed"
+        case .outfit:   return "figure.stand"
+        }
+    }
+}
+
 class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     @Published var session = AVCaptureSession()
     @Published var isSessionRunning = false
@@ -17,7 +30,13 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     @Published var focusPoint: CGPoint?
     @Published var isFocusing = false
 
-    // Real-time AR Biometric Overlays
+    // Real-time AR Biometric Overlays & Guidance
+    @Published var scanMode: ScanMode = .grooming
+    @Published var isAutoCaptureEnabled: Bool = false
+    @Published var isFramingMatched: Bool = false
+    @Published var isLightingAdequate: Bool = true
+    @Published var autoCaptureProgress: CGFloat = 0.0
+    @Published var guidanceMessage: String = "Align within guide"
     @Published var spineStartPoint: CGPoint? = nil
     @Published var spineEndPoint: CGPoint? = nil
     @Published var faceLandmarkPoints: [CGPoint] = []
@@ -30,6 +49,8 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
     private var countdownTimer: Timer?
     private let visionQueue = DispatchQueue(label: "com.lookmax.visionQueue", qos: .userInteractive)
     private var isProcessingFrame = false
+    private var autoCaptureHoldStart: CFTimeInterval? = nil
+    private var hasFiredAutoCapture: Bool = false
 
     var onPhotoCaptured: ((UIImage) -> Void)?
 
@@ -179,6 +200,14 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
         HapticManager.heavy()
     }
 
+    func toggleAutoCapture() {
+        isAutoCaptureEnabled.toggle()
+        autoCaptureProgress = 0.0
+        autoCaptureHoldStart = nil
+        hasFiredAutoCapture = false
+        HapticManager.selection()
+    }
+
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let data = photo.fileDataRepresentation(), let image = UIImage(data: data) else { return }
         let final: UIImage
@@ -187,10 +216,13 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
         } else {
             final = image
         }
+        hasFiredAutoCapture = false
+        autoCaptureProgress = 0.0
+        autoCaptureHoldStart = nil
         DispatchQueue.main.async { self.onPhotoCaptured?(final) }
     }
 
-    // MARK: - Real-time Vision Frame Processing
+    // MARK: - Real-time Vision Frame Processing & Smart Quality Gates
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard !isProcessingFrame, let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         isProcessingFrame = true
@@ -200,38 +232,106 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
 
         let bodyRequest = VNDetectHumanBodyPoseRequest()
         let faceRequest = VNDetectFaceLandmarksRequest()
+        let faceQualityRequest = VNDetectFaceCaptureQualityRequest()
 
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientation, options: [:])
         do {
-            try handler.perform([bodyRequest, faceRequest])
+            try handler.perform([bodyRequest, faceRequest, faceQualityRequest])
 
             var startPt: CGPoint? = nil
             var endPt: CGPoint? = nil
             var aligned = true
             var facePoints: [CGPoint] = []
+            var framingMatched = false
+            var lightingAdequate = true
+            var message = "Position inside guide"
 
-            // Extract Posture Axis (Neck to Root / Spine)
-            if let body = bodyRequest.results?.first {
-                if let neck = try? body.recognizedPoint(.neck),
-                   let root = try? body.recognizedPoint(.root),
-                   neck.confidence > 0.25, root.confidence > 0.25 {
-                    // Convert Vision (bottom-left 0,0) to SwiftUI (top-left 0,0)
-                    startPt = CGPoint(x: neck.location.x, y: 1.0 - neck.location.y)
-                    endPt = CGPoint(x: root.location.x, y: 1.0 - root.location.y)
-                    let dx = abs(neck.location.x - root.location.x)
-                    aligned = dx < 0.05
+            if scanMode == .grooming {
+                // ─── Grooming Quality Gate: Face Alignment & Lighting ───
+                if let face = faceRequest.results?.first {
+                    let bbox = face.boundingBox
+                    let centerX = bbox.midX
+                    let centerY = 1.0 - bbox.midY
+                    let faceHeight = bbox.height
+
+                    // Face contour for AR overlay
+                    if let landmarks = face.landmarks, let contour = landmarks.faceContour {
+                        facePoints = contour.normalizedPoints.map { pt in
+                            let x = bbox.origin.x + (pt.x * bbox.size.width)
+                            let y = 1.0 - (bbox.origin.y + (pt.y * bbox.size.height))
+                            return CGPoint(x: x, y: y)
+                        }
+                    }
+
+                    // Lighting Quality
+                    let quality = Double(faceQualityRequest.results?.first?.faceCaptureQuality ?? 0.6)
+                    if quality < 0.35 {
+                        lightingAdequate = false
+                        message = "Lighting too dark — face light source"
+                    } else if faceHeight < 0.22 {
+                        message = "Move closer to fill oval"
+                    } else if faceHeight > 0.68 {
+                        message = "Step back slightly"
+                    } else if abs(centerX - 0.5) > 0.14 || abs(centerY - 0.44) > 0.16 {
+                        message = "Center face inside oval"
+                    } else {
+                        framingMatched = true
+                        message = isAutoCaptureEnabled ? "Hold steady..." : "Perfect alignment"
+                    }
+                } else {
+                    message = "Position face inside oval"
+                }
+            } else {
+                // ─── Outfit Quality Gate: Full Body (Head to Shoes) ───
+                if let body = bodyRequest.results?.first {
+                    let neck = try? body.recognizedPoint(.neck)
+                    let root = try? body.recognizedPoint(.root)
+                    let leftAnkle = try? body.recognizedPoint(.leftAnkle)
+                    let rightAnkle = try? body.recognizedPoint(.rightAnkle)
+
+                    if let n = neck, let r = root, n.confidence > 0.25, r.confidence > 0.25 {
+                        startPt = CGPoint(x: n.location.x, y: 1.0 - n.location.y)
+                        endPt = CGPoint(x: r.location.x, y: 1.0 - r.location.y)
+                        let dx = abs(n.location.x - r.location.x)
+                        aligned = dx < 0.05
+                    }
+
+                    let hasAnkles = (leftAnkle?.confidence ?? 0 > 0.2) || (rightAnkle?.confidence ?? 0 > 0.2)
+                    if let n = neck, n.confidence > 0.25, n.location.y > 0.90 {
+                        message = "Step back to show head"
+                    } else if !hasAnkles {
+                        message = "Step back to show shoes"
+                    } else if !aligned {
+                        message = "Align upright in silhouette"
+                    } else {
+                        framingMatched = true
+                        message = isAutoCaptureEnabled ? "Hold steady..." : "Full body aligned"
+                    }
+                } else {
+                    message = "Step into silhouette guide"
                 }
             }
 
-            // Extract Face Contour
-            if let face = faceRequest.results?.first, let landmarks = face.landmarks {
-                let bbox = face.boundingBox
-                if let contour = landmarks.faceContour {
-                    facePoints = contour.normalizedPoints.map { pt in
-                        let x = bbox.origin.x + (pt.x * bbox.size.width)
-                        let y = 1.0 - (bbox.origin.y + (pt.y * bbox.size.height))
-                        return CGPoint(x: x, y: y)
-                    }
+            // ─── Auto-Capture Engine ───
+            var progress: CGFloat = 0.0
+            var shouldTriggerPhoto = false
+
+            if self.isAutoCaptureEnabled && framingMatched && lightingAdequate {
+                let now = CACurrentMediaTime()
+                let start = self.autoCaptureHoldStart ?? now
+                self.autoCaptureHoldStart = start
+                let elapsed = now - start
+                progress = min(1.0, CGFloat(elapsed / 1.2))
+
+                if progress >= 1.0 && !self.hasFiredAutoCapture {
+                    self.hasFiredAutoCapture = true
+                    shouldTriggerPhoto = true
+                }
+            } else {
+                self.autoCaptureHoldStart = nil
+                self.autoCaptureProgress = 0.0
+                if !self.isAutoCaptureEnabled {
+                    self.hasFiredAutoCapture = false
                 }
             }
 
@@ -240,7 +340,16 @@ class CameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegat
                 self.spineEndPoint = endPt
                 self.faceLandmarkPoints = facePoints
                 self.isPostureAligned = aligned
+                self.isFramingMatched = framingMatched
+                self.isLightingAdequate = lightingAdequate
+                self.guidanceMessage = message
+                self.autoCaptureProgress = progress
                 self.isProcessingFrame = false
+
+                if shouldTriggerPhoto {
+                    HapticManager.success()
+                    self.performCapture()
+                }
             }
         } catch {
             DispatchQueue.main.async { self.isProcessingFrame = false }

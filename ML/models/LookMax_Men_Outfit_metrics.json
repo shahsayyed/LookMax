@@ -1,104 +1,104 @@
 {
   "category": "Men_Outfit",
   "status": "exported",
-  "real_images": 4353,
-  "real_train": 3482,
-  "real_val": 871,
+  "real_images": 4855,
+  "real_train": 3884,
+  "real_val": 971,
   "synthetic_replay_rows": 7991,
   "replay_ratio": 0.3,
-  "best_real_val_loss": 0.688,
+  "best_real_val_loss": 2.3196,
   "epochs_trained": 10,
   "history": [
     {
       "epoch": 1,
-      "train_loss": 1.6042,
-      "real_val_loss": 0.8159,
-      "real_val_score_mae": 1.2271,
-      "real_val_score_rmse": 1.5583
+      "train_loss": 3.6136,
+      "real_val_loss": 3.0631,
+      "real_val_score_mae": 1.335,
+      "real_val_score_rmse": 1.647
     },
     {
       "epoch": 2,
-      "train_loss": 1.3368,
-      "real_val_loss": 0.7595,
-      "real_val_score_mae": 1.1629,
-      "real_val_score_rmse": 1.4777
+      "train_loss": 2.7143,
+      "real_val_loss": 2.7246,
+      "real_val_score_mae": 1.2379,
+      "real_val_score_rmse": 1.526
     },
     {
       "epoch": 3,
-      "train_loss": 1.2595,
-      "real_val_loss": 0.73,
-      "real_val_score_mae": 1.1329,
-      "real_val_score_rmse": 1.4436
+      "train_loss": 2.4877,
+      "real_val_loss": 2.5454,
+      "real_val_score_mae": 1.159,
+      "real_val_score_rmse": 1.4352
     },
     {
       "epoch": 4,
-      "train_loss": 1.1797,
-      "real_val_loss": 0.7137,
-      "real_val_score_mae": 1.1164,
-      "real_val_score_rmse": 1.4253
+      "train_loss": 2.3494,
+      "real_val_loss": 2.4463,
+      "real_val_score_mae": 1.1107,
+      "real_val_score_rmse": 1.3903
     },
     {
       "epoch": 5,
-      "train_loss": 1.1313,
-      "real_val_loss": 0.702,
-      "real_val_score_mae": 1.1019,
-      "real_val_score_rmse": 1.4089
+      "train_loss": 2.2143,
+      "real_val_loss": 2.411,
+      "real_val_score_mae": 1.109,
+      "real_val_score_rmse": 1.3822
     },
     {
       "epoch": 6,
-      "train_loss": 1.0952,
-      "real_val_loss": 0.691,
-      "real_val_score_mae": 1.0904,
-      "real_val_score_rmse": 1.3953
+      "train_loss": 2.1747,
+      "real_val_loss": 2.3715,
+      "real_val_score_mae": 1.0931,
+      "real_val_score_rmse": 1.3712
     },
     {
       "epoch": 7,
-      "train_loss": 1.0792,
-      "real_val_loss": 0.688,
-      "real_val_score_mae": 1.0884,
-      "real_val_score_rmse": 1.3923
+      "train_loss": 2.1392,
+      "real_val_loss": 2.3347,
+      "real_val_score_mae": 1.0748,
+      "real_val_score_rmse": 1.3428
     },
     {
       "epoch": 8,
-      "train_loss": 1.0798,
-      "real_val_loss": 0.6909,
-      "real_val_score_mae": 1.0912,
-      "real_val_score_rmse": 1.3974
+      "train_loss": 2.0357,
+      "real_val_loss": 2.3284,
+      "real_val_score_mae": 1.0789,
+      "real_val_score_rmse": 1.3457
     },
     {
       "epoch": 9,
-      "train_loss": 1.0447,
-      "real_val_loss": 0.6896,
-      "real_val_score_mae": 1.0897,
-      "real_val_score_rmse": 1.3954
+      "train_loss": 2.048,
+      "real_val_loss": 2.3219,
+      "real_val_score_mae": 1.0725,
+      "real_val_score_rmse": 1.3416
     },
     {
       "epoch": 10,
-      "train_loss": 1.0472,
-      "real_val_loss": 0.6896,
-      "real_val_score_mae": 1.0902,
-      "real_val_score_rmse": 1.3953
+      "train_loss": 2.0036,
+      "real_val_loss": 2.3196,
+      "real_val_score_mae": 1.072,
+      "real_val_score_rmse": 1.341
     }
   ],
-  "final_score_mae": 1.0884072194827548,
-  "final_score_rmse": 1.3922999597864472,
+  "final_score_mae": 1.0720311122132133,
+  "final_score_rmse": 1.34102959429786,
   "replay_head_accuracy": {
-    "upper_type": 0.9212007504690432,
-    "upper_pattern": 0.9324577861163227,
-    "mid_type": 0.9993746091307066,
-    "lower_type": 0.8730456535334584,
-    "lower_pattern": 0.9812382739212008,
-    "footwear_type": 0.9174484052532833,
-    "formality": 0.959349593495935,
-    "fit_baggy": 0.9487179487179487,
-    "fit_tight": 0.9537210756722951,
-    "fit_tailored": 0.9731081926203877,
-    "fabric_wrinkled": 0.9956222639149468,
-    "fabric_crisp": 0.9724828017510945,
+    "upper_type": 0.8855534709193246,
+    "upper_pattern": 0.9437148217636022,
+    "mid_type": 0.9987492182614134,
+    "lower_type": 0.8230143839899937,
+    "lower_pattern": 0.981863664790494,
+    "footwear_type": 0.9136960600375235,
+    "formality": 0.9205753595997499,
+    "fit_baggy": 0.9505941213258287,
+    "fit_tight": 0.9606003752345216,
+    "fit_tailored": 0.9706066291432145,
+    "fabric_wrinkled": 0.9949968730456535,
+    "fabric_crisp": 0.9706066291432145,
     "footwear_worn": 0.9974984365228268,
-    "footwear_polished": 0.9718574108818011,
+    "footwear_polished": 0.9712320200125079,
     "styling_sloppy": 0.9974984365228268,
-    "styling_sharp": 0.9712320200125079
+    "styling_sharp": 0.9706066291432145
   },
   "checkpoint_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Men_Outfit_final.pt",
   "model_path": "/Users/sayyed/development/repos/LookMax/ML/models/LookMax_Men_Outfit.mlpackage",

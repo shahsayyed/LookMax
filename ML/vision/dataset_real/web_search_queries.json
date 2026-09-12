@@ -1,0 +1,763 @@
+[
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_pants_too_long_pooling",
+    "description": "Pants too long / pooling hems over shoes with messy fabric folds",
+    "queries": [
+      "man standing full body photo wearing pants too long pooling over shoes -flatlay -hanger -mannequin",
+      "man full body street style trousers too long bunching at ankles -flatlay -hanger -poster",
+      "man standing head to toe fit check jeans puddling over shoes fail -product -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_wrinkled_crushed_fabrics",
+    "description": "Wrinkled dress shirts, rumpled linen, unironed shirts",
+    "queries": [
+      "man standing full body photo wearing wrinkled dress shirt -flatlay -hanger -product",
+      "man full length street style outfit rumpled wrinkled linen shirt -flatlay -hanger",
+      "man standing head to toe fit check unironed messy shirt outfit -product -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_excessively_baggy_drooping",
+    "description": "Shoulder seam drooping down biceps, billowy oversized shirt, ill-fitting suit",
+    "queries": [
+      "man standing full body photo wearing ill fitting baggy suit shoulders too wide -flatlay -hanger",
+      "man full body outfit oversized baggy dress shirt billowy fit check -product -flatlay",
+      "man standing head to toe poorly fitted oversized suit street style -hanger -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_pulling_tight_strained_seams",
+    "description": "Buttons gaping across chest/belly, pocket flares, x-crease pulling",
+    "queries": [
+      "man standing full body photo wearing tight suit jacket pulling x-crease -flatlay -hanger",
+      "man standing full length shirt buttons pulling tight fit check -product -mannequin",
+      "man standing head to toe tight trousers pockets pulling open outfit -flatlay -hanger"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_scuffed_neglected_footwear",
+    "description": "Beat-up dress shoes, dirty sneakers with outfit, worn out shoes",
+    "queries": [
+      "man standing full body street style outfit dirty beat up sneakers -flatlay -product",
+      "man standing full length photo wearing worn out scuffed dress shoes with suit -hanger",
+      "man standing head to toe outfit dirty worn footwear street style -product -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_sloppy_proportions_incoherence",
+    "description": "Dress shirt too long untucked, mismatched accessories, sloppy fit check",
+    "queries": [
+      "man standing full body photo wearing dress shirt too long untucked fail -flatlay -hanger",
+      "man standing head to toe fit check sloppy casual outfit mismatched -product -mannequin",
+      "man full length mirror selfie ill fitting sloppy casual outfit -flatlay -hanger"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "2_Average",
+    "category": "men_real_denim_jeans",
+    "description": "Straight leg, slim, dark wash, raw selvedge denim in daylight",
+    "queries": [
+      "man standing full body street style wearing dark wash straight leg jeans sneakers -flatlay -hanger",
+      "man standing head to toe photo raw selvedge denim jeans outfit street style -product -hanger",
+      "man standing full length photo blue jeans white t-shirt sneakers everyday look -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "2_Average",
+    "category": "men_chinos_and_trousers",
+    "description": "Clean twill chinos, pleats, tailored wool trousers (no cargo pockets)",
+    "queries": [
+      "man standing full body street style tailored wool dress pants oxford shoes -flatlay -hanger",
+      "man standing head to toe photo wearing pleated tailored wool trousers loafers -product -hanger",
+      "man full length photo gray wool dress pants oxford shoes street style -flatlay -mannequin",
+      "man standing full body smart casual khaki twill chinos dress shirt loafers -flatlay -hanger",
+      "man standing head to toe navy dress trousers brown leather shoes street style -product",
+      "man full length photo pleated beige chinos brown loafers street style outfit -hanger"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "2_Average",
+    "category": "men_cargo_pants_true",
+    "description": "True utilitarian cargo pockets for clear garment texture training",
+    "queries": [
+      "man standing full body streetwear outfit olive green cargo pants sneakers -flatlay -hanger",
+      "man standing head to toe photo wearing black utility cargo trousers -product -hanger",
+      "man full length street style techwear cargo pants boots outfit -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "3_Polished",
+    "category": "men_blazers_and_tailored_suits",
+    "description": "Two-piece suits, navy blazers, tweed sport coats, linen summer suits",
+    "queries": [
+      "man standing full body tailored navy two piece suit street style -flatlay",
+      "man standing head to toe charcoal wool business suit oxford shoes photo -hanger",
+      "man full length corporate formal suit necktie dress shoes photo -product",
+      "man standing full body tailored blazer gray wool trousers dress shoes -flatlay",
+      "man standing full body photo wearing tailored two piece wool suit dress shoes -flatlay -hanger",
+      "man standing head to toe navy blazer gray wool trousers oxford shoes full length -product -hanger",
+      "man full length street style charcoal tailored suit white shirt leather shoes -flatlay -mannequin",
+      "man full body photo corporate business executive suit tie street style -hanger -product",
+      "man standing full body photo double breasted tailored suit dress shoes street style -flatlay",
+      "man standing head to toe classic tailored pinstripe wool suit leather shoes -product",
+      "man full length street style black formal tuxedo dress shoes photo -flatlay",
+      "man standing full body photo bespoke tailored 2-piece suit leather oxford shoes -hanger"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "3_Polished",
+    "category": "men_specific_shoes",
+    "description": "Suede desert boots, leather penny loafers, Chelsea boots, clean dress shoes",
+    "queries": [
+      "man standing full body street style wearing suede chelsea boots outfit -flatlay -product",
+      "man standing head to toe photo wearing brown leather penny loafers smart casual -hanger",
+      "man full length photo wearing oxford dress shoes tailored suit street style -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "2_Average",
+    "category": "men_mature_demographics",
+    "description": "Men over 35 and 50 stylish casual, smart casual, and workwear",
+    "queries": [
+      "older man standing full body photo stylish casual outfit street style -flatlay -hanger",
+      "man in 40s standing head to toe smart casual blazer jeans outfit photo -product -hanger",
+      "mature man over 50 standing full length photo tailored business casual street style -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_trousers_dragging_on_floor",
+    "description": "Wide-leg or flared trousers dragging under heels or dirty hems",
+    "queries": [
+      "woman standing full body street style wide leg trousers dragging on floor -flatlay -hanger",
+      "woman standing head to toe photo pants too long dragging hem fail -product -hanger",
+      "woman full length fit check trousers bunching puddling over heels -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_wrinkled_silk_rayon_linen",
+    "description": "Creases across lap, crumpled blouses, unsteamed dresses",
+    "queries": [
+      "woman standing full body street style photo wearing wrinkled linen dress -flatlay -hanger -product",
+      "woman standing head to toe photo crumpled unironed silk blouse outfit -flatlay -hanger",
+      "woman full length fit check wrinkled creased blazer work outfit -product -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_gapping_pulling_buttons",
+    "description": "Button-down blouse gaping across bust, strained fabric seams",
+    "queries": [
+      "woman standing full body photo wearing button down shirt gaping bust outfit -flatlay -hanger",
+      "woman standing head to toe blazer too tight pulling across back fit check -product -hanger",
+      "woman full length photo tight blouse pulling at seams ill fitting -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_awkward_proportions",
+    "description": "Shapeless tunics, boxy tops cutting off waist, drowning in fabric",
+    "queries": [
+      "woman standing full body street style wearing shapeless ill fitting oversized blazer -flatlay -hanger",
+      "woman standing head to toe photo poorly proportioned baggy casual outfit -product -hanger",
+      "woman full length fit check shapeless tunic awkward proportions -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_worn_uncomfortable_shoes",
+    "description": "Peeling faux leather, scuffed toe-caps, dirty white sneakers with dress",
+    "queries": [
+      "woman standing full body street style photo wearing dirty beat up white sneakers with dress -flatlay -product",
+      "woman standing head to toe outfit worn out scuffed heels street style -product -hanger",
+      "woman full length photo wearing peeling scuffed ballet flats outfit -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "3_Polished",
+    "category": "women_tailored_pantsuits_and_blazers",
+    "description": "Single/double-breasted blazers, sharp lapels, matching trousers",
+    "queries": [
+      "woman standing full body business professional tailored suit street style -flatlay",
+      "woman standing head to toe executive blazer matching trousers photo -hanger",
+      "woman full length street style navy wool pantsuit heels -product",
+      "woman standing full body tailored office trouser suit heels photo -hanger",
+      "woman standing full length charcoal tailored trouser suit heels street style -flatlay",
+      "woman standing full body photo wearing wool tailored pantsuit office street style -flatlay -hanger",
+      "woman standing head to toe photo navy tailored blazer crepe dress pants heels -product -hanger",
+      "woman full length street style tailored double breasted suit trousers -flatlay -mannequin",
+      "woman full body professional corporate business suit high heels photo -hanger -flatlay",
+      "woman standing full body street style charcoal gray trouser suit pumps -product",
+      "woman standing head to toe executive business blazer matching pantsuit street style -flatlay",
+      "woman full length photo black tailored executive pantsuit heels daylight -hanger",
+      "woman standing head to toe beige wool tailored blazer wide leg trousers suit -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "2_Average",
+    "category": "women_true_joggers_and_athleisure",
+    "description": "Elasticated cuffs, drawstrings, French terry sweatpants",
+    "queries": [
+      "woman standing full body street style photo sporty joggers sneakers trench coat -flatlay -hanger",
+      "woman standing head to toe fleece sweatpants sneakers everyday athleisure -product -hanger",
+      "woman full length photo elevated casual joggers outfit street style -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "2_Average",
+    "category": "women_skirts_pencil_midi_aline",
+    "description": "High-waisted pencil skirts, pleated midis with boots/heels",
+    "queries": [
+      "woman corporate business attire blazer pencil skirt pumps full body -flatlay",
+      "woman standing full body tailored office workwear pencil skirt heels -hanger",
+      "woman standing head to toe executive wool pencil skirt blouse pumps street style -product",
+      "woman full length photo formal business midi skirt heeled shoes office -flatlay",
+      "woman standing full body photo tailored wool pencil skirt silk blouse heels -flatlay -hanger",
+      "woman standing head to toe executive business skirt suit pumps photo -product -hanger",
+      "woman full length street style tailored midi skirt blazer professional outfit -flatlay",
+      "woman standing full body photo high waisted pencil skirt tucked shirt heels -product",
+      "woman standing head to toe corporate workwear pencil skirt tailored blouse street style -flatlay",
+      "woman full length photo black tailored pencil skirt pointed toe pumps street style -hanger",
+      "woman standing head to toe pleated wool midi skirt heeled leather boots outfit -product"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "2_Average",
+    "category": "women_blouses_and_tops",
+    "description": "Tailored button-down blouses, silk tops, wrap tops, turtlenecks",
+    "queries": [
+      "woman standing full body street style white button down shirt tucked in tailored trousers -flatlay -hanger",
+      "woman standing head to toe silk wrap blouse wide leg trousers heels -product -hanger",
+      "woman full length photo fitted turtleneck sweater tailored pants boots -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "3_Polished",
+    "category": "women_footwear_types",
+    "description": "Pointed-toe pumps, block heels, ballet flats, leather ankle boots",
+    "queries": [
+      "woman standing full body street style photo wearing pointed toe heeled pumps outfit -flatlay -product",
+      "woman standing head to toe photo wearing leather ankle boots trench coat -product -hanger",
+      "woman full length photo wearing pointed toe flats workwear outfit -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "2_Average",
+    "category": "women_mature_demographics",
+    "description": "Sophisticated casual and professional styles across women 35-50 and over 50",
+    "queries": [
+      "chic woman over 50 standing full body street style outfit trousers blazer -flatlay -hanger",
+      "woman in 40s standing head to toe photo stylish business casual outfit -product -hanger",
+      "mature woman over 50 standing full length photo elegant tailored suit street style -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "men_grooming_bedhead_overgrown_hair",
+    "description": "Messy bedhead, overgrown neck hair, uncombed hair, uneven home haircut",
+    "queries": [
+      "man face portrait photo messy morning bedhead uncombed hair -product -drawing -illustration",
+      "man headshot photo overgrown neck hair haircut needed candid -barber_tool -product",
+      "young man face closeup selfie messy unbrushed hair bedhead -bottle -drawing"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "men_grooming_patchy_untrimmed_beard",
+    "description": "Patchy untrimmed beard, neckbeard, uneven stubble, unlined scruffy beard",
+    "queries": [
+      "man neckbeard candid portrait photo -drawing -product",
+      "man scruffy unlined beard chin closeup -oil -razor",
+      "man patchy chin facial hair candid portrait -product",
+      "man awkward beard growth cheek scruff selfie -drawing",
+      "man untrimmed messy beard natural face photo -product",
+      "man straggly wispy beard hairs chin close up photo -oil",
+      "man sparse patchy beard growth daylight portrait -razor",
+      "man face portrait photo patchy beard cheeks scruffy neck -product -oil -drawing",
+      "man face portrait photo patchy untrimmed beard scruffy close up -product -drawing -oil",
+      "man headshot photo straggly untrimmed neckbeard close up -shaving_kit -product",
+      "man face closeup photo uneven scruffy stubble no clean cheek lines -razor -bottle",
+      "man jawline closeup photo untrimmed wild scruffy neck beard -product -drawing",
+      "man face portrait patchy thin beard growth cheeks close up -oil -supplement",
+      "man headshot scruffy uncombed wiry beard wild whiskers portrait -product",
+      "man jawline untrimmed wispy neckbeard morning selfie photo -razor"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "men_grooming_unibrow_oily_tired_skin",
+    "description": "Unibrow overgrown eyebrows, shiny oily forehead, pale tired puffy face",
+    "queries": [
+      "man face portrait photo overgrown unibrow unshaped eyebrows -tweezers -product -drawing",
+      "man headshot photo shiny oily forehead tired face candid -cream -bottle -serum",
+      "man face closeup candid pale tired puffy eyes natural face -product -diagram"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "3_Polished",
+    "category": "men_grooming_crisp_fade_styled_hair",
+    "description": "Crisp taper fade, sharp lineup skin fade, slicked back undercut, side part pompadour",
+    "queries": [
+      "man face portrait photo crisp taper fade haircut styled hair -scissors -product -drawing",
+      "man headshot closeup photo sharp lineup skin fade haircut -clipper -product",
+      "man face portrait slicked back undercut pompadour styled hair -gel_bottle -drawing"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "3_Polished",
+    "category": "men_grooming_sharp_beard_clean_shave",
+    "description": "Sharp beard lineup straight razor, perfectly trimmed short beard, clean shaven",
+    "queries": [
+      "man face portrait photo sharp straight razor beard lineup clean edges -product -oil",
+      "man headshot photo perfectly trimmed short boxed beard clean lines -shaving_cream",
+      "man face closeup clean shaven smooth jawline portrait photo -razor_blade -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "3_Polished",
+    "category": "men_grooming_healthy_skin_groomed_brows",
+    "description": "Healthy glowing skin portrait, groomed neat eyebrows",
+    "queries": [
+      "man face portrait photo healthy clear glowing skin natural lighting -product -serum -cream",
+      "man headshot closeup photo well groomed neat eyebrows natural face -drawing -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "women_grooming_frizzy_bedhead_hair",
+    "description": "Frizzy tangled unbrushed hair, bedhead unstyled selfie, dry split ends, brassy overgrown roots",
+    "queries": [
+      "woman face portrait photo dry frizzy split ends unstyled hair -product -shampoo -drawing",
+      "woman face portrait photo frizzy tangled unbrushed hair close up -product -shampoo -drawing",
+      "woman headshot closeup selfie messy morning bedhead unstyled hair -hairdryer -bottle",
+      "woman face portrait dry frizzy damaged bleach split ends hair -salon_equipment",
+      "woman face portrait messy overgrown dark roots brassy unstyled hair -product",
+      "woman headshot messy uncombed tangled bedhead morning selfie -drawing",
+      "woman face closeup poofy unbrushed frizzy humidity hair portrait -bottle",
+      "woman portrait bleached brassy orange roots overgrown roots hair -salon"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "women_grooming_cakey_smudged_makeup",
+    "description": "Cakey uneven foundation, smudged mascara running eyeliner, flaky lipstick, harsh unblended contour",
+    "queries": [
+      "woman bad makeup daylight candid face portrait -product",
+      "woman creased cakey foundation natural light closeup -bottle",
+      "woman uneven messy mascara smudged eyes selfie -brush",
+      "woman powdery cakey makeup texture skin closeup -drawing",
+      "woman makeup settling in smile lines cakey natural photo -product",
+      "woman face portrait close up cakey foundation texture fail -product -bottle -jar -drawing",
+      "woman face portrait close up cakey uneven unblended foundation makeup -product -bottle",
+      "woman headshot photo smudged eyeliner running mascara makeup fail -wand -brush",
+      "woman face closeup photo flaky dry patchy lipstick makeup fail -lipstick_tube -product",
+      "woman face portrait closeup separated cakey makeup pores skin texture -product -drawing",
+      "woman face closeup cakey thick foundation natural daylight candid -product",
+      "woman headshot smeared smudged eye makeup after crying fail -drawing",
+      "woman face portrait patch uneven makeup application daylight -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "women_grooming_unshaped_thin_eyebrows",
+    "description": "Overplucked thin unshaped eyebrows, bushy unkempt unbrushed eyebrows",
+    "queries": [
+      "woman overplucked thin eyebrows 90s portrait photo -pencil",
+      "woman patchy thin sparse eyebrows daylight face photo -drawing",
+      "woman uneven asymmetrical drawn eyebrows makeup selfie -product",
+      "woman face portrait photo overplucked 90s thin eyebrows close up -product -pencil -drawing",
+      "woman face portrait close up overplucked thin uneven eyebrows -pencil -tweezers -product",
+      "woman headshot photo bushy unkempt unbrushed messy eyebrows close up -product -drawing",
+      "woman face closeup photo patchy asymmetrical unshaped eyebrows -pencil -product",
+      "woman face portrait close up drawn on uneven blocky eyebrows fail -drawing -product",
+      "woman face closeup thin sperm shaped eyebrows overplucked portrait -pencil",
+      "woman headshot uneven crooked eyebrows microblading fail close up -drawing",
+      "woman portrait natural unshaped messy unibrow bushy eyebrows -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "3_Polished",
+    "category": "women_grooming_sleek_blowout_styled_hair",
+    "description": "Sleek salon blowout, smooth glass hair middle part, defined bouncy curls, neat low bun",
+    "queries": [
+      "woman face portrait photo sleek salon blowout shiny healthy hair -shampoo -bottle -product",
+      "woman headshot photo smooth glass hair sleek middle part portrait -straightener -product",
+      "woman face portrait photo defined bouncy curls styled hair -product -curler -drawing"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "3_Polished",
+    "category": "women_grooming_flawless_clean_makeup",
+    "description": "Clean girl makeup glowing skin, flawless natural everyday makeup, winged eyeliner red lips",
+    "queries": [
+      "woman face portrait photo clean girl makeup natural glowing skin close up -product -palette -bottle",
+      "woman headshot photo flawless natural everyday makeup smooth skin portrait -drawing -brush",
+      "woman face portrait sharp clean winged eyeliner red lipstick polished makeup -product_box"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "3_Polished",
+    "category": "women_grooming_laminated_groomed_eyebrows",
+    "description": "Well groomed laminated feathered eyebrows",
+    "queries": [
+      "woman face portrait close up well groomed laminated feathered eyebrows -pencil -gel_tube -product",
+      "woman headshot closeup neat defined sculpted eyebrows natural look -drawing -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_jacket_sleeves_too_long",
+    "description": "Suit jacket or blazer sleeves extending past wrists and covering hands",
+    "queries": [
+      "man standing full body photo wearing suit jacket sleeves too long covering hands -flatlay -hanger",
+      "man standing head to toe blazer sleeves past wrists ill fitting -product -hanger",
+      "man full length fit check oversized jacket long sleeves fail -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "men_clashing_colors_formal_fail",
+    "description": "Athletic running shoes with formal suit, or garish clashing neon color combinations",
+    "queries": [
+      "man standing full body photo wearing athletic gym sneakers with business suit fail -flatlay -product",
+      "man standing head to toe outfit clashing loud neon colors mismatched -hanger -product",
+      "man full length street style awkward gym shoes formal trousers outfit -flatlay"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_clashing_patterns_mismatch",
+    "description": "Loud competing patterns, clashing colors, or awkward formal mismatch",
+    "queries": [
+      "woman standing full body street style outfit clashing competing patterns fail -flatlay -hanger",
+      "woman standing head to toe photo mismatched awkward color clash outfit -product -hanger",
+      "woman full length fit check athletic running shoes with cocktail dress fail -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Women_Outfit",
+    "tier": "1_Needs_Improvement",
+    "category": "women_waist_gap_sagging_fit",
+    "description": "Severe waist gap on jeans, sagging crotch, or ill-fitting loose trousers",
+    "queries": [
+      "woman standing full body photo wearing jeans severe waist gap ill fitting -flatlay -hanger",
+      "woman standing head to toe trousers sagging crotch baggy fit check -product -hanger",
+      "woman full length photo ill fitting jeans bunching waist fail -flatlay -mannequin"
+    ],
+    "min_width": 480,
+    "min_height": 640,
+    "min_aspect": 1.2,
+    "max_aspect": 2.5,
+    "orientation": "portrait"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "men_grooming_greasy_limp_hair",
+    "description": "Greasy unwashed hair, limp flat unstyled look, stringy oily strands",
+    "queries": [
+      "man face portrait photo greasy unwashed limp unstyled hair selfie -product -shampoo -drawing",
+      "man headshot photo stringy oily uncombed hair close up candid -bottle -drawing",
+      "young man face closeup unwashed flat greasy hair morning -serum -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Men_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "men_grooming_crooked_uneven_neckline",
+    "description": "Uneven asymmetrical beard neckline, crooked trimming line, neck scruff",
+    "queries": [
+      "man jawline closeup photo crooked uneven beard neckline fail -product -blade",
+      "man face portrait photo uneven crooked beard neckline shaving fail -razor -product -oil",
+      "man headshot closeup photo asymmetrical beard line trimming error -clipper -product",
+      "man neck closeup photo unlined scruffy beard neck hair -oil -razor",
+      "man face portrait photo bad beard lineup asymmetrical neckline -product -drawing",
+      "man jawline photo beard neckline cut too high jaw fail -clipper",
+      "man neck closeup scruffy uneven neckline stubble close up -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "women_grooming_spider_mascara_clumpy",
+    "description": "Clumpy spider mascara, flaky mascara fallout, smudged uneven lashes",
+    "queries": [
+      "woman face portrait closeup clumpy spider mascara eyelashes fail -mascara_tube -product -drawing",
+      "woman headshot photo flaky smudged clumpy mascara makeup fail -wand -brush",
+      "woman face closeup photo messy spider legs mascara clumpy lashes -product -drawing",
+      "woman face portrait photo uneven clumpy false lashes peeling edge fail -product",
+      "woman eye closeup photo smudged raccoon eyeliner smeared mascara -product",
+      "woman face portrait heavy clumpy mascara fallout on under eyes -product",
+      "woman headshot smeared mascara running down cheeks candid -drawing"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  },
+  {
+    "stream": "Women_Grooming",
+    "tier": "1_Needs_Improvement",
+    "category": "women_grooming_harsh_unblended_blush",
+    "description": "Harsh unblended stripey blush, clownish cheek color, muddy contour lines",
+    "queries": [
+      "woman face portrait photo harsh unblended stripe blush makeup fail -palette -product -brush",
+      "woman headshot photo muddy unblended contour cheek stripe makeup -product -bottle",
+      "woman face closeup photo clownish bright unblended blush cheeks -drawing -product",
+      "woman face portrait harsh orange contour unblended makeup fail -brush -palette",
+      "woman headshot patchy uneven bronzer stripe on cheekbone -product"
+    ],
+    "min_width": 400,
+    "min_height": 400,
+    "min_aspect": 0.65,
+    "max_aspect": 1.85,
+    "orientation": "square"
+  }
+]

@@ -75,7 +75,7 @@ if HAS_TORCH:
         GREEN, YELLOW, RED, CYAN, BOLD, RESET, header, get_device, get_transforms,
         MultiHeadModel, SyntheticCsvDataset, RealWorldScoreDataset, ReplayMixedLoader,
         compute_losses, evaluate, discover_synthetic_source, discover_real_samples,
-        trainable_fields, export_to_coreml, load_annotations_scores,
+        trainable_fields, export_to_coreml, load_annotations_scores, load_annotations_dict,
     )
 
 
@@ -120,11 +120,13 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
     for tier, cnt in real["per_tier_counts"].items():
         print(f"    {tier:24s}: {cnt} images")
 
-    annotations_scores = load_annotations_scores(ANNOTATIONS_FILE)
+    annotations_data = load_annotations_dict(ANNOTATIONS_FILE)
+    annotations_scores = {fn: d["score"] for fn, d in annotations_data.items() if d.get("score") is not None}
     matched_scores = sum(1 for s in real["samples"] if s[0].name in annotations_scores)
+    matched_attrs = sum(1 for s in real["samples"] if s[0].name in annotations_data and any(annotations_data[s[0].name].get("attributes", {}).values()))
     if annotations_scores:
         print(f"  Score targets: {matched_scores}/{real['total']} calibrated continuous VLM scores loaded "
-              f"from {ANNOTATIONS_FILE.name}")
+              f"({matched_attrs} with real garment/grooming attributes) from {ANNOTATIONS_FILE.name}")
     else:
         print(f"  {YELLOW}⚠ Score targets: no annotations file found; falling back to deterministic tier midpoints{RESET}")
 
@@ -203,7 +205,8 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
 
     # ── Real dataset split ────────────────────────────────────────────────
     real_train_full = RealWorldScoreDataset(real["samples"], schema, get_transforms(image_size, is_train=True),
-                                            annotations_scores=annotations_scores)
+                                            annotations_scores=annotations_scores,
+                                            annotations_data=annotations_data)
     n_real_train = max(1, int(len(real_train_full) * TRAIN_SPLIT))
     n_real_val = len(real_train_full) - n_real_train
     if n_real_val == 0:
@@ -211,7 +214,8 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
         n_real_val = 1
     real_train_ds, real_val_idx = random_split(real_train_full, [n_real_train, n_real_val])
     real_val_full = RealWorldScoreDataset(real["samples"], schema, get_transforms(image_size, is_train=False),
-                                          annotations_scores=annotations_scores)
+                                          annotations_scores=annotations_scores,
+                                          annotations_data=annotations_data)
     real_val_ds = torch.utils.data.Subset(real_val_full, real_val_idx.indices)
     print(f"  Real train : {n_real_train} | Real val: {n_real_val}")
 
@@ -240,11 +244,12 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
     train_loader = ReplayMixedLoader(
         real_train_ds, synth_train_ds if synth_train_ds is not None else [],
         batch_size=args.batch_size, replay_ratio=args.replay_ratio, shuffle=True,
+        num_workers=args.num_workers, pin_memory=False,
     )
     real_val_loader = DataLoader(real_val_ds, batch_size=args.batch_size, shuffle=False,
-                                  num_workers=2, pin_memory=True)
+                                  num_workers=args.num_workers, pin_memory=False)
     synth_val_loader = (DataLoader(synth_val_ds, batch_size=args.batch_size, shuffle=False,
-                                    num_workers=2, pin_memory=True) if synth_val_ds else None)
+                                    num_workers=args.num_workers, pin_memory=False) if synth_val_ds else None)
 
     # ── Fine-tune loop ────────────────────────────────────────────────────
     optimizer = AdamW(model.parameters(), lr=args.learning_rate, weight_decay=1e-4)
@@ -269,7 +274,7 @@ def finetune_category(category: str, device, args, dry_run: bool) -> dict:
 
             optimizer.zero_grad()
             outputs = model(images)
-            loss, _ = compute_losses(outputs, targets, masks, schema)
+            loss, _ = compute_losses(outputs, targets, masks, schema, boundary_weight=args.boundary_weight)
             loss.backward()
             optimizer.step()
 
@@ -412,6 +417,11 @@ def main():
     parser.add_argument("--replay-ratio", type=float, default=REPLAY_RATIO_DEFAULT,
                          help="Fraction of each training batch drawn from synthetic replay data "
                               "(default 0.3 = 30%% synthetic / 70%% real).")
+    parser.add_argument("--boundary-weight", type=float, default=2.5,
+                         help="Loss multiplier on boundary score targets (< 5.0 or > 8.5) "
+                              "to prevent score dynamic range compression (default 2.5).")
+    parser.add_argument("--num-workers", type=int, default=0,
+                         help="Number of DataLoader workers (default 0 for macOS stability).")
     parser.add_argument("--dry-run", action="store_true",
                          help="Validate checkpoint/data presence without training")
     args = parser.parse_args()

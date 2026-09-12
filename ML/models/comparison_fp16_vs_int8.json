@@ -1,0 +1,242 @@
+[
+  {
+    "index": 1,
+    "filename": "Woman full body sharp.jpg",
+    "category": "Women_Outfit",
+    "occasion": "Night Out",
+    "score": 8.03,
+    "tier_label": "Polished & Sharp",
+    "fp16": {
+      "raw_text": "- Swap the blazer for a structured leather jacket or sleek blotto.\n- Replace heeled pumps with pointed-toe heels or sleek strappy heels.\n- Add a metallic belt to pull the blazer and trousers together.\n- Ensure the blouse collar sits flat and symmetrically under the blazer lapels.",
+      "clean_text": "- Swap the blazer for a structured leather jacket or sleek blotto.\n- Replace heeled pumps with pointed-toe heels or sleek strappy heels.\n- Add a metallic belt to pull the blazer and trousers together.\n- Ensure the blouse collar sits flat and symmetrically under the blazer lapels.",
+      "tokens": 70,
+      "words": 48,
+      "latency_sec": 8.87,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Swap the blazer for a structured leather jacket or sleek blotto.\n- Replace heeled pumps with pointed-toe heels or sleek strappy heels.\n- Add a metallic belt to pull the blazer and trousers together.\n- Ensure the blouse collar sits flat and symmetrically under the blazer lapels.",
+      "clean_text": "- Swap the blazer for a structured leather jacket or sleek blotto.\n- Replace heeled pumps with pointed-toe heels or sleek strappy heels.\n- Add a metallic belt to pull the blazer and trousers together.\n- Ensure the blouse collar sits flat and symmetrically under the blazer lapels.",
+      "tokens": 70,
+      "words": 48,
+      "latency_sec": 14.1,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 2,
+    "filename": "Asian man polo jeans.jpeg",
+    "category": "Men_Outfit",
+    "occasion": "Casual Dinner",
+    "score": 6.66,
+    "tier_label": "Average / Baseline Everyday",
+    "fp16": {
+      "raw_text": "- Swap canvas sneakers for clean leather sneakers or casual loafers.\n- Replace the plain crewneck tee with a well-fitted collared shirt.\n- Add a structured overshirt or casual jacket to elevate the dinner look.\n- Ensure chinos have a clean hem with no bunching over footwear.",
+      "clean_text": "- Swap canvas sneakers for clean leather sneakers or casual loafers.\n- Replace the plain crewneck tee with a well-fitted collared shirt.\n- Add a structured overshirt or casual jacket to elevate the dinner look.\n- Ensure chinos have a clean hem with no bunching over footwear.",
+      "tokens": 68,
+      "words": 47,
+      "latency_sec": 8.53,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Swap canvas sneakers for leather loafers or clean minimalist sneakers.\n- Replace the plain crewneck tee with a tailored button-down shirt.\n- Add a structured overshirt or casual jacket to elevate the dinner look.\n- Ensure chinos feature a clean, tapered break above the footwear.",
+      "clean_text": "- Swap canvas sneakers for leather loafers or clean minimalist sneakers.\n- Replace the plain crewneck tee with a tailored button-down shirt.\n- Add a structured overshirt or casual jacket to elevate the dinner look.\n- Ensure chinos feature a clean, tapered break above the footwear.",
+      "tokens": 66,
+      "words": 46,
+      "latency_sec": 8.26,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 3,
+    "filename": "bald man good.webp",
+    "category": "Men_Outfit",
+    "occasion": "Everyday Errands",
+    "score": 6.18,
+    "tier_label": "Average / Baseline Everyday",
+    "fp16": {
+      "raw_text": "- Swap canvas sneakers for clean leather low-tops or minimalist leather sneakers.\n- Replace the polo shirt with a well-fitted crewneck t-shirt or polo.\n- Ensure your denim jeans have a clean, tapered break above the shoes.\n- Steam or iron your polo shirt to eliminate any visible fabric creases.\n- Clean up your haircut and neckline for a sharp, fresh grooming lineup.",
+      "clean_text": "- Swap canvas sneakers for clean leather low-tops or minimalist leather sneakers.\n- Replace the polo shirt with a well-fitted crewneck t-shirt or polo.\n- Ensure your denim jeans have a clean, tapered break above the shoes.\n- Steam or iron your polo shirt to eliminate any visible fabric creases.",
+      "tokens": 94,
+      "words": 50,
+      "latency_sec": 12.19,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Swap canvas sneakers for clean leather low-tops or minimalist leather sneakers.\n- Replace the polo shirt with a well-fitted crewneck t-shirt or casual button-down.\n- Ensure your denim jeans have a clean, tapered break above the shoes.\n- Steam or iron your polo shirt to eliminate any visible fabric creases.\n- Clean up your haircut and neckline for a sharp, fresh grooming lineup.",
+      "clean_text": "- Swap canvas sneakers for clean leather low-tops or minimalist leather sneakers.\n- Replace the polo shirt with a well-fitted crewneck t-shirt or casual button-down.\n- Ensure your denim jeans have a clean, tapered break above the shoes.\n- Steam or iron your polo shirt to eliminate any visible fabric creases.",
+      "tokens": 96,
+      "words": 51,
+      "latency_sec": 12.15,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 4,
+    "filename": "Man Portrait sharp.webp",
+    "category": "Men_Grooming",
+    "occasion": "Formal Business Meeting",
+    "score": 9.07,
+    "tier_label": "Polished & Sharp",
+    "fp16": {
+      "raw_text": "- Ensure dress shirt collar remains crisp and structured throughout the meeting.\n- Check that your dress shoes are thoroughly polished and free of scuffs.\n- Confirm that your dress waist belt sits completely flat and centered.",
+      "clean_text": "\u2022 Apply a lightweight matte styling cream or clay to tame any subtle flyaways.\n\u2022 Keep facial hair line precisely defined and moisturize skin for a healthy finish.",
+      "tokens": 43,
+      "words": 28,
+      "latency_sec": 5.58,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Ensure your dress shirt collar remains crisp and structured throughout meetings.\n- Check that your dress shoes are thoroughly polished and free of scuffs.\n- Keep your dress waist belt completely smooth and free of fabric creases.",
+      "clean_text": "\u2022 Apply a lightweight matte styling cream or clay to tame any subtle flyaways.\n\u2022 Keep facial hair line precisely defined and moisturize skin for a healthy finish.",
+      "tokens": 45,
+      "words": 28,
+      "latency_sec": 5.86,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 5,
+    "filename": "Man needs improvement.avif",
+    "category": "Men_Grooming",
+    "occasion": "First Date",
+    "score": 7.2,
+    "tier_label": "Average / Baseline Everyday",
+    "fp16": {
+      "raw_text": "- Define beard neckline and cheek lines with a razor for sharp edges.\n- Steam your shirt to eliminate any visible creases or fabric wrinkles.\n- Choose tailored trousers that break cleanly above your footwear without pooling.\n- Polish your shoes to remove scuffs and ensure a clean finish.\n- Match your leather belt color directly to your footwear for cohesion.",
+      "clean_text": "- Define beard neckline and cheek lines with a razor for sharp edges.\n\u2022 Tidy up the neckline and sideburns with a trimmer to sharpen your profile.",
+      "tokens": 74,
+      "words": 27,
+      "latency_sec": 9.77,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Sharpen beard cheeklines and neckline for a crisp, intentional finish.\n- Choose a well-fitted button-down shirt that sits flat across shoulders.\n- Ensure trousers are tailored with a clean break above the shoes.\n- Pair with clean, scuff-free leather shoes or minimalist dress sneakers.\n- Steam all garments thoroughly to eliminate any visible fabric creases.",
+      "clean_text": "- Sharpen beard cheeklines and neckline for a crisp, intentional finish.\n\u2022 Tidy up the neckline and sideburns with a trimmer to sharpen your profile.",
+      "tokens": 80,
+      "words": 25,
+      "latency_sec": 10.57,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 6,
+    "filename": "Man portrain needs improvement.avif",
+    "category": "Men_Grooming",
+    "occasion": "Tech Job Interview",
+    "score": 5.59,
+    "tier_label": "Average / Baseline Everyday",
+    "fp16": {
+      "raw_text": "- Style short hair with a matte pomade for a clean, intentional finish.\n- Edge and trim your beard neckline and cheeklines for sharp definition.\n- Brush and groom eyebrows to create a neat, professional appearance.\n- Wear a crisp, well-fitted collared shirt pressed free of any wrinkles.\n- Pair with tailored trousers and clean, scuff-free leather shoes.",
+      "clean_text": "- Style short hair with a matte pomade for a clean, intentional finish.\n- Edge and trim your beard neckline and cheeklines for sharp definition.\n- Brush and groom eyebrows to create a neat, professional appearance.",
+      "tokens": 82,
+      "words": 36,
+      "latency_sec": 10.87,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Style short hair with a matte pomade for a sharp, intentional look.\n- Edge and trim your beard neckline and cheeklines for clean definition.\n- Brush and groom eyebrows to create a neat, professional appearance.\n- Wear a crisp, well-fitted button-down shirt pressed free of wrinkles.\n- Pair with tailored chinos and clean, scuff-free leather shoes.",
+      "clean_text": "- Style short hair with a matte pomade for a sharp, intentional look.\n- Edge and trim your beard neckline and cheeklines for clean definition.\n- Brush and groom eyebrows to create a neat, professional appearance.",
+      "tokens": 83,
+      "words": 36,
+      "latency_sec": 11.04,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 7,
+    "filename": "Woman face sharp.jpg",
+    "category": "Women_Grooming",
+    "occasion": "Formal Business Meeting",
+    "score": 8.03,
+    "tier_label": "Polished & Sharp",
+    "fp16": {
+      "raw_text": "- Ensure blouse or tailored shirt is crisply pressed with zero visible wrinkles.\n- Pair with a structured, tailored blazer to command executive presence.\n- Select polished leather loafers or clean dress shoes in pristine condition.\n- Add a subtle tinted lip balm for polished facial definition.\n- Check that all garments are thoroughly steamed and free of creases.",
+      "clean_text": "- Add a subtle tinted lip balm for polished facial definition.\n\u2022 Smooth hairline flyaways with a light finishing serum or edge brush.",
+      "tokens": 76,
+      "words": 23,
+      "latency_sec": 9.95,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Ensure blouse or tailored shirt is crisply pressed with zero visible wrinkles.\n- Pair with a structured, tailored blazer to establish formal business authority.\n- Ensure leather shoes or polished loafers are completely scuff-free and polished.\n- Check that your tailored trousers break cleanly above your dress shoes.\n- Add a subtle, minimalist watch to complete the formal business aesthetic.",
+      "clean_text": "- Add a subtle, minimalist watch to complete the formal business aesthetic.\n\u2022 Smooth hairline flyaways with a light finishing serum or edge brush.",
+      "tokens": 80,
+      "words": 24,
+      "latency_sec": 10.55,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 8,
+    "filename": "Woman average.webp",
+    "category": "Women_Grooming",
+    "occasion": "Casual Dinner",
+    "score": 7.0,
+    "tier_label": "Average / Baseline Everyday",
+    "fp16": {
+      "raw_text": "- Add a structured, tailored blazer to elevate the casual dinner aesthetic.\n- Introduce a warm accent color to add depth to the minimal makeup.\n- Incorporate delicate jewelry to frame the face and complement the styled hair.\n- Ensure footwear is clean, polished, and free of visible scuffs.\n- Steam garments thoroughly to eliminate any visible wrinkles or creases.",
+      "clean_text": "- Introduce a warm accent color to add depth to the minimal makeup.\n- Incorporate delicate jewelry to frame the face and complement the styled hair.",
+      "tokens": 76,
+      "words": 26,
+      "latency_sec": 10.01,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Add a structured, tailored blazer to elevate the casual dinner aesthetic.\n- Introduce a warm accent color to add depth to the minimal makeup.\n- Incorporate delicate jewelry to frame the face and complement the styled hair.\n- Ensure footwear is clean, polished, and free of visible scuffs.\n- Steam garments thoroughly to eliminate any visible fabric creases.",
+      "clean_text": "- Introduce a warm accent color to add depth to the minimal makeup.\n- Incorporate delicate jewelry to frame the face and complement the styled hair.",
+      "tokens": 75,
+      "words": 26,
+      "latency_sec": 9.87,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 9,
+    "filename": "needs improvement woman.jpeg",
+    "category": "Women_Grooming",
+    "occasion": "Creative Field Interview",
+    "score": 6.73,
+    "tier_label": "Average / Baseline Everyday",
+    "fp16": {
+      "raw_text": "- Add a bold, structured accessory to showcase creative industry flair.\n- Ensure your top's neckline and collar remain crisp and completely wrinkle-free.\n- Pair with clean, scuff-free minimalist jewelry to elevate the overall presentation.\n- Select tailored, well-fitted trousers with a clean break above your shoes.\n- Ensure footwear is immaculate and free of visible scuffs or dust.",
+      "clean_text": "- Add a bold, structured accessory to showcase creative industry flair.\n- Pair with clean, scuff-free minimalist jewelry to elevate the overall presentation.",
+      "tokens": 85,
+      "words": 23,
+      "latency_sec": 11.26,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Add a bold, structured accessory to showcase creative industry flair.\n- Ensure your top's neckline and collar remain crisp and completely wrinkle-free.\n- Pair with clean, scuff-free minimalist jewelry to elevate the overall presentation.\n- Ensure footwear is immaculate and free of scuffs or dirt.\n- Check that all garment seams sit neatly without pulling or bunching.",
+      "clean_text": "- Add a bold, structured accessory to showcase creative industry flair.\n- Pair with clean, scuff-free minimalist jewelry to elevate the overall presentation.",
+      "tokens": 81,
+      "words": 23,
+      "latency_sec": 10.67,
+      "has_repetition": false
+    }
+  },
+  {
+    "index": 10,
+    "filename": "woman bad hair.webp",
+    "category": "Women_Grooming",
+    "occasion": "First Date",
+    "score": 4.66,
+    "tier_label": "Needs Improvement / Poor Execution",
+    "fp16": {
+      "raw_text": "- Style your long hair with defined waves or a polished blowout.\n- Shape and define your eyebrows with a pencil and tinted gel.\n- Add a tinted lip balm and mascara for a fresh look.\n- Choose a well-fitted top with structured shoulders to elevate your silhouette.\n- Wear clean, polished footwear to complete the date-night aesthetic.",
+      "clean_text": "- Style your long hair with defined waves or a polished blowout.\n- Shape and define your eyebrows with a pencil and tinted gel.\n- Add a tinted lip balm and mascara for a fresh look.",
+      "tokens": 78,
+      "words": 36,
+      "latency_sec": 10.24,
+      "has_repetition": false
+    },
+    "int8": {
+      "raw_text": "- Style your long hair with defined waves or a polished blowout.\n- Shape and define your eyebrows with a pencil and tinted gel.\n- Add a tinted lip balm and mascara for a fresh look.\n- Choose a well-fitted top with structured shoulders to project confidence.\n- Incorporate delicate jewelry to elevate the overall date-night aesthetic.",
+      "clean_text": "- Style your long hair with defined waves or a polished blowout.\n- Shape and define your eyebrows with a pencil and tinted gel.\n- Add a tinted lip balm and mascara for a fresh look.\n- Incorporate delicate jewelry to elevate the overall date-night aesthetic.",
+      "tokens": 76,
+      "words": 46,
+      "latency_sec": 10.0,
+      "has_repetition": false
+    }
+  }
+]

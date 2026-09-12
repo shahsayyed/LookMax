@@ -228,7 +228,7 @@ class MultiHeadModel(nn.Module):
 # ──────────────────────────────────────────────────────────────────────────────
 # Masked multi-head loss
 # ──────────────────────────────────────────────────────────────────────────────
-def compute_losses(outputs: dict, targets: dict, masks: dict, schema: list):
+def compute_losses(outputs: dict, targets: dict, masks: dict, schema: list, boundary_weight: float = 1.0):
     """
     outputs: dict[name] -> (B, C) logits, or (B, 1) for regression
     targets: dict[name] -> (B,) tensor — float for regression, long index otherwise
@@ -236,6 +236,9 @@ def compute_losses(outputs: dict, targets: dict, masks: dict, schema: list):
              supervised for that sample, 0.0 where it must not contribute
              (real-world samples: every head except `score` is masked to
              0 — see 05_finetune_real_world.py's RealWorldScoreDataset).
+
+    boundary_weight: multiplier for loss on boundary score targets (< 5.0 or > 8.5)
+             to fight center-regression / score dynamic range compression.
 
     The per-head loss is a MASKED MEAN, i.e. (raw_per_sample * mask).sum()
     / mask.sum() — not `.sum() / batch_size`. Dividing by the effective
@@ -263,6 +266,9 @@ def compute_losses(outputs: dict, targets: dict, masks: dict, schema: list):
 
         if f["type"] == "regression":
             raw = F.smooth_l1_loss(out.squeeze(-1), tgt, reduction="none")
+            if boundary_weight > 1.0 and name == "score":
+                sample_weights = torch.where((tgt < 5.0) | (tgt > 8.5), boundary_weight, 1.0)
+                raw = raw * sample_weights
         else:
             raw = F.cross_entropy(out, tgt, reduction="none")
 
@@ -331,26 +337,84 @@ def load_annotations_scores(annotations_file: Path) -> dict[str, float]:
                 vlm = data.get("vlm_result") or {}
                 score = vlm.get("overall_score")
                 fn = data.get("filename")
-                if fn and score is not None and float(score) > 0:
-                    scores[fn] = float(score)
+                if fn and score is not None:
+                    s_val = float(score)
+                    if s_val > 10.0 and s_val <= 20.0:
+                        s_val = s_val / 2.0
+                    s_val = max(1.0, min(10.0, s_val))
+                    scores[fn] = s_val
             except (json.JSONDecodeError, ValueError):
                 continue
     return scores
 
 
+def load_annotations_dict(annotations_file: Path) -> dict:
+    """Loads all VLM annotations including continuous overall_score and
+    garment/grooming attribute pseudo-labels from dataset_annotations.jsonl.
+    Maps filename -> {'score': float, 'attributes': dict}
+    """
+    records = {}
+    if not annotations_file or not Path(annotations_file).exists():
+        return records
+    with open(annotations_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                vlm = data.get("vlm_result") or {}
+                fn = data.get("filename")
+                if not fn:
+                    continue
+                score = vlm.get("overall_score")
+                s_val = None
+                if score is not None:
+                    s_val = float(score)
+                    if s_val > 10.0 and s_val <= 20.0:
+                        s_val = s_val / 2.0
+                    s_val = max(1.0, min(10.0, s_val))
+
+                attrs = {}
+                for key in [
+                    "upper_type", "mid_type", "lower_type", "footwear_type", "formality",
+                    "hair_styled", "hair_length", "facial_hair_style", "makeup_style"
+                ]:
+                    val = vlm.get(key)
+                    if val is not None:
+                        s_v = str(val).strip().lower()
+                        if key == "lower_type" and s_v in ["suit", "suit_pants", "slacks", "trousers", "dress_pants"]:
+                            s_v = "tailored_trousers"
+                        elif key == "lower_type" and s_v in ["jeans", "blue_jeans"]:
+                            s_v = "denim_jeans"
+                        elif key == "mid_type" and s_v in ["suit_jacket", "suit_coat", "sport_coat"]:
+                            s_v = "blazer"
+                        elif key == "upper_type" and s_v in ["suit", "suit_jacket"]:
+                            s_v = "dress_shirt"
+                        elif key == "footwear_type" and s_v in ["dress_shoes", "loafers", "oxfords"]:
+                            s_v = "leather_dress_shoes"
+                        elif key == "footwear_type" and s_v in ["sneakers", "tennis_shoes"]:
+                            s_v = "canvas_sneakers"
+                        attrs[key] = s_v
+
+                records[fn] = {"score": s_val, "attributes": attrs}
+            except (json.JSONDecodeError, ValueError):
+                continue
+    return records
+
+
 # ──────────────────────────────────────────────────────────────────────────────
-# Real-world dataset — continuous VLM score anchor, score head only
+# Real-world dataset — continuous VLM score anchor + pseudo-labeled attributes
 # ──────────────────────────────────────────────────────────────────────────────
 class RealWorldScoreDataset(Dataset):
     """Wraps a flat list of (image_path, tier) samples pooled across all
     age-demographics for one gender+stream category (see
-    05_finetune_real_world.py's discover_real_samples()). Real photos only
-    carry tier and VLM scores, so every sample supervises ONLY the `score`
-    head; every other head is masked to 0.0.
+    05_finetune_real_world.py's discover_real_samples()).
 
-    When `annotations_scores` is provided, each image uses its real continuous
-    VLM `overall_score` (1.0 to 10.0 scale) directly from dataset_annotations.jsonl,
-    providing true continuous regression targets without pseudo-random jitter.
+    When `annotations_data` is provided, each image uses its real continuous
+    VLM `overall_score` (1.0 to 10.0 scale) and any pseudo-labeled garment /
+    grooming attributes from dataset_annotations.jsonl, supervising those heads
+    with real camera textures (mask=1.0) while masking unannotated heads to 0.0.
     """
     TIER_SCORE_RANGES = {
         "1_Needs_Improvement": (tx.SCORE_BANDS["flaw_severe"][0], tx.SCORE_BANDS["flaw_mild"][1]),
@@ -358,11 +422,13 @@ class RealWorldScoreDataset(Dataset):
         "3_Polished": tx.SCORE_BANDS["polished"],
     }
 
-    def __init__(self, samples: list, schema: list, transform, annotations_scores: dict = None, seed: int = 0):
+    def __init__(self, samples: list, schema: list, transform, annotations_scores: dict = None,
+                 annotations_data: dict = None, seed: int = 0):
         self.samples = samples  # list of (Path, tier_str)
         self.schema = trainable_fields(schema)
         self.transform = transform
         self.annotations_scores = annotations_scores or {}
+        self.annotations_data = annotations_data or {}
         self._seed = seed
 
     def __len__(self):
@@ -376,17 +442,26 @@ class RealWorldScoreDataset(Dataset):
         # Look up true continuous VLM overall_score from annotations log;
         # fall back deterministically to tier midpoint if unannotated.
         filename = path.name
-        if filename in self.annotations_scores:
+        score_entry = self.annotations_data.get(filename)
+        if score_entry and score_entry.get("score") is not None:
+            score = score_entry["score"]
+        elif filename in self.annotations_scores:
             score = self.annotations_scores[filename]
         else:
             lo, hi = self.TIER_SCORE_RANGES[tier]
             score = round((lo + hi) / 2.0, 1)
+
+        real_attrs = score_entry.get("attributes", {}) if score_entry else {}
 
         targets, masks = {}, {}
         for f in self.schema:
             name = f["name"]
             if name == "score":
                 targets[name] = torch.tensor(score, dtype=torch.float32)
+                masks[name] = torch.tensor(1.0, dtype=torch.float32)
+            elif f["type"] == "categorical" and name in real_attrs and real_attrs[name] in f.get("classes", []):
+                cls_idx = f["classes"].index(real_attrs[name])
+                targets[name] = torch.tensor(cls_idx, dtype=torch.long)
                 masks[name] = torch.tensor(1.0, dtype=torch.float32)
             elif f["type"] == "regression":
                 targets[name] = torch.tensor(0.0, dtype=torch.float32)
@@ -423,18 +498,18 @@ class ReplayMixedLoader:
     """
 
     def __init__(self, real_dataset, synth_dataset, batch_size: int,
-                 replay_ratio: float, shuffle: bool = True, num_workers: int = 2):
+                 replay_ratio: float, shuffle: bool = True, num_workers: int = 0, pin_memory: bool = False):
         self.synth_n = (max(1, round(batch_size * replay_ratio))
                         if (replay_ratio > 0 and len(synth_dataset)) else 0)
         self.real_n = batch_size - self.synth_n
         assert self.real_n > 0, "replay_ratio too high — no room left for real samples in the batch"
 
         self.real_loader = DataLoader(real_dataset, batch_size=self.real_n, shuffle=shuffle,
-                                       num_workers=num_workers, drop_last=True, pin_memory=True)
+                                       num_workers=num_workers, drop_last=True, pin_memory=pin_memory)
         self.synth_loader = None
         if self.synth_n > 0:
             self.synth_loader = DataLoader(synth_dataset, batch_size=self.synth_n, shuffle=shuffle,
-                                            num_workers=num_workers, drop_last=True, pin_memory=True)
+                                            num_workers=num_workers, drop_last=True, pin_memory=pin_memory)
 
     def __len__(self):
         return len(self.real_loader)

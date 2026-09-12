@@ -64,7 +64,7 @@ logger = logging.getLogger("reddit_scraper")
 
 # ─── Optional LookMax Pipeline Config Integration ────────────────────────────
 try:
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # ML/vision/config.py
     from config import (
         DOWNLOAD_WORKERS,
         IMAGE_EXTENSIONS,
@@ -78,15 +78,17 @@ try:
         REDDIT_QUERIES_FILE,
         REDDIT_SCRAPE_OUTPUT_JSON,
         REDDIT_SOURCES,
+        TRAINING_DATA_DIR,
         USER_AGENT,
     )
 except ImportError:
     # Standalone defaults if running outside LookMax environment
     PIPELINE_DIR = Path(__file__).resolve().parent
-    RAW_SCRAPES_DIR = PIPELINE_DIR.parent / "data" / "1_Raw_Scrapes"
-    REDDIT_PROFILE_DIR = PIPELINE_DIR / "reddit_profile"
+    RAW_SCRAPES_DIR = PIPELINE_DIR.parent.parent / "data" / "vision_real" / "1_Raw_Scrapes"
+    TRAINING_DATA_DIR = PIPELINE_DIR.parent.parent / "data" / "vision_real" / "3_CoreML_Training_Data"
+    REDDIT_PROFILE_DIR = PIPELINE_DIR.parent.parent / ".cache" / "reddit_profile"
     REDDIT_QUERIES_FILE = PIPELINE_DIR / "reddit_queries.json"
-    REDDIT_SCRAPE_OUTPUT_JSON = PIPELINE_DIR / "reddit_images.json"
+    REDDIT_SCRAPE_OUTPUT_JSON = PIPELINE_DIR.parent.parent / "data" / "vision_real" / "2_VLM_Processing" / "metadata_logs" / "reddit_images.json"
     USER_AGENT = (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
@@ -1070,7 +1072,7 @@ def scrape_categories(
             except Exception as e:
                 logger.warning("Could not load existing output JSON: %s", e)
 
-    # Pre-populate seen hashes with existing file stems on disk
+    # Pre-populate seen hashes with existing file stems on disk (content-level deduplication)
     seen_hashes: Set[str] = set()
     dl_path: Optional[Path] = None
     if download_dir:
@@ -1079,10 +1081,22 @@ def scrape_categories(
         for f in dl_path.rglob("*"):
             if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS:
                 seen_hashes.add(f.stem)
-        if seen_hashes:
-            logger.info("Found %d pre-existing image files on disk; skipping duplicates.", len(seen_hashes))
 
-    total_collected = sum(len(urls) for urls in results.values())
+    # Also index hashes from RAW_SCRAPES_DIR and TRAINING_DATA_DIR to guarantee no re-downloads
+    for extra_dir in (RAW_SCRAPES_DIR, TRAINING_DATA_DIR):
+        if extra_dir:
+            ed_path = Path(extra_dir).resolve()
+            if ed_path.exists() and ed_path != dl_path:
+                for f in ed_path.rglob("*"):
+                    if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS:
+                        seen_hashes.add(f.stem)
+
+    if seen_hashes:
+        logger.info("Indexed %d pre-existing image content hashes on disk across raw scrapes & training data; duplicate files will be skipped.", len(seen_hashes))
+
+    initial_collected = sum(len(urls) for urls in results.values())
+    total_collected = initial_collected
+    session_new_urls = 0
     total_downloaded_session = 0
     logger.info("Total categories to process: %d (Current total URLs: %d)", len(specs), total_collected)
 
@@ -1090,19 +1104,27 @@ def scrape_categories(
 
     try:
         for i, spec in enumerate(specs, start=1):
-            if target_total and total_collected >= target_total:
-                logger.info("🎯 Reached global target limit of %d total images! Stopping scrape.", target_total)
+            reached_target = False
+            if target_total:
+                if target_total <= initial_collected:
+                    reached_target = (session_new_urls >= target_total)
+                else:
+                    reached_target = (total_collected >= target_total)
+
+            if reached_target:
+                logger.info("🎯 Reached target limit (%d images; session new: %d, grand total: %d)! Stopping scrape.", target_total, session_new_urls, total_collected)
                 break
 
             cat_name = spec.get("category", f"category_{i}")
             logger.info("\n─── [%d/%d] Category: %s ───", i, len(specs), cat_name)
 
+            effective_limit = min(limit, spec.get("limit", limit)) if limit else spec.get("limit", 50)
             existing_urls = results.get(cat_name, [])
-            if len(existing_urls) >= limit:
-                logger.info("Category '%s' already has %d/%d images. Skipping.", cat_name, len(existing_urls), limit)
+            if len(existing_urls) >= effective_limit:
+                logger.info("Category '%s' already has %d/%d images. Skipping.", cat_name, len(existing_urls), effective_limit)
                 continue
 
-            needed = limit - len(existing_urls)
+            needed = effective_limit - len(existing_urls)
             new_urls, newly_downloaded = scrape_category_target(
                 category_spec=spec,
                 context=context,
@@ -1115,6 +1137,7 @@ def scrape_categories(
             )
 
             total_downloaded_session += newly_downloaded
+            session_new_urls += len(new_urls)
 
             # Merge results
             combined = list(existing_urls)
@@ -1128,7 +1151,14 @@ def scrape_categories(
             if output_json_path:
                 save_results_to_json(results, output_json_path)
 
-            if i < len(specs) and (not target_total or total_collected < target_total):
+            has_more = (i < len(specs))
+            if target_total:
+                if target_total <= initial_collected:
+                    has_more = has_more and (session_new_urls < target_total)
+                else:
+                    has_more = has_more and (total_collected < target_total)
+
+            if has_more:
                 tracker.pause_after_category(cat_name)
 
     finally:

@@ -16,6 +16,7 @@ struct SessionDetailView: View {
     @State private var showingLibraryPicker = false
     @State private var showingComparison = false
     @State private var incomingImage: UIImage?
+    @State private var capturedScanMode: ScanMode = .grooming
     @State private var isAnalyzing = false
 
     private var selectedLook: LookItem? {
@@ -197,8 +198,9 @@ struct SessionDetailView: View {
                 }
             }
             .fullScreenCover(isPresented: $showingCustomCamera) {
-                CustomCameraView(isPresented: $showingCustomCamera, occasion: session.occasion) { image in
+                CustomCameraView(isPresented: $showingCustomCamera, occasion: session.occasion) { image, mode in
                     incomingImage = image
+                    capturedScanMode = mode
                     analyzeAndAddLook()
                 }
                 .ignoresSafeArea()
@@ -252,11 +254,17 @@ struct SessionDetailView: View {
         guard let uiImage = incomingImage else { return }
         incomingImage = nil
         isAnalyzing = true
+        let scanMode = capturedScanMode
 
-        // ─── Phase 1: On-Device Vision Analysis (instant) ───
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task {
+            // ─── Step 1: On-Device CoreML Vision Prediction ───
+            let categoryPrefix = "Men"
+            let mlCategory = scanMode == .grooming ? "\(categoryPrefix)_Grooming" : "\(categoryPrefix)_Outfit"
+            let coreMLResult = try? await CoreMLVisionManager.shared.analyze(image: uiImage, category: mlCategory)
+
+            // ─── Step 2: Vision Landmarks & Lighting Quality Baseline ───
             guard let cgImage = uiImage.cgImage else {
-                DispatchQueue.main.async { isAnalyzing = false }
+                await MainActor.run { isAnalyzing = false }
                 return
             }
 
@@ -278,17 +286,34 @@ struct SessionDetailView: View {
                 occasion: session.occasion
             )
 
+            // ─── Step 3: Calibrated Scores & On-Device Checklist ───
+            let finalScore = coreMLResult?.score ?? visionAnalysis.score
+            let finalHeadline = coreMLResult?.tierLabel ?? visionAnalysis.headlineBadge
+            let finalGood = (coreMLResult?.goodPoints.isEmpty == false) ? coreMLResult!.goodPoints : visionAnalysis.goodPoints
+            let finalBad = (coreMLResult?.badPoints.isEmpty == false) ? coreMLResult!.badPoints : visionAnalysis.badPoints
+
+            let suggestions: [StyleSuggestion]
+            if let cml = coreMLResult {
+                suggestions = StylistEngineManager.shared.generateSuggestions(
+                    category: mlCategory,
+                    occasion: session.occasion,
+                    score: finalScore,
+                    visionResult: cml
+                )
+            } else {
+                suggestions = visionAnalysis.suggestions
+            }
+
             let imagePath = SessionStorageManager.shared.saveImage(uiImage)
 
-            // Build initial look from Vision scores (shown immediately to user)
             let initialLook = LookItem(
                 imagePath: imagePath,
-                score: visionAnalysis.score,
-                potentialScore: visionAnalysis.potentialScore,
-                headlineBadge: visionAnalysis.headlineBadge,
-                goodPoints: visionAnalysis.goodPoints,
-                badPoints: visionAnalysis.badPoints,
-                suggestions: visionAnalysis.suggestions,
+                score: finalScore,
+                potentialScore: min(9.9, finalScore + 1.4),
+                headlineBadge: finalHeadline,
+                goodPoints: finalGood,
+                badPoints: finalBad,
+                suggestions: suggestions,
                 detectedOutfitColor: visionAnalysis.detectedOutfitColor,
                 detectedFaceShape: visionAnalysis.detectedFaceShape,
                 lightingScore: visionAnalysis.lightingScore,
@@ -300,14 +325,14 @@ struct SessionDetailView: View {
                 styleNote: visionAnalysis.styleNote
             )
 
-            DispatchQueue.main.async {
+            await MainActor.run {
                 session.looks.append(initialLook)
                 SessionStorageManager.shared.updateSession(session)
                 selectedLookId = initialLook.id
                 isAnalyzing = false
                 HapticManager.success()
 
-                // ─── Phase 2: Gemini VLM Deep Analysis (async, enriches the look) ───
+                // ─── Step 4: Optional Gemini VLM Deep Enrichment (async) ───
                 isDeepAnalyzing = true
                 deepAnalysisError = nil
 
@@ -319,41 +344,35 @@ struct SessionDetailView: View {
                             occasion: session.occasion
                         )
 
-                        // Merge Gemini scores with Vision result
                         let merged = LookAnalysisEngine.merge(
                             gemini: geminiResult,
                             visionResult: visionAnalysis
                         )
 
-                        // Find and update the look we just added
                         if let idx = session.looks.firstIndex(where: { $0.id == initialLook.id }) {
                             session.looks[idx] = LookItem(
                                 id: initialLook.id,
-                                imagePath: imagePath,
-                                score: merged.score,
+                                imagePath: initialLook.imagePath,
+                                score: finalScore,
                                 potentialScore: merged.potentialScore,
-                                headlineBadge: merged.headlineBadge,
-                                goodPoints: merged.goodPoints,
-                                badPoints: merged.badPoints,
-                                suggestions: merged.suggestions,
-                                detectedOutfitColor: merged.detectedOutfitColor,
-                                detectedFaceShape: merged.detectedFaceShape,
-                                lightingScore: merged.lightingScore,
-                                postureScore: merged.postureScore,
-                                fitScore: merged.fitScore,
-                                groomingScore: merged.groomingScore,
-                                postureNote: merged.postureNote,
-                                fitNote: merged.fitNote,
-                                styleNote: merged.styleNote
+                                headlineBadge: finalHeadline,
+                                goodPoints: finalGood + geminiResult.goodPoints.prefix(2),
+                                badPoints: finalBad + geminiResult.improvementPoints.prefix(2),
+                                suggestions: suggestions,
+                                detectedOutfitColor: initialLook.detectedOutfitColor,
+                                detectedFaceShape: initialLook.detectedFaceShape,
+                                lightingScore: initialLook.lightingScore,
+                                postureScore: initialLook.postureScore,
+                                fitScore: initialLook.fitScore,
+                                groomingScore: initialLook.groomingScore,
+                                postureNote: geminiResult.postureNote,
+                                fitNote: geminiResult.fitNote,
+                                styleNote: geminiResult.styleNote
                             )
                             SessionStorageManager.shared.updateSession(session)
-                            HapticManager.medium()  // Subtle confirmation that deep analysis landed
                         }
-                    } catch GeminiServiceError.missingAPIKey {
-                        // Silent fail when no API key — Vision scores are still shown
-                        print("[GeminiVisionService] No API key configured. Using on-device Vision scores only.")
                     } catch {
-                        deepAnalysisError = error.localizedDescription
+                        // Cloud Gemini unavailable, on-device look is already complete and displayed!
                     }
                 }
             }

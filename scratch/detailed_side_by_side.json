@@ -1,0 +1,1063 @@
+[
+  {
+    "filename": "Asian man polo jeans.jpeg",
+    "category": "Men_Outfit",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Asian man polo jeans.jpeg",
+      "filename": "Asian man polo jeans.jpeg",
+      "category": "Men_Outfit",
+      "score": 7.05,
+      "tier": "2_Average",
+      "tier_label": "Average / Baseline Everyday",
+      "attributes": {
+        "upper_type": {
+          "prediction": "polo_shirt",
+          "confidence": 0.302,
+          "distribution": {
+            "tank_top": 0.056,
+            "graphic_tee": 0.096,
+            "plain_crewneck_tee": 0.115,
+            "henley": 0.074,
+            "polo_shirt": 0.302,
+            "flannel_shirt": 0.003,
+            "thermal_henley": 0.285,
+            "crewneck_sweater": 0.006,
+            "turtleneck_sweater": 0.048,
+            "oxford_button_down": 0.01,
+            "chambray_shirt": 0.0,
+            "dress_shirt": 0.005
+          }
+        },
+        "upper_pattern": {
+          "prediction": "solid",
+          "confidence": 0.974,
+          "distribution": {
+            "solid": 0.974,
+            "striped": 0.001,
+            "checked": 0.002,
+            "printed": 0.023
+          }
+        },
+        "mid_type": {
+          "prediction": "none",
+          "confidence": 1.0,
+          "distribution": {
+            "none": 1.0,
+            "hoodie": 0.0,
+            "denim_jacket": 0.0,
+            "bomber_jacket": 0.0,
+            "cardigan": 0.0,
+            "blazer": 0.0
+          }
+        },
+        "lower_type": {
+          "prediction": "cargo_pants",
+          "confidence": 0.789,
+          "distribution": {
+            "sweatpants": 0.001,
+            "athletic_shorts": 0.0,
+            "cargo_shorts": 0.005,
+            "denim_jeans": 0.009,
+            "joggers": 0.0,
+            "cargo_pants": 0.789,
+            "chino_pants": 0.008,
+            "corduroy_pants": 0.187,
+            "tailored_trousers": 0.0,
+            "dress_pants": 0.001,
+            "none": 0.0
+          }
+        },
+        "lower_pattern": {
+          "prediction": "solid",
+          "confidence": 0.999,
+          "distribution": {
+            "solid": 0.999,
+            "striped": 0.0,
+            "checked": 0.0,
+            "printed": 0.001,
+            "none": 0.0
+          }
+        },
+        "footwear_type": {
+          "prediction": "suede_desert_boots",
+          "confidence": 0.271,
+          "distribution": {
+            "slides": 0.128,
+            "flip_flops": 0.054,
+            "canvas_sneakers": 0.183,
+            "running_shoes": 0.22,
+            "leather_sneakers": 0.107,
+            "suede_desert_boots": 0.271,
+            "leather_dress_shoes": 0.024,
+            "oxford_shoes": 0.014
+          }
+        },
+        "formality": {
+          "prediction": "smart_casual",
+          "confidence": 0.703,
+          "distribution": {
+            "casual": 0.296,
+            "smart_casual": 0.703,
+            "business": 0.001,
+            "formal": 0.0
+          }
+        },
+        "fit_baggy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fit_tight": {
+          "top_index": 0,
+          "confidence": 0.999
+        },
+        "fit_tailored": {
+          "prediction": "1",
+          "confidence": 0.967,
+          "distribution": {
+            "0": 0.033,
+            "1": 0.967
+          }
+        },
+        "fabric_wrinkled": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fabric_crisp": {
+          "prediction": "1",
+          "confidence": 0.97,
+          "distribution": {
+            "0": 0.03,
+            "1": 0.97
+          }
+        },
+        "footwear_worn": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "footwear_polished": {
+          "prediction": "1",
+          "confidence": 0.963,
+          "distribution": {
+            "0": 0.036,
+            "1": 0.963
+          }
+        },
+        "styling_sloppy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "styling_sharp": {
+          "prediction": "1",
+          "confidence": 0.972,
+          "distribution": {
+            "0": 0.029,
+            "1": 0.972
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"polo_shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"denim_jeans\",\n    \"footwear_type\": \"sneakers\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 7.5\n  },\n  \"grooming\": {\n    \"hair_length\": \"short\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"beard\",\n    \"score\": 8.0\n  }\n}\n```"
+  },
+  {
+    "filename": "Man Portrait sharp.webp",
+    "category": "Men_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Man Portrait sharp.webp",
+      "filename": "Man Portrait sharp.webp",
+      "category": "Men_Grooming",
+      "score": 8.62,
+      "tier": "3_Polished",
+      "tier_label": "Polished & Sharp",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "hair_styled": {
+          "prediction": "1",
+          "confidence": 0.993,
+          "distribution": {
+            "0": 0.006,
+            "1": 0.993
+          }
+        },
+        "hair_length": {
+          "prediction": "medium",
+          "confidence": 1.0,
+          "distribution": {
+            "buzz_cut": 0.0,
+            "short": 0.0,
+            "medium": 1.0,
+            "long": 0.0
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "skin_healthy": {
+          "prediction": "1",
+          "confidence": 0.99,
+          "distribution": {
+            "0": 0.01,
+            "1": 0.99
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "eyebrows_groomed": {
+          "prediction": "1",
+          "confidence": 0.985,
+          "distribution": {
+            "0": 0.015,
+            "1": 0.985
+          }
+        },
+        "facial_hair_style": {
+          "prediction": "clean_shaven",
+          "confidence": 0.966,
+          "distribution": {
+            "clean_shaven": 0.966,
+            "stubble": 0.033,
+            "short_beard": 0.0,
+            "full_beard": 0.0,
+            "moustache": 0.001
+          }
+        },
+        "facial_hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "facial_hair_groomed": {
+          "prediction": "0",
+          "confidence": 1.0,
+          "distribution": {
+            "0": 1.0,
+            "1": 0.0
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"Outfit\": {\n    \"upper_type\": \"t-shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"none\",\n    \"footwear_type\": \"none\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 7.5\n  },\n  \"Grooming\": {\n    \"hair_length\": \"medium\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"none\",\n    \"score\": 8.0\n  }\n}\n```"
+  },
+  {
+    "filename": "Man needs improvement.avif",
+    "category": "Men_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Man needs improvement.avif",
+      "filename": "Man needs improvement.avif",
+      "category": "Men_Grooming",
+      "score": 7.67,
+      "tier": "3_Polished",
+      "tier_label": "Polished & Sharp",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "hair_styled": {
+          "prediction": "0",
+          "confidence": 0.634,
+          "distribution": {
+            "0": 0.634,
+            "1": 0.366
+          }
+        },
+        "hair_length": {
+          "prediction": "medium",
+          "confidence": 0.994,
+          "distribution": {
+            "buzz_cut": 0.0,
+            "short": 0.005,
+            "medium": 0.994,
+            "long": 0.0
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "skin_healthy": {
+          "prediction": "0",
+          "confidence": 0.776,
+          "distribution": {
+            "0": 0.776,
+            "1": 0.224
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "eyebrows_groomed": {
+          "prediction": "0",
+          "confidence": 0.749,
+          "distribution": {
+            "0": 0.749,
+            "1": 0.25
+          }
+        },
+        "facial_hair_style": {
+          "prediction": "full_beard",
+          "confidence": 0.688,
+          "distribution": {
+            "clean_shaven": 0.001,
+            "stubble": 0.0,
+            "short_beard": 0.179,
+            "full_beard": 0.688,
+            "moustache": 0.133
+          }
+        },
+        "facial_hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "facial_hair_groomed": {
+          "prediction": "0",
+          "confidence": 0.96,
+          "distribution": {
+            "0": 0.96,
+            "1": 0.039
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"polo_shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"denim_jeans\",\n    \"footwear_type\": \"sneakers\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 6.5\n  },\n  \"grooming\": {\n    \"hair_length\": \"medium\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"beard\",\n    \"score\": 7.0\n  }\n}\n```"
+  },
+  {
+    "filename": "Man portrain needs improvement.avif",
+    "category": "Men_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Man portrain needs improvement.avif",
+      "filename": "Man portrain needs improvement.avif",
+      "category": "Men_Grooming",
+      "score": 6.13,
+      "tier": "2_Average",
+      "tier_label": "Average / Baseline Everyday",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "hair_styled": {
+          "prediction": "0",
+          "confidence": 1.0,
+          "distribution": {
+            "0": 1.0,
+            "1": 0.0
+          }
+        },
+        "hair_length": {
+          "prediction": "medium",
+          "confidence": 0.918,
+          "distribution": {
+            "buzz_cut": 0.0,
+            "short": 0.082,
+            "medium": 0.918,
+            "long": 0.0
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "skin_healthy": {
+          "prediction": "0",
+          "confidence": 1.0,
+          "distribution": {
+            "0": 1.0,
+            "1": 0.0
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "eyebrows_groomed": {
+          "prediction": "0",
+          "confidence": 1.0,
+          "distribution": {
+            "0": 1.0,
+            "1": 0.0
+          }
+        },
+        "facial_hair_style": {
+          "prediction": "moustache",
+          "confidence": 0.918,
+          "distribution": {
+            "clean_shaven": 0.0,
+            "stubble": 0.0,
+            "short_beard": 0.082,
+            "full_beard": 0.0,
+            "moustache": 0.918
+          }
+        },
+        "facial_hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "facial_hair_groomed": {
+          "prediction": "0",
+          "confidence": 1.0,
+          "distribution": {
+            "0": 1.0,
+            "1": 0.0
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"polo_shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"denim_jeans\",\n    \"footwear_type\": \"sneakers\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 6.5\n  },\n  \"grooming\": {\n    \"hair_length\": \"short\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"beard and mustache\",\n    \"score\": 7.0\n  }\n}\n```"
+  },
+  {
+    "filename": "Woman average.webp",
+    "category": "Women_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Woman average.webp",
+      "filename": "Woman average.webp",
+      "category": "Women_Grooming",
+      "score": 7.4,
+      "tier": "2_Average",
+      "tier_label": "Average / Baseline Everyday",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "hair_styled": {
+          "prediction": "1",
+          "confidence": 0.955,
+          "distribution": {
+            "0": 0.046,
+            "1": 0.955
+          }
+        },
+        "hair_length": {
+          "prediction": "buzz_cut",
+          "confidence": 0.989,
+          "distribution": {
+            "buzz_cut": 0.989,
+            "short": 0.011,
+            "medium": 0.0,
+            "long": 0.0
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "skin_healthy": {
+          "prediction": "1",
+          "confidence": 0.94,
+          "distribution": {
+            "0": 0.059,
+            "1": 0.94
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "eyebrows_groomed": {
+          "prediction": "1",
+          "confidence": 0.945,
+          "distribution": {
+            "0": 0.056,
+            "1": 0.945
+          }
+        },
+        "makeup_style": {
+          "prediction": "minimal",
+          "confidence": 0.65,
+          "distribution": {
+            "none": 0.305,
+            "minimal": 0.65,
+            "everyday": 0.043,
+            "full": 0.002
+          }
+        },
+        "makeup_uneven": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "makeup_flawless": {
+          "prediction": "0",
+          "confidence": 0.987,
+          "distribution": {
+            "0": 0.987,
+            "1": 0.014
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"Outfit\": {\n    \"upper_type\": \"t-shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"none\",\n    \"footwear_type\": \"none\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 6.5\n  },\n  \"Grooming\": {\n    \"hair_length\": \"medium\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"none\",\n    \"score\": 7.5\n  }\n}\n```"
+  },
+  {
+    "filename": "Woman face sharp.jpg",
+    "category": "Women_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Woman face sharp.jpg",
+      "filename": "Woman face sharp.jpg",
+      "category": "Women_Grooming",
+      "score": 8.12,
+      "tier": "3_Polished",
+      "tier_label": "Polished & Sharp",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "hair_styled": {
+          "prediction": "1",
+          "confidence": 0.999,
+          "distribution": {
+            "0": 0.001,
+            "1": 0.999
+          }
+        },
+        "hair_length": {
+          "prediction": "short",
+          "confidence": 0.833,
+          "distribution": {
+            "buzz_cut": 0.155,
+            "short": 0.833,
+            "medium": 0.001,
+            "long": 0.011
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "skin_healthy": {
+          "prediction": "1",
+          "confidence": 0.999,
+          "distribution": {
+            "0": 0.001,
+            "1": 0.999
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "eyebrows_groomed": {
+          "prediction": "1",
+          "confidence": 0.998,
+          "distribution": {
+            "0": 0.002,
+            "1": 0.998
+          }
+        },
+        "makeup_style": {
+          "prediction": "full",
+          "confidence": 0.757,
+          "distribution": {
+            "none": 0.0,
+            "minimal": 0.027,
+            "everyday": 0.216,
+            "full": 0.757
+          }
+        },
+        "makeup_uneven": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "makeup_flawless": {
+          "prediction": "1",
+          "confidence": 0.998,
+          "distribution": {
+            "0": 0.002,
+            "1": 0.998
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"sweater\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"none\",\n    \"footwear_type\": \"none\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 7.5\n  },\n  \"grooming\": {\n    \"hair_length\": \"short\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"makeup\",\n    \"score\": 8.0\n  }\n}\n```"
+  },
+  {
+    "filename": "Woman full body sharp.jpg",
+    "category": "Women_Outfit",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/Woman full body sharp.jpg",
+      "filename": "Woman full body sharp.jpg",
+      "category": "Women_Outfit",
+      "score": 7.81,
+      "tier": "3_Polished",
+      "tier_label": "Polished & Sharp",
+      "attributes": {
+        "upper_type": {
+          "prediction": "dress_shirt",
+          "confidence": 0.604,
+          "distribution": {
+            "tank_top": 0.0,
+            "graphic_tee": 0.002,
+            "casual_camisole": 0.0,
+            "henley": 0.0,
+            "casual_blouse": 0.021,
+            "wrap_top": 0.03,
+            "silk_blouse": 0.018,
+            "fitted_sweater": 0.0,
+            "turtleneck_sweater": 0.0,
+            "tailored_blouse": 0.323,
+            "dress_shirt": 0.604,
+            "dress": 0.001
+          }
+        },
+        "upper_pattern": {
+          "prediction": "solid",
+          "confidence": 0.997,
+          "distribution": {
+            "solid": 0.997,
+            "striped": 0.001,
+            "checked": 0.0,
+            "printed": 0.002
+          }
+        },
+        "mid_type": {
+          "prediction": "denim_jacket",
+          "confidence": 0.8,
+          "distribution": {
+            "none": 0.023,
+            "hoodie": 0.001,
+            "denim_jacket": 0.8,
+            "cropped_jacket": 0.115,
+            "cardigan": 0.0,
+            "blazer": 0.061
+          }
+        },
+        "lower_type": {
+          "prediction": "joggers",
+          "confidence": 0.665,
+          "distribution": {
+            "sweatpants": 0.004,
+            "leggings": 0.071,
+            "denim_shorts": 0.003,
+            "denim_jeans": 0.145,
+            "joggers": 0.665,
+            "casual_skirt": 0.0,
+            "wide_leg_trousers": 0.0,
+            "midi_skirt": 0.0,
+            "tailored_trousers": 0.112,
+            "pencil_skirt": 0.0,
+            "none": 0.0
+          }
+        },
+        "lower_pattern": {
+          "prediction": "solid",
+          "confidence": 0.973,
+          "distribution": {
+            "solid": 0.973,
+            "striped": 0.0,
+            "checked": 0.0,
+            "printed": 0.028,
+            "none": 0.0
+          }
+        },
+        "footwear_type": {
+          "prediction": "heeled_pumps",
+          "confidence": 0.997,
+          "distribution": {
+            "slides": 0.0,
+            "flip_flops": 0.0,
+            "sneakers": 0.0,
+            "ballet_flats": 0.0,
+            "ankle_boots": 0.001,
+            "block_heels": 0.0,
+            "pointed_flats": 0.002,
+            "heeled_pumps": 0.997
+          }
+        },
+        "formality": {
+          "prediction": "business",
+          "confidence": 0.728,
+          "distribution": {
+            "casual": 0.0,
+            "smart_casual": 0.265,
+            "business": 0.728,
+            "formal": 0.007
+          }
+        },
+        "fit_baggy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fit_tight": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fit_tailored": {
+          "prediction": "1",
+          "confidence": 0.994,
+          "distribution": {
+            "0": 0.006,
+            "1": 0.994
+          }
+        },
+        "fabric_wrinkled": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fabric_crisp": {
+          "prediction": "1",
+          "confidence": 0.987,
+          "distribution": {
+            "0": 0.014,
+            "1": 0.987
+          }
+        },
+        "footwear_worn": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "footwear_polished": {
+          "prediction": "1",
+          "confidence": 0.992,
+          "distribution": {
+            "0": 0.007,
+            "1": 0.992
+          }
+        },
+        "styling_sloppy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "styling_sharp": {
+          "prediction": "1",
+          "confidence": 0.994,
+          "distribution": {
+            "0": 0.006,
+            "1": 0.994
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"dress_shirt\",\n    \"mid_type\": \"jacket\",\n    \"lower_type\": \"pants\",\n    \"footwear_type\": \"heels\",\n    \"formality\": \"business\",\n    \"fit\": \"tailored\",\n    \"score\": 8.0\n  },\n  \"grooming\": {\n    \"hair_length\": \"medium\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"no facial hair, light makeup\",\n    \"score\": 7.5\n  }\n}\n```"
+  },
+  {
+    "filename": "bald man good.webp",
+    "category": "Men_Outfit",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/bald man good.webp",
+      "filename": "bald man good.webp",
+      "category": "Men_Outfit",
+      "score": 6.67,
+      "tier": "2_Average",
+      "tier_label": "Average / Baseline Everyday",
+      "attributes": {
+        "upper_type": {
+          "prediction": "polo_shirt",
+          "confidence": 0.523,
+          "distribution": {
+            "tank_top": 0.001,
+            "graphic_tee": 0.002,
+            "plain_crewneck_tee": 0.008,
+            "henley": 0.437,
+            "polo_shirt": 0.523,
+            "flannel_shirt": 0.001,
+            "thermal_henley": 0.024,
+            "crewneck_sweater": 0.0,
+            "turtleneck_sweater": 0.0,
+            "oxford_button_down": 0.003,
+            "chambray_shirt": 0.0,
+            "dress_shirt": 0.0
+          }
+        },
+        "upper_pattern": {
+          "prediction": "solid",
+          "confidence": 0.554,
+          "distribution": {
+            "solid": 0.554,
+            "striped": 0.332,
+            "checked": 0.002,
+            "printed": 0.113
+          }
+        },
+        "mid_type": {
+          "prediction": "none",
+          "confidence": 0.996,
+          "distribution": {
+            "none": 0.996,
+            "hoodie": 0.0,
+            "denim_jacket": 0.002,
+            "bomber_jacket": 0.0,
+            "cardigan": 0.001,
+            "blazer": 0.001
+          }
+        },
+        "lower_type": {
+          "prediction": "denim_jeans",
+          "confidence": 0.993,
+          "distribution": {
+            "sweatpants": 0.004,
+            "athletic_shorts": 0.0,
+            "cargo_shorts": 0.0,
+            "denim_jeans": 0.993,
+            "joggers": 0.003,
+            "cargo_pants": 0.0,
+            "chino_pants": 0.0,
+            "corduroy_pants": 0.0,
+            "tailored_trousers": 0.0,
+            "dress_pants": 0.0,
+            "none": 0.0
+          }
+        },
+        "lower_pattern": {
+          "prediction": "solid",
+          "confidence": 0.94,
+          "distribution": {
+            "solid": 0.94,
+            "striped": 0.042,
+            "checked": 0.004,
+            "printed": 0.014,
+            "none": 0.0
+          }
+        },
+        "footwear_type": {
+          "prediction": "running_shoes",
+          "confidence": 0.609,
+          "distribution": {
+            "slides": 0.0,
+            "flip_flops": 0.0,
+            "canvas_sneakers": 0.293,
+            "running_shoes": 0.609,
+            "leather_sneakers": 0.097,
+            "suede_desert_boots": 0.0,
+            "leather_dress_shoes": 0.0,
+            "oxford_shoes": 0.0
+          }
+        },
+        "formality": {
+          "prediction": "smart_casual",
+          "confidence": 0.674,
+          "distribution": {
+            "casual": 0.326,
+            "smart_casual": 0.674,
+            "business": 0.0,
+            "formal": 0.0
+          }
+        },
+        "fit_baggy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fit_tight": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fit_tailored": {
+          "prediction": "0",
+          "confidence": 0.683,
+          "distribution": {
+            "0": 0.683,
+            "1": 0.317
+          }
+        },
+        "fabric_wrinkled": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "fabric_crisp": {
+          "prediction": "0",
+          "confidence": 0.717,
+          "distribution": {
+            "0": 0.717,
+            "1": 0.283
+          }
+        },
+        "footwear_worn": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "footwear_polished": {
+          "prediction": "0",
+          "confidence": 0.68,
+          "distribution": {
+            "0": 0.68,
+            "1": 0.32
+          }
+        },
+        "styling_sloppy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "styling_sharp": {
+          "prediction": "0",
+          "confidence": 0.695,
+          "distribution": {
+            "0": 0.695,
+            "1": 0.305
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"polo_shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"denim_jeans\",\n    \"footwear_type\": \"sneakers\",\n    \"formality\": \"smart_casual\",\n    \"fit\": \"tight\",\n    \"score\": 7.5\n  },\n  \"grooming\": {\n    \"hair_length\": \"short\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"mustache\",\n    \"score\": 8.0\n  }\n}\n```"
+  },
+  {
+    "filename": "needs improvement woman.jpeg",
+    "category": "Women_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/needs improvement woman.jpeg",
+      "filename": "needs improvement woman.jpeg",
+      "category": "Women_Grooming",
+      "score": 7.09,
+      "tier": "2_Average",
+      "tier_label": "Average / Baseline Everyday",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "hair_styled": {
+          "prediction": "0",
+          "confidence": 0.934,
+          "distribution": {
+            "0": 0.934,
+            "1": 0.066
+          }
+        },
+        "hair_length": {
+          "prediction": "medium",
+          "confidence": 0.726,
+          "distribution": {
+            "buzz_cut": 0.0,
+            "short": 0.27,
+            "medium": 0.726,
+            "long": 0.003
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "skin_healthy": {
+          "prediction": "0",
+          "confidence": 0.938,
+          "distribution": {
+            "0": 0.938,
+            "1": 0.061
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "eyebrows_groomed": {
+          "prediction": "0",
+          "confidence": 0.945,
+          "distribution": {
+            "0": 0.945,
+            "1": 0.055
+          }
+        },
+        "makeup_style": {
+          "prediction": "minimal",
+          "confidence": 0.652,
+          "distribution": {
+            "none": 0.025,
+            "minimal": 0.652,
+            "everyday": 0.236,
+            "full": 0.086
+          }
+        },
+        "makeup_uneven": {
+          "top_index": 0,
+          "confidence": 1.0
+        },
+        "makeup_flawless": {
+          "prediction": "0",
+          "confidence": 0.966,
+          "distribution": {
+            "0": 0.966,
+            "1": 0.034
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"sweater\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"none\",\n    \"footwear_type\": \"none\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 6.5\n  },\n  \"grooming\": {\n    \"hair_length\": \"medium\",\n    \"hair_styled\": \"yes\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"no facial hair, light makeup\",\n    \"score\": 7.5\n  }\n}\n```"
+  },
+  {
+    "filename": "woman bad hair.webp",
+    "category": "Women_Grooming",
+    "our_prediction": {
+      "file": "/Users/sayyed/Downloads/Test Images/woman bad hair.webp",
+      "filename": "woman bad hair.webp",
+      "category": "Women_Grooming",
+      "score": 4.73,
+      "tier": "1_Needs_Improvement",
+      "tier_label": "Needs Improvement / Poor Execution",
+      "attributes": {
+        "hair_untidy": {
+          "top_index": 0,
+          "confidence": 0.973
+        },
+        "hair_styled": {
+          "prediction": "0",
+          "confidence": 0.999,
+          "distribution": {
+            "0": 0.999,
+            "1": 0.001
+          }
+        },
+        "hair_length": {
+          "prediction": "medium",
+          "confidence": 0.722,
+          "distribution": {
+            "buzz_cut": 0.0,
+            "short": 0.262,
+            "medium": 0.722,
+            "long": 0.016
+          }
+        },
+        "skin_neglected": {
+          "top_index": 0,
+          "confidence": 0.922
+        },
+        "skin_healthy": {
+          "prediction": "0",
+          "confidence": 0.999,
+          "distribution": {
+            "0": 0.999,
+            "1": 0.001
+          }
+        },
+        "eyebrows_unkempt": {
+          "top_index": 0,
+          "confidence": 0.959
+        },
+        "eyebrows_groomed": {
+          "prediction": "0",
+          "confidence": 0.999,
+          "distribution": {
+            "0": 0.999,
+            "1": 0.001
+          }
+        },
+        "makeup_style": {
+          "prediction": "minimal",
+          "confidence": 0.421,
+          "distribution": {
+            "none": 0.278,
+            "minimal": 0.421,
+            "everyday": 0.29,
+            "full": 0.009
+          }
+        },
+        "makeup_uneven": {
+          "top_index": 0,
+          "confidence": 0.999
+        },
+        "makeup_flawless": {
+          "prediction": "0",
+          "confidence": 1.0,
+          "distribution": {
+            "0": 1.0,
+            "1": 0.0
+          }
+        }
+      }
+    },
+    "qwen_raw": "```json\n{\n  \"outfit\": {\n    \"upper_type\": \"t-shirt\",\n    \"mid_type\": \"none\",\n    \"lower_type\": \"none\",\n    \"footwear_type\": \"none\",\n    \"formality\": \"casual\",\n    \"fit\": \"loose\",\n    \"score\": 5.0\n  },\n  \"grooming\": {\n    \"hair_length\": \"long\",\n    \"hair_styled\": \"no\",\n    \"skin_condition\": \"healthy/clear\",\n    \"facial_hair_or_makeup\": \"none\",\n    \"score\": 3.0\n  }\n}\n```"
+  }
+]

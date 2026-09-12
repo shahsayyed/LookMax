@@ -1,0 +1,929 @@
+[
+  {
+    "category": "women_fit_wedding_too_casual",
+    "subreddit": "weddingattireapproval",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Questions on underdressed / too casual outfits (Needs Improvement)",
+    "limit": 40,
+    "query": "too casual"
+  },
+  {
+    "category": "women_fit_wedding_too_tight",
+    "subreddit": "weddingattireapproval",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Fit questions regarding overly tight dresses (Needs Improvement)",
+    "limit": 40,
+    "query": "too tight"
+  },
+  {
+    "category": "women_fit_wedding_too_baggy",
+    "subreddit": "weddingattireapproval",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Fit questions regarding oversized / ill-fitting dresses (Needs Improvement)",
+    "limit": 40,
+    "query": "too baggy"
+  },
+  {
+    "category": "women_fit_wedding_alterations",
+    "subreddit": "weddingattireapproval",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Garments needing alterations / tailoring flaws (Needs Improvement)",
+    "limit": 40,
+    "query": "alterations needed"
+  },
+  {
+    "category": "women_fit_wedding_does_this_work",
+    "subreddit": "weddingattireapproval",
+    "sort": "new",
+    "time": "all",
+    "description": "Women Outfit \u2014 Candid outfit evaluation questions (Diverse tiers)",
+    "limit": 40,
+    "query": "does this work"
+  },
+  {
+    "category": "women_fit_wedding_flattering",
+    "subreddit": "weddingattireapproval",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Candid silhouette and styling checks",
+    "limit": 40,
+    "query": "flattering or not"
+  },
+  {
+    "category": "women_fit_wedding_mother_bride",
+    "subreddit": "weddingattireapproval",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Over 50 \u2014 Formal dress fit checks (Mature demographics)",
+    "limit": 40,
+    "query": "mother of the bride"
+  },
+  {
+    "category": "women_fit_wedding_mother_groom",
+    "subreddit": "weddingattireapproval",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Over 50 \u2014 Mature formal attire fit checks",
+    "limit": 40,
+    "query": "mother of the groom"
+  },
+  {
+    "category": "women_fit_wedding_mature_guest",
+    "subreddit": "weddingattireapproval",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 / Over 50 \u2014 Mature guest attire",
+    "limit": 40,
+    "query": "mature guest dress"
+  },
+  {
+    "category": "women_fit_wedding_hot_feed",
+    "subreddit": "weddingattireapproval",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Outfit \u2014 Active daily wedding attire feedback feed",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "women_mature_oldhag_fit_check_new",
+    "subreddit": "oldhagfashion",
+    "sort": "new",
+    "time": "all",
+    "description": "Women 35+ / Over 50 \u2014 Daily fit checks (Diverse tiers)",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "women_mature_oldhag_work_outfit",
+    "subreddit": "oldhagfashion",
+    "sort": "top",
+    "time": "year",
+    "description": "Women 35+ / Over 50 \u2014 Work and office styling",
+    "limit": 40,
+    "query": "work outfit"
+  },
+  {
+    "category": "women_o50_oldhag_over_50",
+    "subreddit": "oldhagfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Self-identified 50+ fashion posters",
+    "limit": 40,
+    "query": "over 50"
+  },
+  {
+    "category": "women_o50_oldhag_over_60",
+    "subreddit": "oldhagfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Self-identified 60+ fashion posters",
+    "limit": 40,
+    "query": "over 60"
+  },
+  {
+    "category": "women_35_50_oldhag_over_40",
+    "subreddit": "oldhagfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Self-identified 40s styling",
+    "limit": 40,
+    "query": "over 40"
+  },
+  {
+    "category": "women_mature_oldhag_awkward_fit",
+    "subreddit": "oldhagfashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Experimental / ill-proportioned styling (Needs Improvement)",
+    "limit": 40,
+    "query": "awkward fit"
+  },
+  {
+    "category": "women_mature_oldhag_hot_feed",
+    "subreddit": "oldhagfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35+ / Over 50 \u2014 Unfiltered daily outfit feed",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "women_35_50_capsule_fit_check",
+    "subreddit": "capsulewardrobe",
+    "sort": "new",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Minimalist and workwear fit checks",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "women_35_50_capsule_workwear",
+    "subreddit": "capsulewardrobe",
+    "sort": "top",
+    "time": "year",
+    "description": "Women 35-50 \u2014 Everyday office attire",
+    "limit": 40,
+    "query": "office workwear"
+  },
+  {
+    "category": "women_35_50_capsule_does_this_fit",
+    "subreddit": "capsulewardrobe",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Candid fit evaluation (Needs Improvement / Average)",
+    "limit": 40,
+    "query": "does this fit"
+  },
+  {
+    "category": "women_35_50_capsule_proportions",
+    "subreddit": "capsulewardrobe",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Silhouette and proportion feedback",
+    "limit": 40,
+    "query": "proportions critique"
+  },
+  {
+    "category": "women_35_50_capsule_top_year",
+    "subreddit": "capsulewardrobe",
+    "sort": "top",
+    "time": "year",
+    "description": "Women 35-50 \u2014 Top capsule wardrobe outfits past year",
+    "limit": 40,
+    "listing": "top"
+  },
+  {
+    "category": "women_35_50_bizcas_blazer_fit",
+    "subreddit": "businesscasual",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Blazer and jacket tailoring checks",
+    "limit": 40,
+    "query": "women blazer fit"
+  },
+  {
+    "category": "women_35_50_bizcas_trousers_fit",
+    "subreddit": "businesscasual",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Slacks and trouser fit checks",
+    "limit": 40,
+    "query": "women trousers pants fit"
+  },
+  {
+    "category": "women_35_50_bizcas_critique",
+    "subreddit": "businesscasual",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Office outfit feedback",
+    "limit": 40,
+    "query": "women work outfit critique"
+  },
+  {
+    "category": "women_35_50_bizcas_first_day",
+    "subreddit": "businesscasual",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 First day / interview outfits",
+    "limit": 40,
+    "query": "first day outfit check"
+  },
+  {
+    "category": "men_35_50_bizcas_blazer_trousers",
+    "subreddit": "businesscasual",
+    "sort": "top",
+    "time": "year",
+    "description": "Men 35-50 \u2014 Business casual blazer chinos fit",
+    "limit": 40,
+    "query": "men blazer chinos fit"
+  },
+  {
+    "category": "men_35_50_bizcas_slacks_check",
+    "subreddit": "businesscasual",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men 35-50 \u2014 Pant length and tailoring feedback",
+    "limit": 40,
+    "query": "pants trousers fit check"
+  },
+  {
+    "category": "women_plussize_fit_check_new",
+    "subreddit": "PlusSizeFashion",
+    "sort": "new",
+    "time": "all",
+    "description": "Women Outfit \u2014 Fit check posts (Diverse tiers)",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "women_plussize_work_outfit",
+    "subreddit": "PlusSizeFashion",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Outfit \u2014 Work outfits and office fit",
+    "limit": 40,
+    "query": "work outfit critique"
+  },
+  {
+    "category": "women_plussize_does_this_flatter",
+    "subreddit": "PlusSizeFashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Candid fit evaluation (Needs Improvement / Average)",
+    "limit": 40,
+    "query": "does this flatter"
+  },
+  {
+    "category": "women_plussize_honest_opinion",
+    "subreddit": "PlusSizeFashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Critical fit feedback",
+    "limit": 40,
+    "query": "honest opinion fit"
+  },
+  {
+    "category": "women_35_50_plussize_over_40",
+    "subreddit": "PlusSizeFashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Mature plus size styling",
+    "limit": 40,
+    "query": "over 40 outfit"
+  },
+  {
+    "category": "women_o50_plussize_over_50",
+    "subreddit": "PlusSizeFashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Mature plus size styling",
+    "limit": 40,
+    "query": "over 50 outfit"
+  },
+  {
+    "category": "women_plussize_hot_feed",
+    "subreddit": "PlusSizeFashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Outfit \u2014 Active daily plus size feed",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "women_midsize_fit_check_new",
+    "subreddit": "Midsizefashion",
+    "sort": "new",
+    "time": "all",
+    "description": "Women Outfit \u2014 Fit checks",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "women_midsize_workwear",
+    "subreddit": "Midsizefashion",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Outfit \u2014 Workwear styling",
+    "limit": 40,
+    "query": "workwear critique"
+  },
+  {
+    "category": "women_midsize_honest_thoughts",
+    "subreddit": "Midsizefashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Candid feedback",
+    "limit": 40,
+    "query": "honest thoughts outfit"
+  },
+  {
+    "category": "women_petite_pants_too_long",
+    "subreddit": "petitefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Hemming / length issues (Needs Improvement)",
+    "limit": 40,
+    "query": "pants too long fit check"
+  },
+  {
+    "category": "women_petite_tailoring_advice",
+    "subreddit": "petitefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Tailoring checks (Needs Improvement / Average)",
+    "limit": 40,
+    "query": "tailoring advice blazer"
+  },
+  {
+    "category": "women_petite_proportions_critique",
+    "subreddit": "petitefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Proportion critiques",
+    "limit": 40,
+    "query": "proportions critique outfit"
+  },
+  {
+    "category": "women_35_50_petite_over_40",
+    "subreddit": "petitefashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Petite mature styling",
+    "limit": 40,
+    "query": "over 40 fit check"
+  },
+  {
+    "category": "women_o50_petite_over_50",
+    "subreddit": "petitefashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Petite mature styling",
+    "limit": 40,
+    "query": "over 50 style"
+  },
+  {
+    "category": "women_petite_hot_feed",
+    "subreddit": "petitefashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Outfit \u2014 Petite feed",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "women_fashionadv_critique",
+    "subreddit": "fashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Honest outfit critique requests",
+    "limit": 40,
+    "query": "outfit critique honest"
+  },
+  {
+    "category": "women_fashionadv_does_this_look_good",
+    "subreddit": "fashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Candid outfit questions",
+    "limit": 40,
+    "query": "does this look good on me"
+  },
+  {
+    "category": "women_fashionadv_how_to_improve",
+    "subreddit": "fashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Improvement-seeking fit checks (Needs Improvement)",
+    "limit": 40,
+    "query": "how can i improve this outfit"
+  },
+  {
+    "category": "women_35_50_fashionadv_over_40",
+    "subreddit": "fashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Style upgrade advice",
+    "limit": 40,
+    "query": "over 40 style advice"
+  },
+  {
+    "category": "women_o50_fashionadv_over_50",
+    "subreddit": "fashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Mature style advice",
+    "limit": 40,
+    "query": "over 50 outfit advice"
+  },
+  {
+    "category": "men_o50_mensfashion_over_50",
+    "subreddit": "mensfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Fit check from older men",
+    "limit": 40,
+    "query": "over 50 fit check"
+  },
+  {
+    "category": "men_o50_mensfashion_over_60",
+    "subreddit": "mensfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Senior style fit checks",
+    "limit": 40,
+    "query": "over 60 style"
+  },
+  {
+    "category": "men_o50_mensfashion_older_man",
+    "subreddit": "mensfashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Mature fit critiques",
+    "limit": 40,
+    "query": "older man fit check"
+  },
+  {
+    "category": "men_35_50_mensfashion_over_40",
+    "subreddit": "mensfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Men 35-50 \u2014 Mid-career fit checks",
+    "limit": 40,
+    "query": "over 40 fit check"
+  },
+  {
+    "category": "men_35_50_mensfashion_dad_upgrade",
+    "subreddit": "mensfashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men 35-50 \u2014 Style upgrade advice (Needs Improvement / Average)",
+    "limit": 40,
+    "query": "dad style upgrade"
+  },
+  {
+    "category": "men_tier1_mensfashion_suit_too_big",
+    "subreddit": "mensfashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Outfit \u2014 Ill-fitting suit jacket (Needs Improvement)",
+    "limit": 40,
+    "query": "suit jacket too big"
+  },
+  {
+    "category": "men_tier1_mensfashion_pants_too_baggy",
+    "subreddit": "mensfashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Outfit \u2014 Oversized pants fit check (Needs Improvement)",
+    "limit": 40,
+    "query": "pants too baggy fit check"
+  },
+  {
+    "category": "men_tier1_mensfashion_alterations",
+    "subreddit": "mensfashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Outfit \u2014 Tailoring issues (Needs Improvement)",
+    "limit": 40,
+    "query": "alterations advice fit check"
+  },
+  {
+    "category": "men_mensfashion_hot_feed",
+    "subreddit": "mensfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Outfit \u2014 Active daily mensfashion feed",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "men_mensfashion_new_feed",
+    "subreddit": "mensfashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Outfit \u2014 Fresh unfiltered mensfashion feed",
+    "limit": 40,
+    "listing": "new"
+  },
+  {
+    "category": "men_mfa_fit_check_new",
+    "subreddit": "malefashionadvice",
+    "sort": "new",
+    "time": "all",
+    "description": "Men Outfit \u2014 Fresh fit checks",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "men_mfa_first_suit_new",
+    "subreddit": "malefashionadvice",
+    "sort": "new",
+    "time": "all",
+    "description": "Men Outfit \u2014 First suit trials (Needs Improvement)",
+    "limit": 40,
+    "query": "first suit fit check"
+  },
+  {
+    "category": "men_mfa_tailoring_critique",
+    "subreddit": "malefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Outfit \u2014 Tailoring critique",
+    "limit": 40,
+    "query": "tailoring critique suit"
+  },
+  {
+    "category": "men_o50_mfa_older_man",
+    "subreddit": "malefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Mature MFA styling",
+    "limit": 40,
+    "query": "older man advice fit check"
+  },
+  {
+    "category": "men_bigmen_fit_check_new",
+    "subreddit": "bigmenfashionadvice",
+    "sort": "new",
+    "time": "all",
+    "description": "Men Outfit \u2014 Fresh big men fit checks",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "men_bigmen_suit_fit",
+    "subreddit": "bigmenfashionadvice",
+    "sort": "top",
+    "time": "year",
+    "description": "Men Outfit \u2014 Big men suit fit checks",
+    "limit": 40,
+    "query": "suit fit check"
+  },
+  {
+    "category": "men_bigmen_proportions",
+    "subreddit": "bigmenfashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Outfit \u2014 Big men proportions feedback",
+    "limit": 40,
+    "query": "proportions advice fit"
+  },
+  {
+    "category": "men_vintage_suit_fit",
+    "subreddit": "vintagefashion",
+    "sort": "top",
+    "time": "year",
+    "description": "Men Outfit \u2014 Classic tailored menswear",
+    "limit": 40,
+    "query": "mens suit vintage fit check"
+  },
+  {
+    "category": "women_vintage_dress_fit",
+    "subreddit": "vintagefashion",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Outfit \u2014 Vintage dress fit check",
+    "limit": 40,
+    "query": "vintage dress fit check"
+  },
+  {
+    "category": "women_o50_vintage_mature",
+    "subreddit": "vintagefashion",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Mature vintage styling",
+    "limit": 40,
+    "query": "vintage mature woman outfit"
+  },
+  {
+    "category": "face_women_35_50_hair_40s",
+    "subreddit": "femalehairadvice",
+    "sort": "new",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Haircut advice in 40s",
+    "limit": 40,
+    "query": "haircut 40s"
+  },
+  {
+    "category": "face_women_o50_hair_50s",
+    "subreddit": "femalehairadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Haircut advice in 50s",
+    "limit": 40,
+    "query": "haircut 50s"
+  },
+  {
+    "category": "face_women_o50_hair_60s",
+    "subreddit": "femalehairadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Haircut advice in 60s",
+    "limit": 40,
+    "query": "haircut 60s"
+  },
+  {
+    "category": "face_women_mature_hair_advice",
+    "subreddit": "femalehairadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35+ / Over 50 \u2014 Mature hair advice",
+    "limit": 40,
+    "query": "mature hairstyle advice"
+  },
+  {
+    "category": "face_women_tier1_bad_haircut",
+    "subreddit": "femalehairadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Grooming \u2014 Haircut fixes / unstyled hair (Needs Improvement)",
+    "limit": 40,
+    "query": "bad haircut how to fix"
+  },
+  {
+    "category": "face_women_tier1_messy_styling",
+    "subreddit": "femalehairadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Grooming \u2014 Unstyled hair styling advice (Needs Improvement)",
+    "limit": 40,
+    "query": "messy unstyled hair advice"
+  },
+  {
+    "category": "face_men_35_50_hair_40s",
+    "subreddit": "malehairadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men 35-50 \u2014 Haircut advice in 40s",
+    "limit": 40,
+    "query": "haircut in 40s"
+  },
+  {
+    "category": "face_men_o50_hair_50s",
+    "subreddit": "malehairadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Haircut advice in 50s",
+    "limit": 40,
+    "query": "haircut in 50s"
+  },
+  {
+    "category": "face_men_o50_mature_hair",
+    "subreddit": "malehairadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Mature hairstyles",
+    "limit": 40,
+    "query": "mature mens haircut"
+  },
+  {
+    "category": "face_men_tier1_haircut_fix",
+    "subreddit": "malehairadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Grooming \u2014 Unstyled / flawed haircut (Needs Improvement)",
+    "limit": 40,
+    "query": "bad haircut need advice"
+  },
+  {
+    "category": "face_men_35_50_grooming_beard",
+    "subreddit": "malegrooming",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men 35-50 \u2014 Beard trimming in 40s",
+    "limit": 40,
+    "query": "beard trim advice 40s"
+  },
+  {
+    "category": "face_men_o50_grooming_silver",
+    "subreddit": "malegrooming",
+    "sort": "top",
+    "time": "all",
+    "description": "Men Over 50 \u2014 Silver beard styling (Polished)",
+    "limit": 40,
+    "query": "older man beard trim silver"
+  },
+  {
+    "category": "face_men_tier1_neckbeard_cleanup",
+    "subreddit": "malegrooming",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Grooming \u2014 Untrimmed neckbeard cleanup (Needs Improvement)",
+    "limit": 40,
+    "query": "neckbeard lineup cleanup"
+  },
+  {
+    "category": "face_men_tier1_stubble_advice",
+    "subreddit": "malegrooming",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Men Grooming \u2014 Patchy stubble advice (Needs Improvement)",
+    "limit": 40,
+    "query": "patchy stubble advice"
+  },
+  {
+    "category": "face_women_35_50_makeup_40s",
+    "subreddit": "MakeupAddiction",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Everyday makeup in 40s",
+    "limit": 40,
+    "query": "everyday makeup 40s"
+  },
+  {
+    "category": "face_women_o50_makeup_50s",
+    "subreddit": "MakeupAddiction",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Makeup routine in 50s",
+    "limit": 40,
+    "query": "makeup routine 50s"
+  },
+  {
+    "category": "face_women_o50_hooded_eyes",
+    "subreddit": "MakeupAddiction",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Over 50 \u2014 Mature eye makeup",
+    "limit": 40,
+    "query": "mature hooded eyes makeup"
+  },
+  {
+    "category": "face_women_tier1_cakey_foundation",
+    "subreddit": "MakeupAddiction",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Grooming \u2014 Cakey makeup execution (Needs Improvement)",
+    "limit": 40,
+    "query": "cakey foundation fix"
+  },
+  {
+    "category": "women_ffa_fit_check_new",
+    "subreddit": "femalefashionadvice",
+    "sort": "new",
+    "time": "all",
+    "description": "Women Outfit \u2014 Fresh FFA fit checks",
+    "limit": 40,
+    "query": "fit check"
+  },
+  {
+    "category": "women_ffa_how_does_this_fit",
+    "subreddit": "femalefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Natural fit inquiries",
+    "limit": 40,
+    "query": "how does this fit"
+  },
+  {
+    "category": "women_ffa_tailoring_critique",
+    "subreddit": "femalefashionadvice",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Tailoring critique",
+    "limit": 40,
+    "query": "tailoring critique advice"
+  },
+  {
+    "category": "women_35_50_ffa_in_my_40s",
+    "subreddit": "femalefashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 \u2014 FFA 40s style discussions",
+    "limit": 40,
+    "query": "in my 40s style"
+  },
+  {
+    "category": "women_o50_ffa_in_my_50s",
+    "subreddit": "femalefashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 FFA 50s style discussions",
+    "limit": 40,
+    "query": "in my 50s style"
+  },
+  {
+    "category": "women_o50_ffa_over_60",
+    "subreddit": "femalefashionadvice",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 FFA 60s style discussions",
+    "limit": 40,
+    "query": "over 60 style"
+  },
+  {
+    "category": "feed_ffa_top_year",
+    "subreddit": "femalefashionadvice",
+    "sort": "top",
+    "time": "year",
+    "description": "Women Outfit \u2014 Top FFA past year",
+    "limit": 40,
+    "listing": "top"
+  },
+  {
+    "category": "feed_outfits_new_rot",
+    "subreddit": "OUTFITS",
+    "sort": "top",
+    "time": "all",
+    "description": "General Outfits \u2014 Fresh unfiltered feed (High Tier 1 & 2 content)",
+    "limit": 40,
+    "listing": "new"
+  },
+  {
+    "category": "feed_outfits_hot_rot",
+    "subreddit": "OUTFITS",
+    "sort": "top",
+    "time": "all",
+    "description": "General Outfits \u2014 Hot trending feed",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "women_outfits_rate_my_fit",
+    "subreddit": "OUTFITS",
+    "sort": "new",
+    "time": "all",
+    "description": "Women Outfit \u2014 Direct rating requests",
+    "limit": 40,
+    "query": "rate my outfit"
+  },
+  {
+    "category": "women_outfits_honest_opinion",
+    "subreddit": "OUTFITS",
+    "sort": "relevance",
+    "time": "all",
+    "description": "Women Outfit \u2014 Honest fit feedback",
+    "limit": 40,
+    "query": "honest opinion fit"
+  },
+  {
+    "category": "women_35_50_outfits_over_40",
+    "subreddit": "OUTFITS",
+    "sort": "top",
+    "time": "all",
+    "description": "Women 35-50 \u2014 Over 40 outfit checks",
+    "limit": 40,
+    "query": "over 40 outfit"
+  },
+  {
+    "category": "women_o50_outfits_over_50",
+    "subreddit": "OUTFITS",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Over 50 \u2014 Over 50 outfit checks",
+    "limit": 40,
+    "query": "over 50 outfit"
+  },
+  {
+    "category": "feed_femalefashion_hot",
+    "subreddit": "femalefashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Outfit \u2014 Hot feed femalefashion",
+    "limit": 40,
+    "listing": "hot"
+  },
+  {
+    "category": "feed_femalefashion_new",
+    "subreddit": "femalefashion",
+    "sort": "top",
+    "time": "all",
+    "description": "Women Outfit \u2014 New feed femalefashion",
+    "limit": 40,
+    "listing": "new"
+  },
+  {
+    "category": "feed_outfitoftheday_new",
+    "subreddit": "outfitoftheday",
+    "sort": "top",
+    "time": "all",
+    "description": "General Outfits \u2014 New feed outfitoftheday",
+    "limit": 40,
+    "listing": "new"
+  }
+]
