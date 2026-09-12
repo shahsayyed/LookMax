@@ -130,6 +130,7 @@ ML/models/*.mlmodel
 *.onnx
 *.bin
 *.png
+*.vertex_*
 
 # Python Environments & Caches
 .venv/
